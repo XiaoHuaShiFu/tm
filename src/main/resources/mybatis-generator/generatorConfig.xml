@@ -58,7 +58,7 @@
 
 
         <!-- 生成实体类地址 -->
-        <javaModelGenerator targetPackage="com.faishze.api.fasizheapi.pojo.do0" targetProject="${mybatis.project}" >
+        <javaModelGenerator targetPackage="com.xiaohuashifu.tm.pojo.do0" targetProject="${mybatis.project}" >
             <property name="enableSubPackages" value="false"/>
             <property name="trimStrings" value="true"/>
         </javaModelGenerator>
@@ -67,7 +67,7 @@
             <property name="enableSubPackages" value="false" />
         </sqlMapGenerator>
         <!-- 生成mapxml对应client，也就是接口dao -->
-        <javaClientGenerator targetPackage="com.faishze.api.fasizheapi.dao" targetProject="${mybatis.project}" type="XMLMAPPER" >
+        <javaClientGenerator targetPackage="com.xiaohuashifu.tm.dao" targetProject="${mybatis.project}" type="XMLMAPPER" >
             <property name="enableSubPackages" value="false" />
 <!--            继承通用mapper-->
 <!--            <property name="implementationPackage" value="com.faishze.api.fasizheapi.dao.BaseMapper"/>-->

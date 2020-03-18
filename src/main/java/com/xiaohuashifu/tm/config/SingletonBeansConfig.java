@@ -52,16 +52,16 @@ public class SingletonBeansConfig {
         return restTemplate;
     }
 
-//    /**
-//     * FTPClientTemplate单例
-//     * @return FTPClientTemplate
-//     */
-//    @Bean
-//    public FTPClientTemplate ftpClientTemplate(@Value("${ftp.host}") String host,
-//                                               @Value("${ftp.username}") String username,
-//                                               @Value("${ftp.password}") String password) {
-//        return new FTPClientTemplate(host, username, password);
-//    }
+    /**
+     * FTPClientTemplate单例
+     * @return FTPClientTemplate
+     */
+    @Bean
+    public FTPClientTemplate ftpClientTemplate(@Value("${ftp.host}") String host,
+                                               @Value("${ftp.username}") String username,
+                                               @Value("${ftp.password}") String password) {
+        return new FTPClientTemplate(host, username, password);
+    }
 
 
     /**
