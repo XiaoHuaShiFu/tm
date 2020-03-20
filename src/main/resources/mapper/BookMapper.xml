@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.xiaohuashifu.tm.dao.BookMapper">
   <insert id="insert" parameterType="com.xiaohuashifu.tm.pojo.do0.Book">
-    insert into book (id, name, type, price, author, location)
-    values (#{book.id}, #{book.name}, #{book.type}, #{book.price}, #{book.author}, #{book.location})
+    insert into book (id, name, type, price, author, location, create_time)
+    values (#{book.id}, #{book.name}, #{book.type}, #{book.price}, #{book.author}, #{book.location}, now())
   </insert>
 </mapper>
