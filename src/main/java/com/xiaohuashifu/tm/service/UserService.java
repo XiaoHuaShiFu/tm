@@ -1,5 +1,8 @@
 package com.xiaohuashifu.tm.service;
 
+import com.xiaohuashifu.tm.pojo.ao.UserAO;
+import com.xiaohuashifu.tm.result.Result;
+
 /**
  * 描述: 用户Service
  *
@@ -9,4 +12,7 @@ package com.xiaohuashifu.tm.service;
  */
 public interface UserService {
 
+    Result<String> getOpenid(Integer userFormId);
+
+    Result<UserAO> getUserByCode(String code);
 }

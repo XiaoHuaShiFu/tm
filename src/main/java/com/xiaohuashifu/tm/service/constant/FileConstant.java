@@ -4,7 +4,7 @@ package com.xiaohuashifu.tm.service.constant;
 import com.xiaohuashifu.tm.util.PropertiesUtils;
 
 /**
- * 描述:
+ * 描述: 文件相关常量
  *
  * @author xhsf
  * @email 827032783@qq.com

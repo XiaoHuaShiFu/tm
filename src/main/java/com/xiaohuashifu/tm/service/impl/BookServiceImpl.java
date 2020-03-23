@@ -10,9 +10,13 @@ import com.xiaohuashifu.tm.service.BookService;
 @Service("bookService")
 public class BookServiceImpl implements BookService {
 
+	private final BookMapper bookMapper;
+
 	@Autowired
-	BookMapper bookMapper;
-	
+	public BookServiceImpl(BookMapper bookMapper) {
+		this.bookMapper = bookMapper;
+	}
+
 	@Override
 	public void insert(Book book) {
 		bookMapper.insert(book);

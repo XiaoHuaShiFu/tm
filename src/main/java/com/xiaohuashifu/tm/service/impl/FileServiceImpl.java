@@ -17,8 +17,12 @@ import java.io.IOException;
 @Service("fileService")
 public class FileServiceImpl implements FileService {
 
+    private final FTPClientTemplate ftpClientTemplate;
+
     @Autowired
-    private FTPClientTemplate ftpClientTemplate;
+    public FileServiceImpl(FTPClientTemplate ftpClientTemplate) {
+        this.ftpClientTemplate = ftpClientTemplate;
+    }
 
     /**
      * 上传文件到ftp服务器

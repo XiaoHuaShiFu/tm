@@ -1,5 +1,7 @@
 package com.xiaohuashifu.tm.service.impl;
 
+import com.xiaohuashifu.tm.pojo.ao.UserAO;
+import com.xiaohuashifu.tm.result.Result;
 import com.xiaohuashifu.tm.service.UserService;
 import org.springframework.stereotype.Service;
 
@@ -8,8 +10,17 @@ import org.springframework.stereotype.Service;
  *
  * @author xhsf
  * @email 827032783@qq.com
- * @update 2019-10-26
+ * @create 2019-10-26
  */
 @Service("userService")
 public class UserServiceImpl implements UserService {
+    @Override
+    public Result<String> getOpenid(Integer userFormId) {
+        return null;
+    }
+
+    @Override
+    public Result<UserAO> getUserByCode(String code) {
+        return null;
+    }
 }

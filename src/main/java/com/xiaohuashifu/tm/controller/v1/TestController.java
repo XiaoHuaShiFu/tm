@@ -33,25 +33,44 @@ public class TestController {
         this.redisTemplate = redisTemplate;
     }
 
+    /**
+     * 测试MySQL
+     * @return
+     */
     @RequestMapping("/test")
     public Object test() {
         return testMapper.selectAll();
     }
 
+    /**
+     * 测试SpringMVC
+     * @return
+     */
     @RequestMapping("/test1")
     public Object test1() {
         return "zzzzzzzzzzzds";
     }
 
+    /**
+     * 测试FTP
+     * @param file
+     * @return
+     */
     @RequestMapping("/test2")
     public Object saveFile(MultipartFile file) {
         return fileService.save(file, "user");
     }
 
+    /**
+     * 测试Redis
+     * @param key
+     * @param value
+     * @return
+     */
     @RequestMapping("/test3")
     public Object test3(String key, String value) {
         redisTemplate.opsForValue().set(key, value);
-        return "aaa";
+        return redisTemplate.opsForValue().get(key);
     }
 
 
