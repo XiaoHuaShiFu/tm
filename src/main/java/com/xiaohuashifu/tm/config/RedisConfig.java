@@ -10,6 +10,9 @@ import org.springframework.data.redis.serializer.RedisSerializer;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
+import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.JedisPoolConfig;
+
 /**
  * 描述: Redis配置
  *
@@ -38,6 +41,28 @@ public class RedisConfig {
         redisTemplate.setConnectionFactory(redisConnectionFactory);
         return redisTemplate;
     }
+    
+
+	/**
+	 * JedisPool单例
+	 * @return JedisPool
+	 */
+	@Bean
+	public JedisPool jedisPool(@Value("${spring.redis.jedis.pool.max-idle}") Integer maxIdle,
+	                           @Value("${spring.redis.jedis.pool.min-idle}") Integer minIdle,
+	                           @Value("${spring.redis.jedis.pool.max-active}") Integer total,
+	                           @Value("${spring.redis.jedis.pool.max-wait}") Integer maxWait,
+	                           @Value("${spring.redis.host}") String host,
+	                           @Value("${spring.redis.port}") Integer port,
+	                           @Value("${spring.redis.timeout}") Integer timeout,
+	                           @Value("${spring.redis.password}") String password) {
+	    JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
+	    jedisPoolConfig.setMaxIdle(maxIdle);
+	    jedisPoolConfig.setMinIdle(minIdle);
+	    jedisPoolConfig.setMaxTotal(total);
+	    jedisPoolConfig.setMaxWaitMillis(maxWait);
+	    return new JedisPool(jedisPoolConfig, host, port, timeout, password);
+	}
 
     /**
      * JedisPool单例
