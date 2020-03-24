@@ -57,15 +57,15 @@
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
 
-		<dependency>
-        	<groupId>org.springframework.boot</groupId>
-        	<artifactId>spring-boot-starter-thymeleaf</artifactId>
-        </dependency>
-        
         <dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-devtools</artifactId>
-		</dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>
@@ -109,19 +109,19 @@
 
         <!--&lt;!&ndash; REST架构的约束hateoas，在这里只为了启动HTTP监控端点的需要 &ndash;&gt;-->
         <!--<dependency>-->
-            <!--<groupId>org.springframework.hateoas</groupId>-->
-            <!--<artifactId>spring-hateoas</artifactId>-->
+        <!--<groupId>org.springframework.hateoas</groupId>-->
+        <!--<artifactId>spring-hateoas</artifactId>-->
         <!--</dependency>-->
         <!--<dependency>-->
-            <!--<groupId>org.springframework.boot</groupId>-->
-            <!--<artifactId>spring-boot-starter-data-jpa</artifactId>-->
-            <!--<version>RELEASE</version>-->
-            <!--<scope>compile</scope>-->
+        <!--<groupId>org.springframework.boot</groupId>-->
+        <!--<artifactId>spring-boot-starter-data-jpa</artifactId>-->
+        <!--<version>RELEASE</version>-->
+        <!--<scope>compile</scope>-->
         <!--</dependency>-->
         <!--&lt;!&ndash; REST架构的约束hateoas，在这里只为了启动HTTP监控端点的需要 &ndash;&gt;-->
         <!--<dependency>-->
-            <!--<groupId>org.springframework.boot</groupId>-->
-            <!--<artifactId>spring-boot-devtools</artifactId>-->
+        <!--<groupId>org.springframework.boot</groupId>-->
+        <!--<artifactId>spring-boot-devtools</artifactId>-->
         <!--</dependency>-->
 
         <!-- ftpclient -->
@@ -208,6 +208,19 @@
             <version>2.0.1.Final</version>
         </dependency>
         <!-- java bean validation -->
+
+        <!-- multipartResolver所需依赖 -->
+        <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+            <version>1.4</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.6</version>
+        </dependency>
+        <!-- multipartResolver所需依赖 -->
 
     </dependencies>
 

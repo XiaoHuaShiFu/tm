@@ -1,7 +1,9 @@
 package com.xiaohuashifu.tm.dao;
 
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+@Mapper
 public interface WeChatMpFormIdMapper {
 
     /**

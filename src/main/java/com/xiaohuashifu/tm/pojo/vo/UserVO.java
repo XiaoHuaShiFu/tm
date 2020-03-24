@@ -1,4 +1,4 @@
-package com.xiaohuashifu.tm.pojo.ao;
+package com.xiaohuashifu.tm.pojo.vo;
 
 /**
  * 描述:
@@ -7,7 +7,7 @@ package com.xiaohuashifu.tm.pojo.ao;
  * @email 827032783@qq.com
  * @create 2020-03-24 0:41
  */
-public class UserAO {
+public class UserVO {
     private Integer id;
     public Integer getId() {
         return id;

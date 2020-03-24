@@ -1,4 +1,4 @@
-package com.xiaohuashifu.tm.pojo.ao;
+package com.xiaohuashifu.tm.pojo.vo;
 
 /**
  * 描述: Token对象
@@ -7,7 +7,7 @@ package com.xiaohuashifu.tm.pojo.ao;
  * @email 827032783@qq.com
  * @create 2019-08-11 11:23
  */
-public class TokenAO {
+public class TokenVO {
 
     private Integer id;
 
@@ -15,10 +15,10 @@ public class TokenAO {
 
     private String token;
 
-    public TokenAO() {
+    public TokenVO() {
     }
 
-    public TokenAO(Integer id, String type, String token) {
+    public TokenVO(Integer id, String type, String token) {
         this.id = id;
         this.type = type;
         this.token = token;
@@ -50,7 +50,7 @@ public class TokenAO {
 
     @Override
     public String toString() {
-        return "TokenAO{" +
+        return "TokenVO{" +
                 "id=" + id +
                 ", type='" + type + '\'' +
                 ", token='" + token + '\'' +
