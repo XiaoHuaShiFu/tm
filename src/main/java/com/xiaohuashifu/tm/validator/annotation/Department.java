@@ -20,7 +20,7 @@ import java.lang.annotation.*;
 @Repeatable(Department.List.class)
 public @interface Department {
 
-    String message() default "INVALID_PARAMETER: The name of dep must be " +
+    String message() default "INVALID_PARAMETER: The parameter of department must be one of" +
             "[ALL | UNKNOWN | ZZB | XSB | RSB | YFB | CWB | CGB | PZB | GZB | KFB].";
 
     Class<?>[] groups() default {};

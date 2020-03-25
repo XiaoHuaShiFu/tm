@@ -20,7 +20,7 @@ import java.lang.annotation.*;
 @Repeatable(TokenType.List.class)
 public @interface TokenType {
 
-    String message() default "INVALID_PARAMETER: The name of tokenType must be [USER].";
+    String message() default "INVALID_PARAMETER: The parameter of tokenType must be one of [USER].";
 
     Class<?>[] groups() default {};
 

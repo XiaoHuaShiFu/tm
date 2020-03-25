@@ -6,6 +6,7 @@ import com.xiaohuashifu.tm.pojo.vo.TokenVO;
 import com.xiaohuashifu.tm.result.Result;
 import com.xiaohuashifu.tm.service.TokenService;
 import com.xiaohuashifu.tm.validator.annotation.TokenType;
+import com.xiaohuashifu.tm.validator.annotation.WeChatMpCode;
 import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,7 +17,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 
 
 /**
@@ -66,8 +66,7 @@ public class TokenController {
     @ResponseStatus(value = HttpStatus.CREATED)
     @ErrorHandler
     public Object postToken(
-            @NotBlank(message = "INVALID_PARAMETER_IS_BLANK: The code must be not blank.")
-            @Size(message = "INVALID_PARAMETER_SIZE: The size of code must be 32.", min = 32, max = 32) String code,
+            @NotBlank(message = "INVALID_PARAMETER_IS_BLANK: The code must be not blank.") @WeChatMpCode String code,
             @NotBlank(message = "INVALID_PARAMETER_IS_BLANK: The tokenType must be not blank.")
             @TokenType String tokenType) {
         Result<TokenAO> result = tokenService.createAndSaveToken(tokenType, code);

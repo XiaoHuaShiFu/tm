@@ -12,7 +12,7 @@ public enum WeChatMp {
     /**
      * 团队管理小程序相关常量
      */
-    AIE_RECRUIT("tm", "wx111d67f7174bded6", "221ad0268eb2b372252c2b114cbc1832");
+    TM("tm", "wx111d67f7174bded6", "221ad0268eb2b372252c2b114cbc1832");
 
     /**
      * 微信小程序名字

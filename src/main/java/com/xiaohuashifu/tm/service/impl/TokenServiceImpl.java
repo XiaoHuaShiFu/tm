@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.xiaohuashifu.tm.constant.TokenExpire;
 import com.xiaohuashifu.tm.constant.TokenType;
 import com.xiaohuashifu.tm.pojo.ao.TokenAO;
-import com.xiaohuashifu.tm.pojo.ao.UserAO;
+import com.xiaohuashifu.tm.pojo.do0.UserDO;
 import com.xiaohuashifu.tm.result.ErrorCode;
 import com.xiaohuashifu.tm.result.Result;
 import com.xiaohuashifu.tm.service.CacheService;
@@ -93,11 +93,11 @@ public class TokenServiceImpl implements TokenService {
      */
     @Override
     public Result<TokenAO> createAndSaveToken(String tokenType, String code) {
-        Result<UserAO> result = userService.getUserByCode(code);
+        Result<UserDO> result = userService.getUserByCode(code);
         if (!result.isSuccess()) {
             return Result.fail(result.getErrorCode(), result.getMessage());
         }
-        UserAO user = result.getData();
+        UserDO user = result.getData();
         TokenAO tokenAO = new TokenAO();
         tokenAO.setId(user.getId());
         tokenAO.setType(TokenType.USER.name());

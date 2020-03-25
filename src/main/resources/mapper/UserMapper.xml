@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xiaohuashifu.tm.dao.UserMapper">
+    <resultMap id="BaseResultMap" type="com.xiaohuashifu.tm.pojo.do0.UserDO">
+        <constructor>
+            <idArg column="id" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+            <arg column="openid" jdbcType="CHAR" javaType="java.lang.String"/>
+            <arg column="job_number" jdbcType="CHAR" javaType="java.lang.String"/>
+            <arg column="password" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="nick_name" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="full_name" jdbcType="CHAR" javaType="java.lang.String"/>
+            <arg column="gender" jdbcType="CHAR" javaType="java.lang.String"/>
+            <arg column="birthday" jdbcType="DATE" javaType="java.util.Date"/>
+            <arg column="phone" jdbcType="CHAR" javaType="java.lang.String"/>
+            <arg column="email" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="department" jdbcType="CHAR" javaType="java.lang.String"/>
+            <arg column="avatar_url" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="point" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+            <arg column="available" jdbcType="BOOLEAN" javaType="java.lang.Boolean"/>
+            <arg column="create_time" jdbcType="DATE" javaType="java.util.Date"/>
+            <arg column="update_time" jdbcType="DATE" javaType="java.util.Date"/>
+        </constructor>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, openid, job_number, password, nick_name, full_name, gender, birthday, phone, email, department, avatar_url,
+        point, available, create_time, update_time
+    </sql>
+
+    <insert id="saveUser" parameterType="com.xiaohuashifu.tm.pojo.do0.UserDO" useGeneratedKeys="true" keyProperty="id">
+        insert into user
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="openid != null" >
+                openid,
+            </if>
+            <if test="jobNumber != null" >
+                job_number,
+            </if>
+            <if test="password != null" >
+                password,
+            </if>
+            <if test="nickName != null" >
+                nick_name,
+            </if>
+            <if test="fullName != null" >
+                full_name,
+            </if>
+            <if test="gender != null" >
+                gender,
+            </if>
+            <if test="birthday != null" >
+                birthday,
+            </if>
+            <if test="phone != null" >
+                phone,
+            </if>
+            <if test="email != null" >
+                email,
+            </if>
+            <if test="department != null" >
+                department,
+            </if>
+            <if test="avatarUrl != null" >
+                avatar_url,
+            </if>
+            <if test="point != null" >
+                point,
+            </if>
+            <if test="available != null" >
+                available,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="openid != null" >
+                #{openid, jdbcType=VARCHAR},
+            </if>
+            <if test="jobNumber != null" >
+                #{jobNumber, jdbcType=CHAR},
+            </if>
+            <if test="password != null" >
+                #{password, jdbcType=CHAR},
+            </if>
+            <if test="nickName != null" >
+                #{nickName, jdbcType=VARCHAR},
+            </if>
+            <if test="fullName != null" >
+                #{fullName, jdbcType=VARCHAR},
+            </if>
+            <if test="gender != null" >
+                #{gender, jdbcType=CHAR},
+            </if>
+            <if test="birthday != null" >
+                #{birthday, jdbcType=DATE},
+            </if>
+            <if test="phone != null" >
+                #{phone, jdbcType=CHAR},
+            </if>
+            <if test="email != null" >
+                #{email, jdbcType=VARCHAR},
+            </if>
+            <if test="department != null" >
+                #{department, jdbcType=CHAR},
+            </if>
+            <if test="avatarUrl != null" >
+                #{avatarUrl, jdbcType=VARCHAR},
+            </if>
+            <if test="point != null" >
+                #{point, jdbcType=INTEGER},
+            </if>
+            <if test="available != null" >
+                #{available, jdbcType=BOOLEAN},
+            </if>
+        </trim>
+    </insert>
+
+    <select id="getUser" parameterType="integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from user
+        where id = #{id, jdbcType=INTEGER}
+    </select>
+
+    <select id="getUserByOpenid" parameterType="string" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from user
+        where openid = #{openid, jdbcType=CHAR}
+    </select>
+
+    <select id="getCountByOpenid" parameterType="string" resultType="int">
+        select
+        count(*)
+        from user
+        where openid = #{openid, jdbcType=VARCHAR}
+    </select>
+
+    <select id="listUsers" parameterType="com.xiaohuashifu.tm.pojo.query.UserQuery" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from user
+        order by update_time desc
+    </select>
+
+    <update id="updateUser" parameterType="com.xiaohuashifu.tm.pojo.do0.UserDO">
+        update user
+        <set>
+            <if test="jobNumber != null">
+                job_number = #{jobNumber, jdbcType=CHAR},
+            </if>
+            <if test="password != null">
+                password = #{password, jdbcType=VARCHAR},
+            </if>
+            <if test="nickName != null">
+                nick_name = #{nickName, jdbcType=VARCHAR},
+            </if>
+            <if test="fullName != null">
+                full_name = #{fullName, jdbcType=VARCHAR},
+            </if>
+            <if test="gender != null">
+                gender = #{gender, jdbcType=CHAR},
+            </if>
+            <if test="birthday != null">
+                birthday = #{birthday, jdbcType=DATE},
+            </if>
+            <if test="phone != null">
+                phone = #{phone, jdbcType=CHAR},
+            </if>
+            <if test="email != null">
+                email = #{email, jdbcType=VARCHAR},
+            </if>
+            <if test="department != null">
+                department = #{department, jdbcType=CHAR},
+            </if>
+            <if test="point != null">
+                point = #{point, jdbcType=INTEGER},
+            </if>
+            <if test="available != null">
+                available = #{available, jdbcType=BOOLEAN},
+            </if>
+        </set>
+        where id = #{id, jdbcType=INTEGER}
+    </update>
+
+</mapper>

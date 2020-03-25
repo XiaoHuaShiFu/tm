@@ -1,5 +1,11 @@
-package com.xiaohuashifu.tm.pojo.vo;
+package com.xiaohuashifu.tm.pojo.do0;
 
+import com.xiaohuashifu.tm.pojo.do0.group.Group;
+import com.xiaohuashifu.tm.pojo.do0.group.GroupPost;
+import com.xiaohuashifu.tm.validator.annotation.*;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.util.Date;
 
 /**
@@ -7,40 +13,76 @@ import java.util.Date;
  *
  * @author xhsf
  * @email 827032783@qq.com
- * @create 2020-03-24 0:41
+ * @create 2020-03-25 18:37
  */
-public class UserVO {
+public class UserDO {
+
+    @Id(groups = {Group.class})
     private Integer id;
 
+    private String openid;
+
+    @NotBlank(message = "INVALID_PARAMETER_IS_BLANK: The jobNumber must be not blank.",
+            groups = {GroupPost.class})
+    @JobNumber(groups = {Group.class})
     private String jobNumber;
 
+    @NotBlank(message = "INVALID_PARAMETER_IS_BLANK: The password must be not blank.",
+            groups = {GroupPost.class})
+    @Password(groups = {Group.class})
     private String password;
 
+    @NotBlank(message = "INVALID_PARAMETER_IS_BLANK: The nickName must be not blank.",
+            groups = {GroupPost.class})
+    @Size(message = "INVALID_PARAMETER_SIZE: The size of nickName must be between 1 to 20.",
+            min = 1, max = 20,
+            groups = {Group.class})
     private String nickName;
 
+    @NotBlank(message = "INVALID_PARAMETER_IS_BLANK: The fullName must be not blank.",
+            groups = {GroupPost.class})
+    @Size(message = "INVALID_PARAMETER_SIZE: The size of fullName must be between 1 to 20.",
+            min = 1, max = 20,
+            groups = {Group.class})
     private String fullName;
 
+    @NotBlank(message = "INVALID_PARAMETER_IS_BLANK: The gender must be not blank.",
+            groups = {GroupPost.class})
+    @Gender(groups = {Group.class})
     private String gender;
 
     private Date birthday;
 
+    @Phone(groups = {Group.class})
     private String phone;
 
+    @Email(groups = {Group.class})
     private String email;
 
+    @NotBlank(message = "INVALID_PARAMETER_IS_BLANK: The department must be not blank.",
+            groups = {GroupPost.class})
+    @Department(groups = {Group.class})
     private String department;
 
+    @NotBlank(message = "INVALID_PARAMETER_IS_BLANK: The avatarUrl must be not blank.",
+            groups = {GroupPost.class})
+    @Url(groups = {Group.class})
     private String avatarUrl;
 
     private Integer point;
 
     private Boolean available;
 
-    public UserVO() {
+    private Date createTime;
+
+    private Date updateTime;
+
+    public UserDO() {
     }
 
-    public UserVO(Integer id, String jobNumber, String password, String nickName, String fullName, String gender, Date birthday, String phone, String email, String department, String avatarUrl, Integer point, Boolean available) {
+    public UserDO(Integer id, String openid, String jobNumber, String password, String nickName, String fullName, String gender, Date birthday, String phone, String email, String department, String avatarUrl, Integer point, Boolean available, Date createTime, Date updateTime) {
         this.id = id;
+        this.openid = openid;
         this.jobNumber = jobNumber;
         this.password = password;
         this.nickName = nickName;
@@ -53,6 +95,8 @@ public class UserVO {
         this.avatarUrl = avatarUrl;
         this.point = point;
         this.available = available;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -61,6 +105,14 @@ public class UserVO {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public String getOpenid() {
+        return openid;
+    }
+
+    public void setOpenid(String openid) {
+        this.openid = openid;
     }
 
     public String getJobNumber() {
@@ -159,10 +211,27 @@ public class UserVO {
         this.available = available;
     }
 
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
-        return "UserVO{" +
+        return "UserDO{" +
                 "id=" + id +
+                ", openid='" + openid + '\'' +
                 ", jobNumber='" + jobNumber + '\'' +
                 ", password='" + password + '\'' +
                 ", nickName='" + nickName + '\'' +
@@ -175,6 +244,8 @@ public class UserVO {
                 ", avatarUrl='" + avatarUrl + '\'' +
                 ", point=" + point +
                 ", available=" + available +
+                ", createTime=" + createTime +
+                ", updateTime=" + updateTime +
                 '}';
     }
 }

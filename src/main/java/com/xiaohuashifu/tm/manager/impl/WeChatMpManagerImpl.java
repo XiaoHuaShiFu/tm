@@ -53,6 +53,7 @@ public class WeChatMpManagerImpl implements WeChatMpManager {
      *
      * @return AccessTokenDTO
      */
+    @Override
     public Optional<String> getAccessToken() {
         String accessToken = cacheService.get(REDIS_KEY);
         if (accessToken == null) {
@@ -69,11 +70,12 @@ public class WeChatMpManagerImpl implements WeChatMpManager {
      *
      * @return AccessTokenDTO
      */
+    @Override
     public Optional<AccessTokenDTO> getNewAccessToken() {
         // 获取access-token
         String url = MessageFormat.format("{0}?grant_type={1}&appid={2}&secret={3}",
                 WeChatMpConsts.ACCESS_TOKEN_URL, WeChatGrantTypeEnum.CLIENT_CREDENTIAL.getValue(),
-                WeChatMp.AIE_RECRUIT.getAppId(), WeChatMp.AIE_RECRUIT.getSecret());
+                WeChatMp.TM.getAppId(), WeChatMp.TM.getSecret());
         ResponseEntity<AccessTokenDTO> entity = restTemplate.getForEntity(url, AccessTokenDTO.class);
         if (Objects.requireNonNull(entity.getBody()).getAccess_token() == null) {
             logger.warn("Get access token fail.");
@@ -102,6 +104,8 @@ public class WeChatMpManagerImpl implements WeChatMpManager {
      * @param mpName 小程序名
      * @return String
      */
+    @Override
+    @Deprecated
     public String getOpenid(String code, String mpName) {
         WeChatMp weChatMp = WeChatMp.valueOf(mpName);
         return getOpenid(code, weChatMp);
@@ -113,6 +117,7 @@ public class WeChatMpManagerImpl implements WeChatMpManager {
      * @param weChatMp 小程序类别
      * @return String
      */
+    @Override
     public String getOpenid(String code, WeChatMp weChatMp) {
         Code2SessionDTO code2SessionDTO = getCode2Session(code, weChatMp);
         return code2SessionDTO.getOpenid();
@@ -124,6 +129,7 @@ public class WeChatMpManagerImpl implements WeChatMpManager {
      * @param messageTemplate 模板消息
      * @return 是否发送成功
      */
+    @Override
     public boolean sendTemplateMessage(MessageTemplateDTO messageTemplate) {
         Optional<String> accessToken = getAccessToken();
         if (!accessToken.isPresent()) {

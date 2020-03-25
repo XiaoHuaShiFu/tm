@@ -19,6 +19,7 @@ public interface WeChatMpManager {
 
     Optional<AccessTokenDTO> getNewAccessToken();
 
+    @Deprecated
     String getOpenid(String code, String mpName);
 
     String getOpenid(String code, WeChatMp weChatMp);

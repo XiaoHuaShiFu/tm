@@ -1,7 +1,10 @@
 package com.xiaohuashifu.tm.service;
 
-import com.xiaohuashifu.tm.pojo.ao.UserAO;
+import com.xiaohuashifu.tm.pojo.do0.UserDO;
+import com.xiaohuashifu.tm.pojo.query.UserQuery;
 import com.xiaohuashifu.tm.result.Result;
+
+import java.util.List;
 
 /**
  * 描述: 用户Service
@@ -14,5 +17,13 @@ public interface UserService {
 
     Result<String> getOpenid(Integer userFormId);
 
-    Result<UserAO> getUserByCode(String code);
+    Result<UserDO> getUserByCode(String code);
+
+    Result<UserDO> saveUser(UserDO userDO, String code);
+
+    Result<UserDO> getUser(Integer id);
+
+    Result<List<UserDO>> listUsers(UserQuery query);
+
+    Result<UserDO> updateUser(UserDO userDO);
 }

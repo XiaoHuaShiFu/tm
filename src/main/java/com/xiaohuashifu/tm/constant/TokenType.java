@@ -14,4 +14,8 @@ public enum TokenType {
      */
     USER,
 
+    /**
+     * 管理员的Token
+     */
+    ADMIN
 }

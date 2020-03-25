@@ -42,6 +42,12 @@ public enum ErrorCode {
             "InvalidParameter.ValueBelow", "The name of {Parameter} below, min: {Value}."),
 
     /**
+     * 参数值范围不正确
+     */
+    INVALID_PARAMETER_VALUE(HttpStatus.BAD_REQUEST,
+            "InvalidParameter.Value", "The parameter of {Parameter} is invalid."),
+
+    /**
      * 参数长度不在规定范围内，String类型
      */
     INVALID_PARAMETER_SIZE(HttpStatus.BAD_REQUEST,
