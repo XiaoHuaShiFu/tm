@@ -2,12 +2,20 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.xiaohuashifu.tm.dao.BookMapper">
   <insert id="insert" parameterType="com.xiaohuashifu.tm.pojo.do0.BookDO">
-    insert into book (id, numbering, name, cover_url, create_time)
-    values (#{book.id}, #{book.numbering}, #{book.name}, #{book.coverUrl}, now())
+    insert into book (numbering, name, cover_url, create_time)
+    values (#{book.numbering}, #{book.name}, #{book.coverUrl}, now());
   </insert>
   
-  <delete id="delete">
+  <delete id="delete" parameterType="integer">
   	delete from book where id = #{id};
   </delete>
+  
+  <select id="getCoverById" parameterType="integer" resultType="string">
+  	select cover_url from book where id = #{id};
+  </select>
+  
+  <select id="getAllBooks" resultType="com.xiaohuashifu.tm.pojo.do0.BookDO">
+  	select id, numbering, name, state, available from book;
+  </select>
   
 </mapper>

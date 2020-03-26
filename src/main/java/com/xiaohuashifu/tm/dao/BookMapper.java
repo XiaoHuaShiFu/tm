@@ -8,4 +8,5 @@ import com.xiaohuashifu.tm.pojo.do0.BookDO;
 public interface BookMapper {
 	void insert(@Param("book") BookDO book);
 	void delete(Integer id);
+	String getCoverById(Integer id);
 }

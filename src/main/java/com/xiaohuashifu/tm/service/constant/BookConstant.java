@@ -7,7 +7,7 @@ package com.xiaohuashifu.tm.service.constant;
  */
 public class BookConstant {
 	/**
-     * 头像文件目录前缀
+     * 图书封面文件目录前缀
      */
-    public static final String PREFIX_COVER_FILE_DIRECTORY = "user/cover/";
+    public static final String PREFIX_COVER_FILE_DIRECTORY = "book/cover/";
 }

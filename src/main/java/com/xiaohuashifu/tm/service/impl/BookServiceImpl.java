@@ -25,10 +25,9 @@ public class BookServiceImpl implements BookService {
 	}
 
 	@Override
-	public Result<BookDO> insert(BookDO book, MultipartFile cover) {
+	public Result save(BookDO book, MultipartFile cover) {
 		if(cover != null) {
 			String coverUrl = fileService.saveAndGetUrl(cover, BookConstant.PREFIX_COVER_FILE_DIRECTORY);
-			System.out.println(coverUrl);
 			book.setCoverUrl(coverUrl);
 		}
 		bookMapper.insert(book);
@@ -36,8 +35,13 @@ public class BookServiceImpl implements BookService {
 	}
 	
 	@Override
-	public void delete(Integer id) {
+	public Result delete(Integer id) {
+		String coverUrl = bookMapper.getCoverById(id);
+		if(coverUrl != null) {
+			fileService.delete(coverUrl);
+		}
 		bookMapper.delete(id);
+		return Result.success();
 	}
 
 	@Override

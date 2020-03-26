@@ -5,14 +5,14 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<form id="form1" action="/book" enctype="multipart/form-data" method="post">
+	<form id="form1" action="books" enctype="multipart/form-data" method="post">
 		编号<input id="numbering" type="text" name="numbering">
 		书名<input id="name" type="text" name="name">
 		封面<input id="cover" type="file" name="cover" accept=".jpg,.jpeg,.png">
 		<input id="sub" type="button" value="提交">
 	</form>
 	
-	<form action="/books" method="post">
+	<form action="books" method="post">
 		<input type="hidden" name="_method" value="DELETE">
 		输入你要删除的书籍的编号<input type="text" name="id">
 		<input type="submit" value="提交">
@@ -32,7 +32,7 @@
 		formData.append("bookInfo", new Blob([jsonBook], {type: "application/json"}));
 		formData.append("cover", document.getElementById("cover").files[0]);
 		$.ajax({
-			url:"/book",
+			url:"books",
 			contentType:false,
 			processData:false,
 			data:formData,

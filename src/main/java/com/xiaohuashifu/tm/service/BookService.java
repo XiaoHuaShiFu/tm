@@ -8,7 +8,7 @@ import com.xiaohuashifu.tm.pojo.do0.BookDO;
 import com.xiaohuashifu.tm.result.Result;
 
 public interface BookService {
-	Result<BookDO> insert(BookDO book, MultipartFile cover);
-	void delete(Integer id);
+	Result save(BookDO book, MultipartFile cover);
+	Result delete(Integer id);
 	List<BookDO> selectAll();
 }
