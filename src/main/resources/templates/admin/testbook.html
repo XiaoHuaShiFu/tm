@@ -5,11 +5,39 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<form action="/insertbook" method="post">
-		书名<input type="text" name="name">
-		作者<input type="text" name="author">
-		价格<input type="text" name="price">
+	<form id="form1" action="/book" enctype="multipart/form-data" method="post">
+		编号<input id="numbering" type="text" name="numbering">
+		书名<input id="name" type="text" name="name">
+		封面<input id="cover" type="file" name="cover" accept=".jpg,.jpeg,.png">
+		<input id="sub" type="button" value="提交">
+	</form>
+	
+	<form action="/books" method="post">
+		<input type="hidden" name="_method" value="DELETE">
+		输入你要删除的书籍的编号<input type="text" name="id">
 		<input type="submit" value="提交">
 	</form>
 </body>
+
+<script type="text/javascript" th:src="@{/js/jquery-3.4.1.min.js}"></script>
+<script type="text/javascript">
+	$("#sub").click(function(){
+		var book = {
+			numbering : $("#numbering").val(),
+			name : $("#name").val()
+		};
+		var jsonBook = JSON.stringify(book);
+		
+		var formData = new FormData();
+		formData.append("bookInfo", new Blob([jsonBook], {type: "application/json"}));
+		formData.append("cover", document.getElementById("cover").files[0]);
+		$.ajax({
+			url:"/book",
+			contentType:false,
+			processData:false,
+			data:formData,
+			type:"POST"
+		});	
+	});
+</script>
 </html>

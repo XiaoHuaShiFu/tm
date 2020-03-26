@@ -10,9 +10,6 @@ import org.springframework.data.redis.serializer.RedisSerializer;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
-import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.JedisPoolConfig;
-
 /**
  * 描述: Redis配置
  *
