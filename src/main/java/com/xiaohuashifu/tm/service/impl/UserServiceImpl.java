@@ -8,12 +8,15 @@ import com.xiaohuashifu.tm.pojo.do0.UserDO;
 import com.xiaohuashifu.tm.pojo.query.UserQuery;
 import com.xiaohuashifu.tm.result.ErrorCode;
 import com.xiaohuashifu.tm.result.Result;
+import com.xiaohuashifu.tm.service.FileService;
 import com.xiaohuashifu.tm.service.UserService;
+import com.xiaohuashifu.tm.service.constant.UserConstant;
 import com.xiaohuashifu.tm.util.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -33,10 +36,13 @@ public class UserServiceImpl implements UserService {
 
     private final WeChatMpManager weChatMpManager;
 
+    private final FileService fileService;
+
     @Autowired
-    public UserServiceImpl(UserMapper userMapper, WeChatMpManager weChatMpManager) {
+    public UserServiceImpl(UserMapper userMapper, WeChatMpManager weChatMpManager, FileService fileService) {
         this.userMapper = userMapper;
         this.weChatMpManager = weChatMpManager;
+        this.fileService = fileService;
     }
 
     @Override
@@ -45,7 +51,7 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * 获取UserAO通过code
+     * 获取UserDO通过code
      *
      * @param code wx.login()接口的返回值
      * @return Result<UserDO>
@@ -53,12 +59,24 @@ public class UserServiceImpl implements UserService {
     @Override
     public Result<UserDO> getUserByCode(String code) {
         String openid = weChatMpManager.getOpenid(code, WeChatMp.TM);
-
-        UserDO userDO = userMapper.getUserByOpenid(openid);
         //通过openid获取失败
-        if (userDO == null) {
+        if (openid == null) {
             return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "The specified openid does not exist.");
         }
+        UserDO userDO = userMapper.getUserByOpenid(openid);
+
+        return Result.success(userDO);
+    }
+
+    /**
+     * 获取UserDO通过jobNumber
+     *
+     * @param jobNumber 工号
+     * @return Result<UserDO>
+     */
+    @Override
+    public Result<UserDO> getUserByJobNumber(String jobNumber) {
+        UserDO userDO = userMapper.getUserByJobNumber(jobNumber);
 
         return Result.success(userDO);
     }
@@ -164,5 +182,34 @@ public class UserServiceImpl implements UserService {
         return getUser(userDO0.getId());
     }
 
+    /**
+     * 更新头像
+     *
+     * @param id userId
+     * @param avatar MultipartFile
+     * @return 新文件url
+     */
+    @Override
+    public Result<UserDO> updateAvatar(Integer id, MultipartFile avatar) {
+        // 获取用户信息，主要是为了获取旧文件Url
+        UserDO userDO = userMapper.getUser(id);
+
+        // 更新头像文件
+        String newAvatarUrl = fileService.updateFile(avatar, userDO.getAvatarUrl(),
+                UserConstant.PREFIX_AVATAR_FILE_DIRECTORY);
+
+        // 更新数据库里的avatar_url
+        UserDO userDO0 = new UserDO();
+        userDO0.setId(id);
+        userDO0.setAvatarUrl(newAvatarUrl);
+        int count = userMapper.updateUser(userDO0);
+        if (count < 1) {
+            logger.error("Update avatar failed. id: {}", id);
+            return Result.fail(ErrorCode.INTERNAL_ERROR, "Update avatar failed.");
+        }
+
+        userDO.setAvatarUrl(newAvatarUrl);
+        return Result.success(userDO);
+    }
 
 }

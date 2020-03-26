@@ -87,7 +87,7 @@ public final class FileNameUtils {
         int hostIndex = getHostLength(url);
         int fileNameIndex = getFileNameIndexByUrl(url);
         String host = url.substring(0, hostIndex);
-        String directoryPath = url.substring(hostIndex, fileNameIndex);
+        String directoryPath = url.substring(hostIndex + 1, fileNameIndex);
         String fileName = url.substring(fileNameIndex);
         return new FileUrl(host, directoryPath, fileName);
     }

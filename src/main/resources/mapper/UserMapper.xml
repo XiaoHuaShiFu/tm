@@ -119,6 +119,13 @@
         where id = #{id, jdbcType=INTEGER}
     </select>
 
+    <select id="getUserByJobNumber" parameterType="string" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from user
+        where job_number = #{jobNumber, jdbcType=CHAR}
+    </select>
+
     <select id="getUserByOpenid" parameterType="string" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
@@ -175,6 +182,9 @@
             </if>
             <if test="available != null">
                 available = #{available, jdbcType=BOOLEAN},
+            </if>
+            <if test="avatarUrl != null">
+                avatar_url = #{avatarUrl, jdbcType=BOOLEAN},
             </if>
         </set>
         where id = #{id, jdbcType=INTEGER}

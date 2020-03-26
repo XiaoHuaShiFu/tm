@@ -92,7 +92,7 @@ public class TokenServiceImpl implements TokenService {
      * @return Result<TokenAO>
      */
     @Override
-    public Result<TokenAO> createAndSaveToken(String tokenType, String code) {
+    public Result<TokenAO> createAndSaveTokenByCode(String tokenType, String code) {
         Result<UserDO> result = userService.getUserByCode(code);
         if (!result.isSuccess()) {
             return Result.fail(result.getErrorCode(), result.getMessage());
@@ -155,6 +155,36 @@ public class TokenServiceImpl implements TokenService {
         }
 
         return result;
+    }
+
+    /**
+     * 创建token并保存到redis里
+     *
+     * @param jobNumber 工号
+     * @param password 密码
+     * @param tokenType token类型
+     * @return Result<TokenAO>
+     */
+    @Override
+    public Result<TokenAO> createAndSaveToken(String tokenType, String jobNumber, String password) {
+        Result<UserDO> result = userService.getUserByJobNumber(jobNumber);
+        if (!result.isSuccess()) {
+            return Result.fail(result.getErrorCode(), result.getMessage());
+        }
+
+        UserDO user = result.getData();
+        if (!user.getPassword().equals(password)) {
+            return Result.fail(ErrorCode.UNAUTHORIZED, "Wrong password.");
+        }
+
+        TokenAO tokenAO = new TokenAO();
+        tokenAO.setId(user.getId());
+        tokenAO.setType(TokenType.USER.name());
+
+        String token = createToken();
+        tokenAO.setToken(token);
+
+        return saveToken(tokenAO);
     }
 
     /**

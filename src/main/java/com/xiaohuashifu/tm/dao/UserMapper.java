@@ -25,6 +25,13 @@ public interface UserMapper {
     UserDO getUser(Integer id);
 
     /**
+     * 获取用户
+     * @param jobNumber 工号
+     * @return userDO
+     */
+    UserDO getUserByJobNumber(String jobNumber);
+
+    /**
      * 通过openid获取对应用户
      * @param openid openid
      * @return UserDO
@@ -52,4 +59,5 @@ public interface UserMapper {
      * @return 成功更新的条数
      */
     int updateUser(UserDO userDO0);
+
 }

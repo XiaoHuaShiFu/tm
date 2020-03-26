@@ -3,6 +3,7 @@ package com.xiaohuashifu.tm.service;
 import com.xiaohuashifu.tm.pojo.do0.UserDO;
 import com.xiaohuashifu.tm.pojo.query.UserQuery;
 import com.xiaohuashifu.tm.result.Result;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -19,6 +20,8 @@ public interface UserService {
 
     Result<UserDO> getUserByCode(String code);
 
+    Result<UserDO> getUserByJobNumber(String jobNumber);
+
     Result<UserDO> saveUser(UserDO userDO, String code);
 
     Result<UserDO> getUser(Integer id);
@@ -26,4 +29,6 @@ public interface UserService {
     Result<List<UserDO>> listUsers(UserQuery query);
 
     Result<UserDO> updateUser(UserDO userDO);
+
+    Result<UserDO> updateAvatar(Integer id, MultipartFile avatar);
 }

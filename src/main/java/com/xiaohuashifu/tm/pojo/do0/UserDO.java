@@ -5,6 +5,7 @@ import com.xiaohuashifu.tm.pojo.do0.group.GroupPost;
 import com.xiaohuashifu.tm.validator.annotation.*;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Date;
 
@@ -17,6 +18,8 @@ import java.util.Date;
  */
 public class UserDO {
 
+    @NotNull(message = "INVALID_PARAMETER_IS_NULL: The id must be not blank.",
+            groups = {GroupPost.class})
     @Id(groups = {Group.class})
     private Integer id;
 

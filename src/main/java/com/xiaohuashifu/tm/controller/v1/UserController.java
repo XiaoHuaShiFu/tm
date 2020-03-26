@@ -11,7 +11,6 @@ import com.xiaohuashifu.tm.pojo.query.UserQuery;
 import com.xiaohuashifu.tm.pojo.vo.UserVO;
 import com.xiaohuashifu.tm.result.ErrorCode;
 import com.xiaohuashifu.tm.result.Result;
-import com.xiaohuashifu.tm.service.FileService;
 import com.xiaohuashifu.tm.service.UserService;
 import com.xiaohuashifu.tm.validator.annotation.Id;
 import com.xiaohuashifu.tm.validator.annotation.WeChatMpCode;
@@ -21,9 +20,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,15 +40,12 @@ import java.util.stream.Collectors;
 @Validated
 public class UserController {
 
-    private final FileService fileService;
-
     private final Mapper mapper;
 
     private final UserService userService;
 
     @Autowired
-    public UserController(FileService fileService, Mapper mapper, UserService userService) {
-        this.fileService = fileService;
+    public UserController(Mapper mapper, UserService userService) {
         this.mapper = mapper;
         this.userService = userService;
     }
@@ -173,5 +171,39 @@ public class UserController {
         return !result.isSuccess() ? result : mapper.map(result.getData(), UserVO.class);
     }
 
+    /**
+     * 修改头像
+     *
+     * @param request HttpServletRequest
+     * @param avatar MultipartFile
+     * @return UserVO
+     *
+     * @success:
+     * HttpStatus.OK
+     *
+     * @errors:
+     * INTERNAL_ERROR: Upload file failed.
+     * INTERNAL_ERROR: Delete file failed.
+     * INTERNAL_ERROR: Update avatar exception.
+     *
+     * @bindErrors
+     * INVALID_PARAMETER_IS_NULL
+     */
+    @RequestMapping(value="/avatar", method = RequestMethod.PUT)
+    @ResponseStatus(value = HttpStatus.OK)
+    @TokenAuth(tokenType = TokenType.USER)
+    @ErrorHandler
+    public Object putAvatar(
+            HttpServletRequest request,
+            @NotNull(message = "INVALID_PARAMETER_IS_BLANK: The id must be not blank.") @Id Integer id,
+            @NotNull(message = "INVALID_PARAMETER_IS_NULL: The required avatar must be not null.") MultipartFile avatar) {
+        TokenAO tokenAO = (TokenAO) request.getAttribute("tokenAO");
+        if (!tokenAO.getId().equals(id)) {
+            return Result.fail(ErrorCode.FORBIDDEN_SUB_USER);
+        }
+        Result<UserDO> result = userService.updateAvatar(tokenAO.getId(), avatar);
+
+        return result.isSuccess() ? mapper.map(result.getData(), UserVO.class) : result;
+    }
 
 }
