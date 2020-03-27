@@ -14,8 +14,8 @@
   	select cover_url from book where id = #{id};
   </select>
   
-  <select id="getAllBooks" resultType="com.xiaohuashifu.tm.pojo.do0.BookDO">
-  	select id, numbering, name, state, available from book;
+  <select id="listBooks" resultType="com.xiaohuashifu.tm.pojo.do0.BookDO">
+  	select id, numbering, name, available from book
   </select>
   
 </mapper>
