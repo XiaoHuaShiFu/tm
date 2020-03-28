@@ -1,18 +1,18 @@
 package com.xiaohuashifu.tm.pojo.do0;
 
 public class BookDO {
-	private String id;
+	private Integer id;
 	private String numbering;
 	private String name;
 	private String coverUrl;
 	private BookState state;
 	private Integer available;
 	
-	public String getId() {
+	public Integer getId() {
 		return id;
 	}
 	
-	public void setId(String id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 	
@@ -62,6 +62,7 @@ public class BookDO {
                 "id=" + id +
                 ", numbering=" + numbering +
                 ", name='" + name + '\'' +
+                ", state=" + state +
                 ", available=" + available +
                 '}';
 	}

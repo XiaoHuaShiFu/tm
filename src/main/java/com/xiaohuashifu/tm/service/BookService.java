@@ -8,7 +8,10 @@ import com.xiaohuashifu.tm.pojo.query.BookQuery;
 import com.xiaohuashifu.tm.result.Result;
 
 public interface BookService {
-	Result save(BookDO book, MultipartFile cover);
-	Result delete(Integer id);
+	Result saveBook(BookDO book, MultipartFile cover);
+	Result deleteBook(Integer id);
+	Result updateBook(BookDO book);
+	Result updateCover(Integer id, MultipartFile cover);
+	Result<BookDO> getBookById(Integer id);
 	Result<PageInfo<BookDO>> listBooks(BookQuery bookQuery);
 }
