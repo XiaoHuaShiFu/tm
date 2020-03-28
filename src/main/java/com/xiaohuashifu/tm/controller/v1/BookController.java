@@ -64,12 +64,15 @@ public class BookController {
 		return result.isSuccess().toString();
 	}
 	
-/*	@ResponseBody
-	@ResponseStatus(HttpStatus.OK)
-	@RequestMapping(method = RequestMethod.GET)
-	public PageInfo<BookDO> getBooks(@RequestParam("pageNum") Integer page) {
-		Result<PageInfo<BookDO>> result = bookService.listBooks(new BookQuery(page));
-		return result.getData();
-	}*/
+//	@ResponseBody
+//	@ResponseStatus(HttpStatus.OK)
+//	@RequestMapping(method = RequestMethod.GET)
+//	public Object getBooks(@RequestParam(value = "pageNum", defaultValue = "1", required = false) Integer pageNum) {
+//		Result<PageInfo<BookDO>> result = bookService.listBooks(new BookQuery(pageNum));
+//		if(result.isSuccess()) {
+//			return result.getData();
+//		}
+//		return result.getMessage();
+//	}
 	
 }

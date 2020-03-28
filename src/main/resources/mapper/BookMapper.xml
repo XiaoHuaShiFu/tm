@@ -28,7 +28,7 @@
   </select>
   
   <select id="listBooks" resultType="com.xiaohuashifu.tm.pojo.do0.BookDO">
-  	select id, numbering, name, available from book
+  	select * from book
   </select>
   
 </mapper>

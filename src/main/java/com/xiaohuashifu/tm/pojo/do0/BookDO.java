@@ -1,5 +1,7 @@
 package com.xiaohuashifu.tm.pojo.do0;
 
+import com.xiaohuashifu.tm.pojo.enum0.BookState;
+
 public class BookDO {
 	private Integer id;
 	private String numbering;

@@ -1,4 +1,4 @@
-package com.xiaohuashifu.tm.pojo.do0;
+package com.xiaohuashifu.tm.pojo.enum0;
 
 public enum BookState {
 	IDLE, BOOKED, BORROWED
