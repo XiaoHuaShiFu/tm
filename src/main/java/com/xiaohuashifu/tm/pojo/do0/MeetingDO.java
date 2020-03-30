@@ -2,7 +2,7 @@ package com.xiaohuashifu.tm.pojo.do0;
 
 import java.sql.Timestamp;
 
-import com.xiaohuashifu.tm.pojo.enum0.MeetingState;
+import com.xiaohuashifu.tm.constant.MeetingState;
 
 public class MeetingDO {
 	private Integer id;

@@ -1,4 +1,4 @@
-package com.xiaohuashifu.tm.pojo.enum0;
+package com.xiaohuashifu.tm.constant;
 
 public enum MeetingState {
 	WATTING, PROCESSING, CANCELLED, FINISH

@@ -1,6 +1,6 @@
 package com.xiaohuashifu.tm.pojo.do0;
 
-import com.xiaohuashifu.tm.pojo.enum0.BookState;
+import com.xiaohuashifu.tm.constant.BookState;
 
 public class BookDO {
 	private Integer id;
