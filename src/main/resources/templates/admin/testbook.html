@@ -46,7 +46,7 @@
 </body>
 
 <script type="text/javascript" th:src="@{/js/jquery-3.4.1.min.js}"></script>
-<script type="text/javascript">
+<script type="text/javascript" th:inline="javascript">
 	$("#sub").click(function(){
 		var book = {
 			numbering : $("#numbering").val(),
