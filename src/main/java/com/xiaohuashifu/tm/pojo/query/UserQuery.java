@@ -13,6 +13,26 @@ public class UserQuery {
 
     private Integer pageSize = 10;
 
+    private Integer id;
+    private String jobNumber;
+    private String nickName;
+    private String fullName;
+    private String gender;
+//            this.id = id;
+//        this.openid = openid;
+//        this.jobNumber = jobNumber;
+//        this.password = password;
+//        this.nickName = nickName;
+//        this.fullName = fullName;
+//        this.gender = gender;
+//        this.birthday = birthday;
+//        this.phone = phone;
+//        this.email = email;
+//        this.department = department;
+//        this.avatarUrl = avatarUrl;
+//        this.point = point;
+//        this.available = available;
+
     public UserQuery() {
     }
 

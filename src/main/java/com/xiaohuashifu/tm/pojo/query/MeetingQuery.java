@@ -1,19 +1,29 @@
 package com.xiaohuashifu.tm.pojo.query;
 
+
 public class MeetingQuery {
 	private Integer pageNum = 1;
-    private Integer pageSize = 5;  //默认一页5条数据
-    
+
+    private Integer pageSize = 10;
+
+    private Integer id;
+
+    private String name;
+
+    private String place;
+
+    private String state;
+
     public MeetingQuery() {}
-    
-    public MeetingQuery(Integer pageNum) {
-    	this.pageNum = pageNum;
-    }
-    
-    public MeetingQuery(Integer pageNum, Integer pageSize) {
-        this.pageNum = pageNum;
-        this.pageSize = pageSize;
-    }
+
+	public MeetingQuery(Integer pageNum, Integer pageSize, Integer id, String name, String place, String state) {
+		this.pageNum = pageNum;
+		this.pageSize = pageSize;
+		this.id = id;
+		this.name = name;
+		this.place = place;
+		this.state = state;
+	}
 
 	public Integer getPageNum() {
 		return pageNum;
@@ -30,13 +40,48 @@ public class MeetingQuery {
 	public void setPageSize(Integer pageSize) {
 		this.pageSize = pageSize;
 	}
-    
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getPlace() {
+		return place;
+	}
+
+	public void setPlace(String place) {
+		this.place = place;
+	}
+
+	public String getState() {
+		return state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
+	}
+
 	@Override
-    public String toString() {
-        return "MeetingQuery{" +
-                "pageNum=" + pageNum +
-                ", pageSize=" + pageSize +
-                '}';
-    }
-	
+	public String toString() {
+		return "MeetingQuery{" +
+				"pageNum=" + pageNum +
+				", pageSize=" + pageSize +
+				", id=" + id +
+				", name='" + name + '\'' +
+				", place='" + place + '\'' +
+				", state='" + state + '\'' +
+				'}';
+	}
 }

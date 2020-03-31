@@ -11,6 +11,7 @@ public class TokenAO {
 
     private Integer id;
 
+    // TODO: 2020/4/1 改成枚举类型
     private String type;
 
     private String token;

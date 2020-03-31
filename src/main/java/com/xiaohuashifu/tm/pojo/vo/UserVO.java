@@ -1,5 +1,8 @@
 package com.xiaohuashifu.tm.pojo.vo;
 
+import com.xiaohuashifu.tm.constant.Department;
+import com.xiaohuashifu.tm.constant.Gender;
+
 import java.util.Date;
 
 /**
@@ -20,7 +23,7 @@ public class UserVO {
 
     private String fullName;
 
-    private String gender;
+    private Gender gender;
 
     private Date birthday;
 
@@ -28,7 +31,7 @@ public class UserVO {
 
     private String email;
 
-    private String department;
+    private Department department;
 
     private String avatarUrl;
 
@@ -39,7 +42,7 @@ public class UserVO {
     public UserVO() {
     }
 
-    public UserVO(Integer id, String jobNumber, String password, String nickName, String fullName, String gender, Date birthday, String phone, String email, String department, String avatarUrl, Integer point, Boolean available) {
+    public UserVO(Integer id, String jobNumber, String password, String nickName, String fullName, Gender gender, Date birthday, String phone, String email, Department department, String avatarUrl, Integer point, Boolean available) {
         this.id = id;
         this.jobNumber = jobNumber;
         this.password = password;
@@ -95,11 +98,11 @@ public class UserVO {
         this.fullName = fullName;
     }
 
-    public String getGender() {
+    public Gender getGender() {
         return gender;
     }
 
-    public void setGender(String gender) {
+    public void setGender(Gender gender) {
         this.gender = gender;
     }
 
@@ -127,11 +130,11 @@ public class UserVO {
         this.email = email;
     }
 
-    public String getDepartment() {
+    public Department getDepartment() {
         return department;
     }
 
-    public void setDepartment(String department) {
+    public void setDepartment(Department department) {
         this.department = department;
     }
 

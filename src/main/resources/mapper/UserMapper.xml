@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.xiaohuashifu.tm.dao.UserMapper">
-    <resultMap id="BaseResultMap" type="com.xiaohuashifu.tm.pojo.do0.UserDO">
-        <constructor>
-            <idArg column="id" jdbcType="INTEGER" javaType="java.lang.Integer"/>
-            <arg column="openid" jdbcType="CHAR" javaType="java.lang.String"/>
-            <arg column="job_number" jdbcType="CHAR" javaType="java.lang.String"/>
-            <arg column="password" jdbcType="VARCHAR" javaType="java.lang.String"/>
-            <arg column="nick_name" jdbcType="VARCHAR" javaType="java.lang.String"/>
-            <arg column="full_name" jdbcType="CHAR" javaType="java.lang.String"/>
-            <arg column="gender" jdbcType="CHAR" javaType="java.lang.String"/>
-            <arg column="birthday" jdbcType="DATE" javaType="java.util.Date"/>
-            <arg column="phone" jdbcType="CHAR" javaType="java.lang.String"/>
-            <arg column="email" jdbcType="VARCHAR" javaType="java.lang.String"/>
-            <arg column="department" jdbcType="CHAR" javaType="java.lang.String"/>
-            <arg column="avatar_url" jdbcType="VARCHAR" javaType="java.lang.String"/>
-            <arg column="point" jdbcType="INTEGER" javaType="java.lang.Integer"/>
-            <arg column="available" jdbcType="BOOLEAN" javaType="java.lang.Boolean"/>
-            <arg column="create_time" jdbcType="DATE" javaType="java.util.Date"/>
-            <arg column="update_time" jdbcType="DATE" javaType="java.util.Date"/>
-        </constructor>
-    </resultMap>
+    <!--<resultMap id="BaseResultMap" type="com.xiaohuashifu.tm.pojo.do0.UserDO">-->
+        <!--<constructor>-->
+            <!--<idArg column="id" jdbcType="INTEGER" javaType="java.lang.Integer"/>-->
+            <!--<arg column="openid" jdbcType="CHAR" javaType="java.lang.String"/>-->
+            <!--<arg column="job_number" jdbcType="CHAR" javaType="java.lang.String"/>-->
+            <!--<arg column="password" jdbcType="VARCHAR" javaType="java.lang.String"/>-->
+            <!--<arg column="nick_name" jdbcType="VARCHAR" javaType="java.lang.String"/>-->
+            <!--<arg column="full_name" jdbcType="CHAR" javaType="java.lang.String"/>-->
+            <!--<arg column="gender" jdbcType="CHAR" javaType="java.lang.String"/>-->
+            <!--<arg column="birthday" jdbcType="DATE" javaType="java.util.Date"/>-->
+            <!--<arg column="phone" jdbcType="CHAR" javaType="java.lang.String"/>-->
+            <!--<arg column="email" jdbcType="VARCHAR" javaType="java.lang.String"/>-->
+            <!--<arg column="department" jdbcType="CHAR" javaType="java.lang.String"/>-->
+            <!--<arg column="avatar_url" jdbcType="VARCHAR" javaType="java.lang.String"/>-->
+            <!--<arg column="point" jdbcType="INTEGER" javaType="java.lang.Integer"/>-->
+            <!--<arg column="available" jdbcType="BOOLEAN" javaType="java.lang.Boolean"/>-->
+            <!--<arg column="create_time" jdbcType="DATE" javaType="java.util.Date"/>-->
+            <!--<arg column="update_time" jdbcType="DATE" javaType="java.util.Date"/>-->
+        <!--</constructor>-->
+    <!--</resultMap>-->
     <sql id="Base_Column_List">
         id, openid, job_number, password, nick_name, full_name, gender, birthday, phone, email, department, avatar_url,
         point, available, create_time, update_time
@@ -112,21 +112,21 @@
         </trim>
     </insert>
 
-    <select id="getUser" parameterType="integer" resultMap="BaseResultMap">
+    <select id="getUser" parameterType="integer" resultType="com.xiaohuashifu.tm.pojo.do0.UserDO">
         select
         <include refid="Base_Column_List"/>
         from user
         where id = #{id, jdbcType=INTEGER}
     </select>
 
-    <select id="getUserByJobNumber" parameterType="string" resultMap="BaseResultMap">
+    <select id="getUserByJobNumber" parameterType="string" resultType="com.xiaohuashifu.tm.pojo.do0.UserDO">
         select
         <include refid="Base_Column_List"/>
         from user
         where job_number = #{jobNumber, jdbcType=CHAR}
     </select>
 
-    <select id="getUserByOpenid" parameterType="string" resultMap="BaseResultMap">
+    <select id="getUserByOpenid" parameterType="string" resultType="com.xiaohuashifu.tm.pojo.do0.UserDO">
         select
         <include refid="Base_Column_List"/>
         from user
@@ -140,7 +140,8 @@
         where openid = #{openid, jdbcType=VARCHAR}
     </select>
 
-    <select id="listUsers" parameterType="com.xiaohuashifu.tm.pojo.query.UserQuery" resultMap="BaseResultMap">
+    <select id="listUsers" parameterType="com.xiaohuashifu.tm.pojo.query.UserQuery"
+            resultType="com.xiaohuashifu.tm.pojo.do0.UserDO">
         select
         <include refid="Base_Column_List"/>
         from user

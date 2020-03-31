@@ -1,11 +1,12 @@
 package com.xiaohuashifu.tm.pojo.do0;
 
+import com.xiaohuashifu.tm.constant.Department;
+import com.xiaohuashifu.tm.constant.Gender;
 import com.xiaohuashifu.tm.pojo.do0.group.Group;
 import com.xiaohuashifu.tm.pojo.do0.group.GroupPost;
 import com.xiaohuashifu.tm.validator.annotation.*;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Date;
 
@@ -18,8 +19,6 @@ import java.util.Date;
  */
 public class UserDO {
 
-    @NotNull(message = "INVALID_PARAMETER_IS_NULL: The id must be not blank.",
-            groups = {GroupPost.class})
     @Id(groups = {Group.class})
     private Integer id;
 
@@ -51,8 +50,7 @@ public class UserDO {
 
     @NotBlank(message = "INVALID_PARAMETER_IS_BLANK: The gender must be not blank.",
             groups = {GroupPost.class})
-    @Gender(groups = {Group.class})
-    private String gender;
+    private Gender gender;
 
     private Date birthday;
 
@@ -64,8 +62,7 @@ public class UserDO {
 
     @NotBlank(message = "INVALID_PARAMETER_IS_BLANK: The department must be not blank.",
             groups = {GroupPost.class})
-    @Department(groups = {Group.class})
-    private String department;
+    private Department department;
 
     @NotBlank(message = "INVALID_PARAMETER_IS_BLANK: The avatarUrl must be not blank.",
             groups = {GroupPost.class})
@@ -83,7 +80,7 @@ public class UserDO {
     public UserDO() {
     }
 
-    public UserDO(Integer id, String openid, String jobNumber, String password, String nickName, String fullName, String gender, Date birthday, String phone, String email, String department, String avatarUrl, Integer point, Boolean available, Date createTime, Date updateTime) {
+    public UserDO(Integer id, String openid, String jobNumber, String password, String nickName, String fullName, com.xiaohuashifu.tm.constant.Gender gender, Date birthday, String phone, String email, Department department, String avatarUrl, Integer point, Boolean available, Date createTime, Date updateTime) {
         this.id = id;
         this.openid = openid;
         this.jobNumber = jobNumber;
@@ -150,11 +147,11 @@ public class UserDO {
         this.fullName = fullName;
     }
 
-    public String getGender() {
+    public com.xiaohuashifu.tm.constant.Gender getGender() {
         return gender;
     }
 
-    public void setGender(String gender) {
+    public void setGender(com.xiaohuashifu.tm.constant.Gender gender) {
         this.gender = gender;
     }
 
@@ -182,11 +179,11 @@ public class UserDO {
         this.email = email;
     }
 
-    public String getDepartment() {
+    public Department getDepartment() {
         return department;
     }
 
-    public void setDepartment(String department) {
+    public void setDepartment(Department department) {
         this.department = department;
     }
 
