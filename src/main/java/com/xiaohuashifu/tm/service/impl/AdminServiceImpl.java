@@ -1,5 +1,6 @@
 package com.xiaohuashifu.tm.service.impl;
 
+import com.xiaohuashifu.tm.result.ErrorCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,10 +18,20 @@ public class AdminServiceImpl implements AdminService {
 	public AdminServiceImpl(AdminMapper adminMapper) {
 		this.adminMapper = adminMapper;
 	}
-	
+
+	/**
+	 * 获取AdminDO通过jobNumber
+	 *
+	 * @param jobNumber 工号
+	 * @return Result<AdminDO>
+	 */
 	@Override
 	public Result<AdminDO> getAdminByJobNumber(String jobNumber) {
 		AdminDO admin = adminMapper.getAdminByJobNumber(jobNumber);
+		if (admin == null) {
+			return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "The admin for jobNumber: "
+					+ jobNumber + " does not exist.");
+		}
 		return Result.success(admin);
 	}
 

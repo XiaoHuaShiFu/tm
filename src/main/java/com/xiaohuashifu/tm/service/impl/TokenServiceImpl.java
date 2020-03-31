@@ -4,9 +4,11 @@ import com.google.gson.Gson;
 import com.xiaohuashifu.tm.constant.TokenExpire;
 import com.xiaohuashifu.tm.constant.TokenType;
 import com.xiaohuashifu.tm.pojo.ao.TokenAO;
+import com.xiaohuashifu.tm.pojo.do0.AdminDO;
 import com.xiaohuashifu.tm.pojo.do0.UserDO;
 import com.xiaohuashifu.tm.result.ErrorCode;
 import com.xiaohuashifu.tm.result.Result;
+import com.xiaohuashifu.tm.service.AdminService;
 import com.xiaohuashifu.tm.service.CacheService;
 import com.xiaohuashifu.tm.service.TokenService;
 import com.xiaohuashifu.tm.service.UserService;
@@ -35,12 +37,15 @@ public class TokenServiceImpl implements TokenService {
 
     private final UserService userService;
 
+    private final AdminService adminService;
+
     private final Gson gson;
 
     @Autowired
-    public TokenServiceImpl(CacheService cacheService, UserService userService, Gson gson) {
+    public TokenServiceImpl(CacheService cacheService, UserService userService, AdminService adminService, Gson gson) {
         this.cacheService = cacheService;
         this.userService = userService;
+        this.adminService = adminService;
         this.gson = gson;
     }
 
@@ -167,23 +172,37 @@ public class TokenServiceImpl implements TokenService {
      */
     @Override
     public Result<TokenAO> createAndSaveToken(String tokenType, String jobNumber, String password) {
-        Result<UserDO> result = userService.getUserByJobNumber(jobNumber);
-        if (!result.isSuccess()) {
-            return Result.fail(result.getErrorCode(), result.getMessage());
-        }
-
-        UserDO user = result.getData();
-        if (!user.getPassword().equals(password)) {
-            return Result.fail(ErrorCode.UNAUTHORIZED, "Wrong password.");
-        }
-
         TokenAO tokenAO = new TokenAO();
-        tokenAO.setId(user.getId());
-        tokenAO.setType(TokenType.USER.name());
+        if (tokenType.equals(TokenType.ADMIN.name())) {
+            Result<AdminDO> result = adminService.getAdminByJobNumber(jobNumber);
+            if (!result.isSuccess()) {
+                return Result.fail(result.getErrorCode(), result.getMessage());
+            }
+            AdminDO admin = result.getData();
+            if (!admin.getPassword().equals(password)) {
+                return Result.fail(ErrorCode.UNAUTHORIZED, "Wrong password.");
+            }
+
+            tokenAO.setId(admin.getId());
+            tokenAO.setType(TokenType.ADMIN.name());
+        } else if (tokenType.equals(TokenType.USER.name())) {
+            Result<UserDO> result = userService.getUserByJobNumber(jobNumber);
+            if (!result.isSuccess()) {
+                return Result.fail(result.getErrorCode(), result.getMessage());
+            }
+
+            UserDO user = result.getData();
+            if (!user.getPassword().equals(password)) {
+                return Result.fail(ErrorCode.UNAUTHORIZED, "Wrong password.");
+            }
+
+            tokenAO.setId(user.getId());
+            tokenAO.setType(TokenType.USER.name());
+        }
+
 
         String token = createToken();
         tokenAO.setToken(token);
-
         return saveToken(tokenAO);
     }
 

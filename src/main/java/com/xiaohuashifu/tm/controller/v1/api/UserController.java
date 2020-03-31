@@ -80,6 +80,8 @@ public class UserController {
         return !result.isSuccess() ? result : mapper.map(result.getData(), UserVO.class);
     }
 
+    // TODO: 2020/3/31 这里在不同权限下应该返回不同的数据,
+    //  ADMIN返回的信息应该多过USER
     /**
      * 获取user
      * @param id 用户编号
@@ -106,6 +108,10 @@ public class UserController {
             Result<UserDO> result = userService.getUser(id);
             return !result.isSuccess() ? result : mapper.map(result.getData(), UserVO.class);
         }
+        if (type == TokenType.ADMIN) {
+            Result<UserDO> result = userService.getUser(id);
+            return !result.isSuccess() ? result : mapper.map(result.getData(), UserVO.class);
+        }
 
         //非法权限token
         return Result.fail(ErrorCode.FORBIDDEN_SUB_USER);
@@ -123,9 +129,7 @@ public class UserController {
      */
     @RequestMapping(method = RequestMethod.GET)
     @ResponseStatus(value = HttpStatus.OK)
-    // TODO: 2020/3/26 这里应该删去USER-TOKEN，但是因为ADMIN模块还未完成，
-    //  无法获取到ADMIN-TOKEN，因此暂时使用USER-TOKEN进行测试
-    @TokenAuth(tokenType = {TokenType.USER, TokenType.ADMIN})
+    @TokenAuth(tokenType = {TokenType.ADMIN})
     @ErrorHandler
     public Object get(HttpServletRequest request, UserQuery query) {
         Result<List<UserDO>> result = userService.listUsers(query);
@@ -159,6 +163,7 @@ public class UserController {
     @RequestMapping(method = RequestMethod.PUT)
     @ResponseStatus(value = HttpStatus.OK)
     // TODO: 2020/3/26 这里应该分开两个权限，分别进行权限控制
+    // TODO: 2020/3/31 ADMIN可以控制修改一些信息，USER可以修改一些信息
     @TokenAuth(tokenType = {TokenType.USER, TokenType.ADMIN})
     @ErrorHandler
     public Object put(HttpServletRequest request, @Validated(Group.class) UserDO userDO) {

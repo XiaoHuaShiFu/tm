@@ -77,7 +77,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public Result<UserDO> getUserByJobNumber(String jobNumber) {
         UserDO userDO = userMapper.getUserByJobNumber(jobNumber);
-
+        if (userDO == null) {
+            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "The specified user for jobNumber="
+                    + jobNumber + " does not exist.");
+        }
         return Result.success(userDO);
     }
 
