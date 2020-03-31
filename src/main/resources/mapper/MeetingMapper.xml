@@ -22,6 +22,9 @@
 			<if test="state != null">
 				and state = #{state, jdbcType=CHAR}
 			</if>
+			<if test="department != null">
+				and FIND_IN_SET(#{department, jdbcType=CHAR}, department)
+			</if>
 		</where>
 		order by update_time desc
 	</select>

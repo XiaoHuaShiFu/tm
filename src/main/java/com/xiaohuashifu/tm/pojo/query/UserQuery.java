@@ -13,6 +13,7 @@ public class UserQuery {
 
     private Integer pageSize = 10;
 
+    // TODO: 2020/4/1 还未写完 
     private Integer id;
     private String jobNumber;
     private String nickName;

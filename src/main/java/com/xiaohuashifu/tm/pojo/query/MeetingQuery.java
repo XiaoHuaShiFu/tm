@@ -12,16 +12,20 @@ public class MeetingQuery {
 
     private String place;
 
+	private String department;
+
     private String state;
 
     public MeetingQuery() {}
 
-	public MeetingQuery(Integer pageNum, Integer pageSize, Integer id, String name, String place, String state) {
+	public MeetingQuery(Integer pageNum, Integer pageSize, Integer id, String name, String place, String department,
+						String state) {
 		this.pageNum = pageNum;
 		this.pageSize = pageSize;
 		this.id = id;
 		this.name = name;
 		this.place = place;
+		this.department = department;
 		this.state = state;
 	}
 
@@ -65,6 +69,14 @@ public class MeetingQuery {
 		this.place = place;
 	}
 
+	public String getDepartment() {
+		return department;
+	}
+
+	public void setDepartment(String department) {
+		this.department = department;
+	}
+
 	public String getState() {
 		return state;
 	}
@@ -81,6 +93,7 @@ public class MeetingQuery {
 				", id=" + id +
 				", name='" + name + '\'' +
 				", place='" + place + '\'' +
+				", department='" + department + '\'' +
 				", state='" + state + '\'' +
 				'}';
 	}
