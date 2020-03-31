@@ -1,4 +1,4 @@
-package com.xiaohuashifu.tm.controller.v1;
+package com.xiaohuashifu.tm.controller.v1.api;
 
 import com.xiaohuashifu.tm.aspect.annotation.ErrorHandler;
 import com.xiaohuashifu.tm.pojo.ao.TokenAO;

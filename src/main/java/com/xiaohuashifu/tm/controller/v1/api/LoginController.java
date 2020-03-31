@@ -1,4 +1,4 @@
-package com.xiaohuashifu.tm.controller.v1;
+package com.xiaohuashifu.tm.controller.v1.api;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

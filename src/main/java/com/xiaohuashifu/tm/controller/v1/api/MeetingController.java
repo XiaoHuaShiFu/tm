@@ -1,4 +1,4 @@
-package com.xiaohuashifu.tm.controller.v1;
+package com.xiaohuashifu.tm.controller.v1.api;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
