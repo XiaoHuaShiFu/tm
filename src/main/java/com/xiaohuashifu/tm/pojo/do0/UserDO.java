@@ -2,8 +2,8 @@ package com.xiaohuashifu.tm.pojo.do0;
 
 import com.xiaohuashifu.tm.constant.Department;
 import com.xiaohuashifu.tm.constant.Gender;
-import com.xiaohuashifu.tm.pojo.do0.group.Group;
-import com.xiaohuashifu.tm.pojo.do0.group.GroupPost;
+import com.xiaohuashifu.tm.pojo.group.Group;
+import com.xiaohuashifu.tm.pojo.group.GroupPost;
 import com.xiaohuashifu.tm.validator.annotation.*;
 
 import javax.validation.constraints.NotBlank;

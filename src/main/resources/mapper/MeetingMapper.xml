@@ -5,7 +5,8 @@
         id, user_id, name, start_time, end_time, place, department, content, state, create_time, update_time
     </sql>
 
-	<select id="listMeetings" parameterType="com.xiaohuashifu.tm.pojo.query.MeetingQuery" resultType="com.xiaohuashifu.tm.pojo.do0.MeetingDO">
+	<select id="listMeetings" parameterType="com.xiaohuashifu.tm.pojo.query.MeetingQuery"
+			resultType="com.xiaohuashifu.tm.pojo.do0.MeetingDO">
 		select
 		<include refid="BaseColumnList"/>
 		from meeting
@@ -14,10 +15,10 @@
 				and id = #{id, jdbcType=INTEGER}
 			</if>
 			<if test="name != null">
-				and name = #{name, jdbcType=VARCHAR}
+				and name like "%"#{name, jdbcType=VARCHAR}"%"
 			</if>
 			<if test="place != null">
-				and place = #{place, jdbcType=VARCHAR}
+				and place like "%"#{place, jdbcType=VARCHAR}"%"
 			</if>
 			<if test="state != null">
 				and state = #{state, jdbcType=CHAR}
@@ -29,7 +30,7 @@
 		order by update_time desc
 	</select>
 
-	<insert id="saveMeeting" parameterType="com.xiaohuashifu.tm.pojo.do0.MeetingDO" useGeneratedKeys="true"
+	<insert id="insertMeeting" parameterType="com.xiaohuashifu.tm.pojo.do0.MeetingDO" useGeneratedKeys="true"
 			keyProperty="id">
 		insert into meeting(user_id, name, start_time, end_time, place, department, content)
 		values (#{userId, jdbcType=INTEGER}, #{name, jdbcType=VARCHAR}, #{startTime, jdbcType=DATE},
@@ -49,6 +50,13 @@
 		count(*)
 		from meeting
 		where id = #{id, jdbcType=INTEGER} and user_id = #{userId, jdbcType=INTEGER}
+	</select>
+
+	<select id="countByIdAndState" parameterType="map" resultType="integer">
+		select
+		count(*)
+		from meeting
+		where id = #{id, jdbcType=INTEGER} and state = #{state, jdbcType=CHAR}
 	</select>
 
 	<update id="updateMeeting" parameterType="com.xiaohuashifu.tm.pojo.do0.MeetingDO">

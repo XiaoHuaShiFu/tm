@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiaohuashifu.tm.dao.MeetingParticipantMapper">
+	<sql id="BaseColumnList">
+        id, user_id, meeting_id, participation_time, create_time, update_time
+    </sql>
+
+	<insert id="insertMeetingParticipant" parameterType="com.xiaohuashifu.tm.pojo.do0.MeetingParticipantDO"
+			useGeneratedKeys="true" keyProperty="id">
+		insert into meeting_participant(user_id, meeting_id, participation_time)
+		values (#{userId, jdbcType=INTEGER}, #{meetingId, jdbcType=INTEGER}, #{participationTime, jdbcType=DATE})
+	</insert>
+
+	<select id="countByMeetingIdAndUserId" parameterType="map" resultType="integer">
+		select
+		count(*)
+		from meeting_participant
+		where meeting_id = #{meetingId, jdbcType=INTEGER} and user_id = #{userId, jdbcType=INTEGER}
+	</select>
+
+	<select id="listMeetingParticipants" parameterType="com.xiaohuashifu.tm.pojo.query.MeetingParticipantQuery"
+			resultType="com.xiaohuashifu.tm.pojo.do0.MeetingParticipantDO">
+		select
+		<include refid="BaseColumnList"/>
+		from meeting_participant
+		where meeting_id = #{meetingId, jdbcType=INTEGER}
+		order by update_time desc
+	</select>
+
+</mapper>

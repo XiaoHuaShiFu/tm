@@ -1,6 +1,9 @@
 package com.xiaohuashifu.tm.pojo.query;
 
 
+import com.xiaohuashifu.tm.constant.Department;
+import com.xiaohuashifu.tm.constant.MeetingState;
+
 public class MeetingQuery {
 	private Integer pageNum = 1;
 
@@ -8,18 +11,24 @@ public class MeetingQuery {
 
     private Integer id;
 
-    private String name;
+	/**
+	 * 模糊搜素
+	 */
+	private String name;
 
+	/**
+	 * 模糊搜素
+	 */
     private String place;
 
-	private String department;
+	private Department department;
 
-    private String state;
+    private MeetingState state;
 
     public MeetingQuery() {}
 
-	public MeetingQuery(Integer pageNum, Integer pageSize, Integer id, String name, String place, String department,
-						String state) {
+	public MeetingQuery(Integer pageNum, Integer pageSize, Integer id, String name, String place, Department department,
+						MeetingState state) {
 		this.pageNum = pageNum;
 		this.pageSize = pageSize;
 		this.id = id;
@@ -69,19 +78,19 @@ public class MeetingQuery {
 		this.place = place;
 	}
 
-	public String getDepartment() {
+	public Department getDepartment() {
 		return department;
 	}
 
-	public void setDepartment(String department) {
+	public void setDepartment(Department department) {
 		this.department = department;
 	}
 
-	public String getState() {
+	public MeetingState getState() {
 		return state;
 	}
 
-	public void setState(String state) {
+	public void setState(MeetingState state) {
 		this.state = state;
 	}
 

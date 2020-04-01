@@ -3,9 +3,11 @@ package com.xiaohuashifu.tm.controller.v1.api;
 import com.xiaohuashifu.tm.aspect.annotation.ErrorHandler;
 import com.xiaohuashifu.tm.aspect.annotation.TokenAuth;
 import com.xiaohuashifu.tm.constant.TokenType;
+import com.xiaohuashifu.tm.pojo.ao.MeetingQrcodeAO;
 import com.xiaohuashifu.tm.pojo.ao.TokenAO;
-import com.xiaohuashifu.tm.pojo.do0.group.GroupPost;
-import com.xiaohuashifu.tm.pojo.do0.group.GroupPut;
+import com.xiaohuashifu.tm.pojo.group.GroupPost;
+import com.xiaohuashifu.tm.pojo.group.GroupPut;
+import com.xiaohuashifu.tm.pojo.vo.MeetingQrcodeVO;
 import com.xiaohuashifu.tm.pojo.vo.MeetingVO;
 import com.xiaohuashifu.tm.result.ErrorCode;
 import com.xiaohuashifu.tm.validator.annotation.Id;
@@ -97,6 +99,7 @@ public class MeetingController {
 		return !result.isSuccess() ? result : mapper.map(result.getData(), MeetingVO.class);
 	}
 
+	// TODO: 2020/4/2 这里可以让manager来做
 	/**
 	 * 查询Meeting
 	 * @param request HttpServletRequest
@@ -161,6 +164,29 @@ public class MeetingController {
 
 		// 非法权限token
 		return Result.fail(ErrorCode.FORBIDDEN_SUB_USER);
+	}
+
+	/**
+	 * 创建Meeting的QRCode并返回QRCode
+	 * @param id 会议id
+	 * @return MeetingQrcodeAO
+	 *
+	 * @success:
+	 * HttpStatus.CREATED
+	 *
+	 * @errors:
+	 *
+	 * @bindErrors
+	 * INVALID_PARAMETER_VALUE_BELOW
+	 */
+	@RequestMapping(value="/qrcode", method = RequestMethod.POST)
+	@ResponseStatus(value = HttpStatus.CREATED)
+	@TokenAuth(tokenType = TokenType.USER)
+	@ErrorHandler
+	public Object postQrcode(HttpServletRequest request, @Id Integer id) {
+		TokenAO tokenAO = (TokenAO) request.getAttribute("tokenAO");
+		Result<MeetingQrcodeAO> result = meetingService.createAndSaveQrcode(id, tokenAO.getId());
+		return !result.isSuccess() ? result : mapper.map(result.getData(), MeetingQrcodeVO.class);
 	}
 
 }

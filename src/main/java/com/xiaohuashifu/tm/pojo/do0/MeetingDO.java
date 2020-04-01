@@ -3,9 +3,9 @@ package com.xiaohuashifu.tm.pojo.do0;
 import java.util.Date;
 
 import com.xiaohuashifu.tm.constant.MeetingState;
-import com.xiaohuashifu.tm.pojo.do0.group.Group;
-import com.xiaohuashifu.tm.pojo.do0.group.GroupPost;
-import com.xiaohuashifu.tm.pojo.do0.group.GroupPut;
+import com.xiaohuashifu.tm.pojo.group.Group;
+import com.xiaohuashifu.tm.pojo.group.GroupPost;
+import com.xiaohuashifu.tm.pojo.group.GroupPut;
 import com.xiaohuashifu.tm.validator.annotation.Id;
 
 import javax.validation.constraints.NotBlank;

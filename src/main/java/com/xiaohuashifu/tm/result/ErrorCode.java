@@ -12,7 +12,7 @@ import org.springframework.http.HttpStatus;
 public enum ErrorCode {
 
     /**
-     * 参数为null
+     * 非法参数
      */
     INVALID_PARAMETER(HttpStatus.BAD_REQUEST,
             "InvalidParameter", "The {Parameter} is not valid."),

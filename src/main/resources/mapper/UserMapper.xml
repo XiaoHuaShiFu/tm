@@ -1,26 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.xiaohuashifu.tm.dao.UserMapper">
-    <!--<resultMap id="BaseResultMap" type="com.xiaohuashifu.tm.pojo.do0.UserDO">-->
-        <!--<constructor>-->
-            <!--<idArg column="id" jdbcType="INTEGER" javaType="java.lang.Integer"/>-->
-            <!--<arg column="openid" jdbcType="CHAR" javaType="java.lang.String"/>-->
-            <!--<arg column="job_number" jdbcType="CHAR" javaType="java.lang.String"/>-->
-            <!--<arg column="password" jdbcType="VARCHAR" javaType="java.lang.String"/>-->
-            <!--<arg column="nick_name" jdbcType="VARCHAR" javaType="java.lang.String"/>-->
-            <!--<arg column="full_name" jdbcType="CHAR" javaType="java.lang.String"/>-->
-            <!--<arg column="gender" jdbcType="CHAR" javaType="java.lang.String"/>-->
-            <!--<arg column="birthday" jdbcType="DATE" javaType="java.util.Date"/>-->
-            <!--<arg column="phone" jdbcType="CHAR" javaType="java.lang.String"/>-->
-            <!--<arg column="email" jdbcType="VARCHAR" javaType="java.lang.String"/>-->
-            <!--<arg column="department" jdbcType="CHAR" javaType="java.lang.String"/>-->
-            <!--<arg column="avatar_url" jdbcType="VARCHAR" javaType="java.lang.String"/>-->
-            <!--<arg column="point" jdbcType="INTEGER" javaType="java.lang.Integer"/>-->
-            <!--<arg column="available" jdbcType="BOOLEAN" javaType="java.lang.Boolean"/>-->
-            <!--<arg column="create_time" jdbcType="DATE" javaType="java.util.Date"/>-->
-            <!--<arg column="update_time" jdbcType="DATE" javaType="java.util.Date"/>-->
-        <!--</constructor>-->
-    <!--</resultMap>-->
     <sql id="Base_Column_List">
         id, openid, job_number, password, nick_name, full_name, gender, birthday, phone, email, department, avatar_url,
         point, available, create_time, update_time
@@ -137,7 +117,7 @@
         select
         count(*)
         from user
-        where openid = #{openid, jdbcType=VARCHAR}
+        where openid = #{openid, jdbcType=CHAR}
     </select>
 
     <select id="listUsers" parameterType="com.xiaohuashifu.tm.pojo.query.UserQuery"
@@ -145,6 +125,42 @@
         select
         <include refid="Base_Column_List"/>
         from user
+        <where>
+            <if test="id != null">
+                and id = #{id, jdbcType=INTEGER}
+            </if>
+            <if test="idList != null">
+                id in (
+                    <foreach collection="idList"  item="item" index="index" separator=",">
+                        #{item}
+                    </foreach>
+                )
+            </if>
+            <if test="jobNumber != null">
+                and job_number like "%"#{jobNumber, jdbcType=CHAR}"%"
+            </if>
+            <if test="nickName != null">
+                and nick_name like "%"#{nickName, jdbcType=VARCHAR}"%"
+            </if>
+            <if test="fullName != null">
+                and full_name like "%"#{fullName, jdbcType=VARCHAR}"%"
+            </if>
+            <if test="gender != null">
+                and gender = #{gender, jdbcType=CHAR}
+            </if>
+            <if test="phone != null">
+                and phone like "%"#{phone, jdbcType=CHAR}"%"
+            </if>
+            <if test="email != null">
+                and email like "%"#{email, jdbcType=VARCHAR}"%"
+            </if>
+            <if test="department != null">
+                and department = #{department, jdbcType=CHAR}
+            </if>
+            <if test="available != null">
+                and available = #{available, jdbcType=BOOLEAN}
+            </if>
+        </where>
         order by update_time desc
     </select>
 
@@ -185,7 +201,7 @@
                 available = #{available, jdbcType=BOOLEAN},
             </if>
             <if test="avatarUrl != null">
-                avatar_url = #{avatarUrl, jdbcType=BOOLEAN},
+                avatar_url = #{avatarUrl, jdbcType=VARCHAR},
             </if>
         </set>
         where id = #{id, jdbcType=INTEGER}

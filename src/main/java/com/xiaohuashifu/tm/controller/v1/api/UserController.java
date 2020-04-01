@@ -5,8 +5,8 @@ import com.xiaohuashifu.tm.aspect.annotation.TokenAuth;
 import com.xiaohuashifu.tm.constant.TokenType;
 import com.xiaohuashifu.tm.pojo.ao.TokenAO;
 import com.xiaohuashifu.tm.pojo.do0.UserDO;
-import com.xiaohuashifu.tm.pojo.do0.group.Group;
-import com.xiaohuashifu.tm.pojo.do0.group.GroupPost;
+import com.xiaohuashifu.tm.pojo.group.Group;
+import com.xiaohuashifu.tm.pojo.group.GroupPost;
 import com.xiaohuashifu.tm.pojo.query.UserQuery;
 import com.xiaohuashifu.tm.pojo.vo.UserVO;
 import com.xiaohuashifu.tm.result.ErrorCode;
@@ -117,7 +117,6 @@ public class UserController {
         return Result.fail(ErrorCode.FORBIDDEN_SUB_USER);
     }
 
-    // TODO: 2020/3/26 这里暂时不支持查询参数，只支持pageNum和pageSize，因为还不知道需要什么查询参数
     /**
      * 查询user
      * @param request HttpServletRequest

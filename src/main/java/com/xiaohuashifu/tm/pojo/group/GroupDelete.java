@@ -1,4 +1,4 @@
-package com.xiaohuashifu.tm.pojo.do0.group;
+package com.xiaohuashifu.tm.pojo.group;
 
 /**
  * 描述:
@@ -7,5 +7,5 @@ package com.xiaohuashifu.tm.pojo.do0.group;
  * @email 827032783@qq.com
  * @create 2020-03-25 19:33
  */
-public interface Group {
+public interface GroupDelete extends Group{
 }
