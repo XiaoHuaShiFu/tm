@@ -54,6 +54,9 @@ public class TokenAuthAspect {
     public Object authToken(ProceedingJoinPoint joinPoint, HttpServletRequest request,
                             TokenAuth tokenAuth) throws Throwable {
         String token = request.getHeader("authorization");
+        if(token == null) {
+        	token = (String) request.getSession().getAttribute("token");
+        }
         //token不在头部
         if (token == null) {
             ErrorResponse errorResponse = new ErrorResponse(ErrorCode.UNAUTHORIZED_TOKEN_IS_NULL.getError(),
