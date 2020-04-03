@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.xiaohuashifu.tm.dao.AdminMapper;
 import com.xiaohuashifu.tm.pojo.do0.AdminDO;
+import com.xiaohuashifu.tm.pojo.do0.AdminLogDO;
 import com.xiaohuashifu.tm.result.Result;
 import com.xiaohuashifu.tm.service.AdminService;
 
@@ -33,6 +34,12 @@ public class AdminServiceImpl implements AdminService {
 					+ jobNumber + " does not exist.");
 		}
 		return Result.success(admin);
+	}
+
+	@Override
+	public Result saveAdminLog(AdminLogDO adminLogDO) {
+		adminMapper.insertAdminLog(adminLogDO);
+		return Result.success();
 	}
 
 }

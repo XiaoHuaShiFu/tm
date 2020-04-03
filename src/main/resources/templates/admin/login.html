@@ -71,15 +71,13 @@
   		$("#login_btn").click(function(){
   			var login = true;
   			$.ajax({
-  				url : "/v1/login/admin",
+//   				url : "/v1/login/admin",
   				data : {
   					"jobNumber" : $("#job_num").val(),
   					"password" : $("#pwd").val()
   				},
-  				method : "POST",
   				async : false,
   				success : function(data){
-//   					console.log("token: " + xhr.getResponseHeader("token"));
 					console.log("data: " + data);
   					if(data == "error"){
   						login = false;

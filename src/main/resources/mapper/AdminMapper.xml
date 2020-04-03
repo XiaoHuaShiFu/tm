@@ -6,4 +6,8 @@
 		from admin
 		where job_number = #{jobNumber};
 	</select>
+	
+	<insert id="insertAdminLog">
+		insert into admin_log (admin_id, content) values (#{adminLog.adminId}, #{adminLog.content});
+	</insert>
 </mapper>
