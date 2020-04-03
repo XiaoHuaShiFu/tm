@@ -35,23 +35,9 @@ public class LoginController {
 		if(result.isSuccess()) {
 			request.getSession().setAttribute("token", result.getData().getToken());
 			response.sendRedirect(request.getContextPath() + "/v1/admin/index");
+			return "ok";
 		}
 		return "error";
 	}
-	
-//	@RequestMapping(value = "admin", method = RequestMethod.POST)
-//	public String adminLogin(HttpServletRequest request, HttpServletResponse response, 
-//					@RequestParam("jobNumber") String jobNumber, @RequestParam("password") String password) throws Exception {
-//		Result<AdminDO> result = adminService.getAdminByJobNumber(jobNumber);
-//		if(result.isSuccess()) {
-//			AdminDO admin = result.getData();
-//			if(admin.getPassword().equals(password)) {
-//				request.getSession().setAttribute("admin", admin);
-//				response.sendRedirect(request.getContextPath() + "/v1/admin/index");
-//				return "ok";
-//			}
-//		}
-//		return "error";
-//	}
 	
 }

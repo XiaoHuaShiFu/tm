@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.xiaohuashifu.tm.aspect.annotation.AdminLog;
 import com.xiaohuashifu.tm.aspect.annotation.TokenAuth;
 import com.xiaohuashifu.tm.constant.TokenType;
 
@@ -21,6 +22,7 @@ public class AdminController {
 	
 	@RequestMapping("index")
 	@TokenAuth(tokenType = {TokenType.ADMIN})
+	@AdminLog("登录")
 	public ModelAndView index(HttpServletRequest request) {
 		ModelAndView model = new ModelAndView("admin/index");
 		model.addObject("token", request.getSession().getAttribute("token"));
