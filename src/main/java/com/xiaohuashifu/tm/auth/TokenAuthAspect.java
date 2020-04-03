@@ -1,6 +1,5 @@
-package com.xiaohuashifu.tm.aspect;
+package com.xiaohuashifu.tm.auth;
 
-import com.xiaohuashifu.tm.aspect.annotation.TokenAuth;
 import com.xiaohuashifu.tm.constant.TokenExpire;
 import com.xiaohuashifu.tm.constant.TokenType;
 import com.xiaohuashifu.tm.pojo.ao.TokenAO;
@@ -17,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 
+
 /**
  * 描述: 身份认证切面
  *
@@ -25,7 +25,8 @@ import javax.servlet.http.HttpServletRequest;
  * @create 2019-08-06 22:22
  */
 @Aspect
-@Component
+// TODO: 2020/4/4 这里指定bean name是因为有两个类名为TokenAuthAspect的bean，不指定会产生冲突
+@Component("tokenAuthAspect0")
 public class TokenAuthAspect {
 
     private final TokenService tokenService;
@@ -39,7 +40,6 @@ public class TokenAuthAspect {
      * 认证token令牌
      *
      * @param joinPoint ProceedingJoinPoint
-     * @param request HttpServletRequest
      * @return Object
      * 会把TokenAO设置在request.attribute.tokenAO里
      *
@@ -50,14 +50,12 @@ public class TokenAuthAspect {
      * UNAUTHORIZED_TOKEN_IS_NULL
      * FORBIDDEN_SUB_USER
      */
-    @Around(value = "@annotation(com.xiaohuashifu.tm.aspect.annotation.TokenAuth) && @annotation(tokenAuth) && args(request, ..)")
-    public Object authToken(ProceedingJoinPoint joinPoint, HttpServletRequest request,
-                            TokenAuth tokenAuth) throws Throwable {
+    @Around(value = "@annotation(com.xiaohuashifu.tm.auth.TokenAuth) && @annotation(tokenAuth) && args(..)")
+    public Object authToken(ProceedingJoinPoint joinPoint, TokenAuth tokenAuth) throws Throwable {
+        Authable authable = (Authable) joinPoint.getThis();
+        HttpServletRequest request = authable.getRequest();
+
         String token = request.getHeader("authorization");
-        // 尝试在session里获取token
-        if(token == null) {
-        	token = (String) request.getSession().getAttribute("token");
-        }
         // token不在头部
         if (token == null) {
             ErrorResponse errorResponse = new ErrorResponse(ErrorCode.UNAUTHORIZED_TOKEN_IS_NULL.getError(),
@@ -74,8 +72,17 @@ public class TokenAuthAspect {
             return new ResponseEntity<>(errorResponse, result.getErrorCode().getHttpStatus());
         }
 
-        // 把此tokenAO传递给控制器
-        request.setAttribute("tokenAO", result.getData());
+        // 把此tokenAO传递给控制器，如果该方法带上TokenAO的话
+        Object[] args = joinPoint.getArgs();
+        for (Object arg : args) {
+            if (arg instanceof TokenAO) {
+                TokenAO tokenAO = result.getData();
+                ((TokenAO) arg).setId(tokenAO.getId());
+                ((TokenAO) arg).setToken(tokenAO.getToken());
+                ((TokenAO) arg).setType(tokenAO.getType());
+                break;
+            }
+        }
         return joinPoint.proceed();
     }
 

@@ -20,10 +20,7 @@ import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotBlank;
@@ -52,6 +49,13 @@ public class AttendanceController {
         this.mapper = mapper;
         this.attendanceService = attendanceService;
         this.attendanceManager = attendanceManager;
+    }
+
+    // TODO: 2020/4/4 测试新的认证模块
+    @RequestMapping("test")
+    @com.xiaohuashifu.tm.auth.TokenAuth(tokenType = TokenType.ADMIN)
+    public Object test(TokenAO tokenAO) {
+        return tokenAO;
     }
 
     /**
