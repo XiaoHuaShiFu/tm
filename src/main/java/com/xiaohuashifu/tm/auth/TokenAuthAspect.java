@@ -72,7 +72,7 @@ public class TokenAuthAspect {
             return new ResponseEntity<>(errorResponse, result.getErrorCode().getHttpStatus());
         }
 
-        // 把此tokenAO传递给控制器，如果该方法带上TokenAO的话
+        // 把此tokenAO传递给控制器，如果该控制器带有TokenAO类型的参数的话
         Object[] args = joinPoint.getArgs();
         for (Object arg : args) {
             if (arg instanceof TokenAO) {
