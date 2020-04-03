@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
  * @create 2020-04-04 3:02
  */
 @Component
-public class TokenAuthImpl implements Authable {
+public class AuthableImpl implements Authable {
 
     @Override
     public HttpServletRequest getRequest() {

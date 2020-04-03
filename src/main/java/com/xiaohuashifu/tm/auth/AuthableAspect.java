@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 public class AuthableAspect {
 
     @DeclareParents(value = "com.xiaohuashifu.tm.controller.v1.api.AttendanceController",
-            defaultImpl = TokenAuthImpl.class)
+            defaultImpl = AuthableImpl.class)
     public Authable authable;
 
 }
