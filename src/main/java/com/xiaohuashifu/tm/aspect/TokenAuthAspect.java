@@ -54,10 +54,11 @@ public class TokenAuthAspect {
     public Object authToken(ProceedingJoinPoint joinPoint, HttpServletRequest request,
                             TokenAuth tokenAuth) throws Throwable {
         String token = request.getHeader("authorization");
+        // 尝试在session里获取token
         if(token == null) {
         	token = (String) request.getSession().getAttribute("token");
         }
-        //token不在头部
+        // token不在头部
         if (token == null) {
             ErrorResponse errorResponse = new ErrorResponse(ErrorCode.UNAUTHORIZED_TOKEN_IS_NULL.getError(),
                     ErrorCode.UNAUTHORIZED_TOKEN_IS_NULL.getMessage());
@@ -73,7 +74,7 @@ public class TokenAuthAspect {
             return new ResponseEntity<>(errorResponse, result.getErrorCode().getHttpStatus());
         }
 
-        //把此id传递给控制器
+        // 把此id传递给控制器
         request.setAttribute("tokenAO", result.getData());
         return joinPoint.proceed();
     }

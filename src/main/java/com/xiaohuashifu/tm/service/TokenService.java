@@ -17,9 +17,9 @@ public interface TokenService {
 
     Result<TokenAO> saveToken(TokenAO tokenAO, int seconds);
 
-    Result<TokenAO> createAndSaveToken(String tokenType, String jobNumber, String password);
+    Result<TokenAO> createAndSaveToken(TokenType tokenType, String username, String password);
 
-    Result<TokenAO> createAndSaveTokenByCode(String tokenType, String code);
+    Result<TokenAO> createAndSaveTokenByCode(TokenType tokenType, String code);
 
     Result<TokenAO> getToken(String token);
 

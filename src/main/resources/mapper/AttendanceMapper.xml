@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xiaohuashifu.tm.dao.AttendanceMapper">
+    <sql id="Base_Column_List">
+        id, user_id, latitude, longitude, sign_in_time, sign_out_time, available, create_time, update_time
+    </sql>
+
+    <insert id="insertAttendance" parameterType="com.xiaohuashifu.tm.pojo.do0.AttendanceDO"
+            useGeneratedKeys="true" keyProperty="id">
+		insert into attendance(user_id, latitude, longitude, sign_in_time)
+		values (#{userId, jdbcType=INTEGER}, #{latitude, jdbcType=DECIMAL}, #{longitude, jdbcType=DECIMAL},
+		#{signInTime, jdbcType=TIMESTAMP})
+	</insert>
+
+    <select id="listAttendances" parameterType="com.xiaohuashifu.tm.pojo.query.AttendanceQuery"
+            resultType="com.xiaohuashifu.tm.pojo.do0.AttendanceDO">
+        select
+        <include refid="Base_Column_List"/>
+        from attendance
+        <where>
+            <if test="id != null">
+                and id = #{id, jdbcType=INTEGER}
+            </if>
+            <if test="idList != null">
+                id in (
+                <foreach collection="idList"  item="item" index="index" separator=",">
+                    #{item}
+                </foreach>
+                )
+            </if>
+            <if test="userId != null">
+                and user_id = #{userId, jdbcType=INTEGER}
+            </if>
+            <if test="available != null">
+                and available = #{available, jdbcType=BOOLEAN}
+            </if>
+        </where>
+        order by update_time desc
+    </select>
+
+    <update id="updateAttendance" parameterType="com.xiaohuashifu.tm.pojo.do0.AttendanceDO">
+        update attendance
+        <set>
+            <if test="signOutTime != null">
+                sign_out_time = #{signOutTime, jdbcType=TIMESTAMP},
+            </if>
+            <if test="available != null">
+                available = #{available, jdbcType=BOOLEAN},
+            </if>
+        </set>
+        where id = #{id, jdbcType=INTEGER}
+    </update>
+
+    <select id="selectAttendance" parameterType="integer" resultType="com.xiaohuashifu.tm.pojo.do0.AttendanceDO">
+        select
+        <include refid="Base_Column_List"/>
+        from attendance
+        where id = #{id, jdbcType=INTEGER}
+    </select>
+
+
+</mapper>

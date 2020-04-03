@@ -148,7 +148,7 @@ public class MeetingController {
 	@ErrorHandler
 	public Object put(HttpServletRequest request, @Validated(GroupPut.class) MeetingDO meetingDO) {
 		TokenAO tokenAO = (TokenAO) request.getAttribute("tokenAO");
-		TokenType type = TokenType.valueOf(tokenAO.getType());
+		TokenType type = tokenAO.getType();
 		if (type == TokenType.USER) {
 			// 普通用户不能修改别人的会议（普通用户只能修改自己的会议）
 			if (!tokenAO.getId().equals(meetingDO.getUserId())) {
@@ -179,7 +179,7 @@ public class MeetingController {
 	 * @bindErrors
 	 * INVALID_PARAMETER_VALUE_BELOW
 	 */
-	@RequestMapping(value="/qrcode", method = RequestMethod.POST)
+	@RequestMapping(value="/qrcodes", method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.CREATED)
 	@TokenAuth(tokenType = TokenType.USER)
 	@ErrorHandler

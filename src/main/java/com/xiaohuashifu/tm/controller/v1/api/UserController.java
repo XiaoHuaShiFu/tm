@@ -102,7 +102,7 @@ public class UserController {
     @ErrorHandler
     public Object get(HttpServletRequest request, @PathVariable @Id Integer id) {
         TokenAO tokenAO = (TokenAO) request.getAttribute("tokenAO");
-        TokenType type = TokenType.valueOf(tokenAO.getType());
+        TokenType type = tokenAO.getType();
 
         if (type == TokenType.USER) {
             Result<UserDO> result = userService.getUser(id);
@@ -128,7 +128,7 @@ public class UserController {
      */
     @RequestMapping(method = RequestMethod.GET)
     @ResponseStatus(value = HttpStatus.OK)
-    @TokenAuth(tokenType = {TokenType.ADMIN})
+    @TokenAuth(tokenType = {TokenType.USER, TokenType.ADMIN})
     @ErrorHandler
     public Object get(HttpServletRequest request, UserQuery query) {
         Result<List<UserDO>> result = userService.listUsers(query);

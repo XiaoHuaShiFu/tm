@@ -1,5 +1,7 @@
 package com.xiaohuashifu.tm.pojo.ao;
 
+import com.xiaohuashifu.tm.constant.TokenType;
+
 /**
  * 描述: Token对象
  *
@@ -11,15 +13,14 @@ public class TokenAO {
 
     private Integer id;
 
-    // TODO: 2020/4/1 改成枚举类型
-    private String type;
+    private TokenType type;
 
     private String token;
 
     public TokenAO() {
     }
 
-    public TokenAO(Integer id, String type, String token) {
+    public TokenAO(Integer id, TokenType type, String token) {
         this.id = id;
         this.type = type;
         this.token = token;
@@ -33,11 +34,11 @@ public class TokenAO {
         this.id = id;
     }
 
-    public String getType() {
+    public TokenType getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(TokenType type) {
         this.type = type;
     }
 

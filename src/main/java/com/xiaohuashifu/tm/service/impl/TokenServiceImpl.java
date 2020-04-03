@@ -12,6 +12,7 @@ import com.xiaohuashifu.tm.service.AdminService;
 import com.xiaohuashifu.tm.service.CacheService;
 import com.xiaohuashifu.tm.service.TokenService;
 import com.xiaohuashifu.tm.service.UserService;
+import com.xiaohuashifu.tm.service.constant.AttendanceConstant;
 import com.xiaohuashifu.tm.service.constant.RedisStatus;
 import com.xiaohuashifu.tm.util.SHA256;
 import org.slf4j.Logger;
@@ -97,7 +98,7 @@ public class TokenServiceImpl implements TokenService {
      * @return Result<TokenAO>
      */
     @Override
-    public Result<TokenAO> createAndSaveTokenByCode(String tokenType, String code) {
+    public Result<TokenAO> createAndSaveTokenByCode(TokenType tokenType, String code) {
         Result<UserDO> result = userService.getUserByCode(code);
         if (!result.isSuccess()) {
             return Result.fail(result.getErrorCode(), result.getMessage());
@@ -105,7 +106,7 @@ public class TokenServiceImpl implements TokenService {
         UserDO user = result.getData();
         TokenAO tokenAO = new TokenAO();
         tokenAO.setId(user.getId());
-        tokenAO.setType(TokenType.USER.name());
+        tokenAO.setType(TokenType.USER);
 
         String token = createToken();
         tokenAO.setToken(token);
@@ -165,16 +166,16 @@ public class TokenServiceImpl implements TokenService {
     /**
      * 创建token并保存到redis里
      *
-     * @param jobNumber 工号
+     * @param username 用户名
      * @param password 密码
      * @param tokenType token类型
      * @return Result<TokenAO>
      */
     @Override
-    public Result<TokenAO> createAndSaveToken(String tokenType, String jobNumber, String password) {
+    public Result<TokenAO> createAndSaveToken(TokenType tokenType, String username, String password) {
         TokenAO tokenAO = new TokenAO();
-        if (tokenType.equals(TokenType.ADMIN.name())) {
-            Result<AdminDO> result = adminService.getAdminByJobNumber(jobNumber);
+        if (tokenType == TokenType.ADMIN) {
+            Result<AdminDO> result = adminService.getAdminByJobNumber(username);
             if (!result.isSuccess()) {
                 return Result.fail(result.getErrorCode(), result.getMessage());
             }
@@ -184,9 +185,9 @@ public class TokenServiceImpl implements TokenService {
             }
 
             tokenAO.setId(admin.getId());
-            tokenAO.setType(TokenType.ADMIN.name());
-        } else if (tokenType.equals(TokenType.USER.name())) {
-            Result<UserDO> result = userService.getUserByJobNumber(jobNumber);
+            tokenAO.setType(tokenType);
+        } else if (tokenType == TokenType.USER) {
+            Result<UserDO> result = userService.getUserByJobNumber(username);
             if (!result.isSuccess()) {
                 return Result.fail(result.getErrorCode(), result.getMessage());
             }
@@ -197,7 +198,18 @@ public class TokenServiceImpl implements TokenService {
             }
 
             tokenAO.setId(user.getId());
-            tokenAO.setType(TokenType.USER.name());
+            tokenAO.setType(tokenType);
+        }
+        // TODO: 2020/4/3 这里有点偷懒了，最好弄权限管理的方式
+        else if (tokenType == TokenType.QRCODE) {
+            final String username0 = AttendanceConstant.USERNAME_FOR_QRCODE_TOKEN;
+            final String password0 = AttendanceConstant.PASSWORD_FOR_QRCODE_TOKEN;
+            if (!username0.equals(username) || !password0.equals(password)) {
+                return Result.fail(ErrorCode.UNAUTHORIZED, "Wrong username or password.");
+            }
+
+            tokenAO.setId(-1);
+            tokenAO.setType(tokenType);
         }
 
 
@@ -213,12 +225,12 @@ public class TokenServiceImpl implements TokenService {
      * @param tokenTypes 可以通过认证的列表
      * @return 是否认证成功
      */
-    private boolean authTokenType(String type, TokenType[] tokenTypes) {
+    private boolean authTokenType(TokenType type, TokenType[] tokenTypes) {
         if (tokenTypes.length == 0) {
             return true;
         }
         for (TokenType tokenType : tokenTypes) {
-            if (tokenType.name().equals(type)) {
+            if (tokenType == type) {
                 return true;
             }
         }

@@ -114,7 +114,7 @@ public class MeetingServiceImpl implements MeetingService {
 	 * 创建并保存Qrcode
 	 * @param meetingId 会议编号
 	 * @param userId 用户编号
-	 * @return Result<String> 二维码
+	 * @return Result<MeetingQrcodeAO> 二维码
 	 */
 	@Override
 	public Result<MeetingQrcodeAO> createAndSaveQrcode(Integer meetingId, Integer userId) {

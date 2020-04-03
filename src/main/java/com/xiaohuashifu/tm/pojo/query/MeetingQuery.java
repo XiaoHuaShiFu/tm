@@ -4,6 +4,8 @@ package com.xiaohuashifu.tm.pojo.query;
 import com.xiaohuashifu.tm.constant.Department;
 import com.xiaohuashifu.tm.constant.MeetingState;
 
+import java.util.List;
+
 public class MeetingQuery {
 	private Integer pageNum = 1;
 
@@ -11,6 +13,7 @@ public class MeetingQuery {
 
     private Integer id;
 
+	private List<Integer> idList;
 	/**
 	 * 模糊搜素
 	 */
@@ -27,11 +30,12 @@ public class MeetingQuery {
 
     public MeetingQuery() {}
 
-	public MeetingQuery(Integer pageNum, Integer pageSize, Integer id, String name, String place, Department department,
-						MeetingState state) {
+	public MeetingQuery(Integer pageNum, Integer pageSize, Integer id, List<Integer> idList, String name, String place,
+						Department department, MeetingState state) {
 		this.pageNum = pageNum;
 		this.pageSize = pageSize;
 		this.id = id;
+		this.idList = idList;
 		this.name = name;
 		this.place = place;
 		this.department = department;
@@ -60,6 +64,14 @@ public class MeetingQuery {
 
 	public void setId(Integer id) {
 		this.id = id;
+	}
+
+	public List<Integer> getIdList() {
+		return idList;
+	}
+
+	public void setIdList(List<Integer> idList) {
+		this.idList = idList;
 	}
 
 	public String getName() {
@@ -100,10 +112,11 @@ public class MeetingQuery {
 				"pageNum=" + pageNum +
 				", pageSize=" + pageSize +
 				", id=" + id +
+				", idList=" + idList +
 				", name='" + name + '\'' +
 				", place='" + place + '\'' +
-				", department='" + department + '\'' +
-				", state='" + state + '\'' +
+				", department=" + department +
+				", state=" + state +
 				'}';
 	}
 }

@@ -1,5 +1,7 @@
 package com.xiaohuashifu.tm.pojo.vo;
 
+import com.xiaohuashifu.tm.constant.TokenType;
+
 /**
  * 描述: Token对象
  *
@@ -11,14 +13,14 @@ public class TokenVO {
 
     private Integer id;
 
-    private String type;
+    private TokenType type;
 
     private String token;
 
     public TokenVO() {
     }
 
-    public TokenVO(Integer id, String type, String token) {
+    public TokenVO(Integer id, TokenType type, String token) {
         this.id = id;
         this.type = type;
         this.token = token;
@@ -32,11 +34,11 @@ public class TokenVO {
         this.id = id;
     }
 
-    public String getType() {
+    public TokenType getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(TokenType type) {
         this.type = type;
     }
 

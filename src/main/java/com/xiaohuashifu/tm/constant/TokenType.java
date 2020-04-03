@@ -17,5 +17,10 @@ public enum TokenType {
     /**
      * 管理员的Token
      */
-    ADMIN
+    ADMIN,
+
+    /**
+     * 拥有QRCode生成权限的Token
+     */
+    QRCODE
 }

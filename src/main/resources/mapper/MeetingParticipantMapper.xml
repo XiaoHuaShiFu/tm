@@ -8,7 +8,7 @@
 	<insert id="insertMeetingParticipant" parameterType="com.xiaohuashifu.tm.pojo.do0.MeetingParticipantDO"
 			useGeneratedKeys="true" keyProperty="id">
 		insert into meeting_participant(user_id, meeting_id, participation_time)
-		values (#{userId, jdbcType=INTEGER}, #{meetingId, jdbcType=INTEGER}, #{participationTime, jdbcType=DATE})
+		values (#{userId, jdbcType=INTEGER}, #{meetingId, jdbcType=INTEGER}, #{participationTime, jdbcType=TIMESTAMP})
 	</insert>
 
 	<select id="countByMeetingIdAndUserId" parameterType="map" resultType="integer">

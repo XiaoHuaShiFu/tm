@@ -31,7 +31,7 @@ public class LoginController {
 	@RequestMapping(value = "admin", method = RequestMethod.POST)
 	public String adminLogin(HttpServletRequest request, HttpServletResponse response, 
 					@RequestParam("jobNumber") String jobNumber, @RequestParam("password") String password) throws Exception {
-		Result<TokenAO> result = tokenService.createAndSaveToken(TokenType.ADMIN.name(), jobNumber, password);
+		Result<TokenAO> result = tokenService.createAndSaveToken(TokenType.ADMIN, jobNumber, password);
 		if(result.isSuccess()) {
 			request.getSession().setAttribute("token", result.getData().getToken());
 			response.sendRedirect(request.getContextPath() + "/v1/admin/index");
