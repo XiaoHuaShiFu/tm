@@ -1,9 +1,15 @@
 package com.xiaohuashifu.tm.service.impl;
 
 import com.xiaohuashifu.tm.result.ErrorCode;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.xiaohuashifu.tm.aspect.annotation.AdminLog;
+import com.xiaohuashifu.tm.constant.AdminLogType;
 import com.xiaohuashifu.tm.dao.AdminMapper;
 import com.xiaohuashifu.tm.pojo.do0.AdminDO;
 import com.xiaohuashifu.tm.pojo.do0.AdminLogDO;
@@ -40,6 +46,23 @@ public class AdminServiceImpl implements AdminService {
 	public Result saveAdminLog(AdminLogDO adminLogDO) {
 		adminMapper.insertAdminLog(adminLogDO);
 		return Result.success();
+	}
+
+	@Override
+	public Result<String> getAnnouncement() {
+		String announcement = adminMapper.getAnnouncement();
+		return Result.success(announcement);
+	}
+
+	@Override
+	@AdminLog(value = "更新公告", type = AdminLogType.UPDATE)
+	public Result<Map<String, String>> updateAnnouncement(String announcement) {
+		Map<String, String> map = new HashMap<String, String>();
+		String oldAnnocement = adminMapper.getAnnouncement();
+		map.put("oldValue", oldAnnocement);
+		adminMapper.updateAnnouncement(announcement);
+		map.put("newValue", announcement);
+		return Result.success(map);
 	}
 
 }

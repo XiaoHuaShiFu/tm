@@ -10,4 +10,12 @@
 	<insert id="insertAdminLog">
 		insert into admin_log (admin_id, content) values (#{adminLog.adminId}, #{adminLog.content});
 	</insert>
+	
+	<select id="getAnnouncement" resultType="string">
+		select content from announcement limit 1;
+	</select>
+	
+	<insert id="updateAnnouncement" parameterType="string">
+		update announcement set content = #{announcement};
+	</insert>
 </mapper>
