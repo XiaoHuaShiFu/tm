@@ -23,7 +23,6 @@ import com.xiaohuashifu.tm.pojo.query.MeetingQuery;
 import com.xiaohuashifu.tm.result.Result;
 import com.xiaohuashifu.tm.service.MeetingService;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -67,8 +66,7 @@ public class MeetingController {
 	@ResponseStatus(value = HttpStatus.CREATED)
 	@TokenAuth(tokenType = {TokenType.USER})
 	@ErrorHandler
-	public Object post(HttpServletRequest request, @Validated(GroupPost.class) MeetingDO meetingDO) {
-		TokenAO tokenAO = (TokenAO) request.getAttribute("tokenAO");
+	public Object post(TokenAO tokenAO, @Validated(GroupPost.class) MeetingDO meetingDO) {
 		meetingDO.setUserId(tokenAO.getId());
 		Result<MeetingDO> result = meetingService.saveMeeting(meetingDO);
 		return !result.isSuccess() ? result : mapper.map(result.getData(), MeetingVO.class);
@@ -94,7 +92,7 @@ public class MeetingController {
 	@ResponseStatus(value = HttpStatus.OK)
 	@TokenAuth(tokenType = {TokenType.USER, TokenType.ADMIN})
 	@ErrorHandler
-	public Object get(HttpServletRequest request, @PathVariable @Id Integer id) {
+	public Object get(@PathVariable @Id Integer id) {
 		Result<MeetingDO> result = meetingService.getMeeting(id);
 		return !result.isSuccess() ? result : mapper.map(result.getData(), MeetingVO.class);
 	}
@@ -102,7 +100,6 @@ public class MeetingController {
 	// TODO: 2020/4/2 这里可以让manager来做
 	/**
 	 * 查询Meeting
-	 * @param request HttpServletRequest
 	 * @param query 查询参数
 	 * @return PageInfo<MeetingDO>
 	 *
@@ -113,7 +110,7 @@ public class MeetingController {
 	@ResponseStatus(value = HttpStatus.OK)
 	@TokenAuth(tokenType = {TokenType.USER, TokenType.ADMIN})
 	@ErrorHandler
-	public Object get(HttpServletRequest request, MeetingQuery query) {
+	public Object get(MeetingQuery query) {
 		Result<PageInfo> result = meetingService.listMeetings(query);
 		if (!result.isSuccess()) {
 			return result;
@@ -146,8 +143,7 @@ public class MeetingController {
 	@ResponseStatus(value = HttpStatus.OK)
 	@TokenAuth(tokenType = {TokenType.USER, TokenType.ADMIN})
 	@ErrorHandler
-	public Object put(HttpServletRequest request, @Validated(GroupPut.class) MeetingDO meetingDO) {
-		TokenAO tokenAO = (TokenAO) request.getAttribute("tokenAO");
+	public Object put(TokenAO tokenAO, @Validated(GroupPut.class) MeetingDO meetingDO) {
 		TokenType type = tokenAO.getType();
 		if (type == TokenType.USER) {
 			// 普通用户不能修改别人的会议（普通用户只能修改自己的会议）
@@ -183,8 +179,7 @@ public class MeetingController {
 	@ResponseStatus(value = HttpStatus.CREATED)
 	@TokenAuth(tokenType = TokenType.USER)
 	@ErrorHandler
-	public Object postQrcode(HttpServletRequest request, @Id Integer id) {
-		TokenAO tokenAO = (TokenAO) request.getAttribute("tokenAO");
+	public Object postQrcode(TokenAO tokenAO, @Id Integer id) {
 		Result<MeetingQrcodeAO> result = meetingService.createAndSaveQrcode(id, tokenAO.getId());
 		return !result.isSuccess() ? result : mapper.map(result.getData(), MeetingQrcodeVO.class);
 	}

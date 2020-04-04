@@ -2,7 +2,7 @@ package com.xiaohuashifu.tm.controller.v1.api;
 
 import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.tm.aspect.annotation.ErrorHandler;
-import com.xiaohuashifu.tm.aspect.annotation.TokenAuth;
+import com.xiaohuashifu.tm.auth.TokenAuth;
 import com.xiaohuashifu.tm.constant.TokenType;
 import com.xiaohuashifu.tm.manager.AttendanceManager;
 import com.xiaohuashifu.tm.pojo.ao.AttendanceQrcodeAO;
@@ -22,7 +22,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotBlank;
 
 /**
@@ -51,13 +50,6 @@ public class AttendanceController {
         this.attendanceManager = attendanceManager;
     }
 
-    // TODO: 2020/4/4 测试新的认证模块
-    @RequestMapping("test")
-    @com.xiaohuashifu.tm.auth.TokenAuth(tokenType = TokenType.ADMIN)
-    public Object test(TokenAO tokenAO) {
-        return tokenAO;
-    }
-
     /**
      * 创建Attendance并返回Attendance
      * @param qrcode 签到所用的动态二维码
@@ -77,10 +69,9 @@ public class AttendanceController {
     @ResponseStatus(value = HttpStatus.CREATED)
     @TokenAuth(tokenType = TokenType.USER)
     @ErrorHandler
-    public Object post(HttpServletRequest request,
+    public Object post(TokenAO tokenAO,
             @NotBlank(message = "INVALID_PARAMETER_IS_BLANK: The qrcode must be not blank.") String qrcode,
             @Validated(GroupPost.class) AttendanceDO attendanceDO) {
-        TokenAO tokenAO = (TokenAO) request.getAttribute("tokenAO");
         // 只能给自己创建签到记录
         if (!tokenAO.getId().equals(attendanceDO.getUserId())) {
             return Result.fail(ErrorCode.FORBIDDEN_SUB_USER);
@@ -91,7 +82,6 @@ public class AttendanceController {
 
     /**
      * 查询attendance
-     * @param request HttpServletRequest
      * @param query 查询参数
      * @return AttendanceVOList
      *
@@ -102,7 +92,7 @@ public class AttendanceController {
     @ResponseStatus(value = HttpStatus.OK)
     @TokenAuth(tokenType = {TokenType.ADMIN})
     @ErrorHandler
-    public Object get(HttpServletRequest request, AttendanceQuery query) {
+    public Object get(AttendanceQuery query) {
         Result<PageInfo<AttendanceVO>> result = attendanceManager.listAttendances(query);
         return result.isSuccess() ? result.getData() : result;
     }
@@ -129,8 +119,7 @@ public class AttendanceController {
     @ResponseStatus(value = HttpStatus.OK)
     @TokenAuth(tokenType = {TokenType.USER, TokenType.ADMIN})
     @ErrorHandler
-    public Object put(HttpServletRequest request,  @Validated(GroupPut.class) AttendanceDO attendanceDO) {
-        TokenAO tokenAO = (TokenAO) request.getAttribute("tokenAO");
+    public Object put(TokenAO tokenAO,  @Validated(GroupPut.class) AttendanceDO attendanceDO) {
         // TODO: 2020/4/3 这里用户部分有一些细节没有处理->应该只能更新签退时间，且在签退记录不存在时才能更新
         // TODO: 2020/4/3 这里应该只有USET-TOKEN才需要带上userid，ADMIN-TOKEN应该可以更新所有的出勤记录
         // 如果Token类型是USER，用户只能更新自己的签到信息，且只能更新签退时间（且必须是第一次更新时才有效）

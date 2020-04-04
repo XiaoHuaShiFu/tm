@@ -1,7 +1,7 @@
 package com.xiaohuashifu.tm.controller.v1.api;
 
 import com.xiaohuashifu.tm.aspect.annotation.ErrorHandler;
-import com.xiaohuashifu.tm.aspect.annotation.TokenAuth;
+import com.xiaohuashifu.tm.auth.TokenAuth;
 import com.xiaohuashifu.tm.constant.TokenType;
 import com.xiaohuashifu.tm.pojo.ao.TokenAO;
 import com.xiaohuashifu.tm.pojo.do0.UserDO;
@@ -22,7 +22,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -84,6 +83,7 @@ public class UserController {
     //  ADMIN返回的信息应该多过USER
     /**
      * 获取user
+     * @param tokenAO TokenAO
      * @param id 用户编号
      * @return UserVO
      *
@@ -100,8 +100,7 @@ public class UserController {
     @ResponseStatus(value = HttpStatus.OK)
     @TokenAuth(tokenType = {TokenType.USER, TokenType.ADMIN})
     @ErrorHandler
-    public Object get(HttpServletRequest request, @PathVariable @Id Integer id) {
-        TokenAO tokenAO = (TokenAO) request.getAttribute("tokenAO");
+    public Object get(TokenAO tokenAO, @PathVariable @Id Integer id) {
         TokenType type = tokenAO.getType();
 
         if (type == TokenType.USER) {
@@ -119,7 +118,6 @@ public class UserController {
 
     /**
      * 查询user
-     * @param request HttpServletRequest
      * @param query 查询参数
      * @return UserVOList
      *
@@ -130,7 +128,7 @@ public class UserController {
     @ResponseStatus(value = HttpStatus.OK)
     @TokenAuth(tokenType = {TokenType.USER, TokenType.ADMIN})
     @ErrorHandler
-    public Object get(HttpServletRequest request, UserQuery query) {
+    public Object get(UserQuery query) {
         Result<List<UserDO>> result = userService.listUsers(query);
         if (!result.isSuccess()) {
             return result;
@@ -143,6 +141,7 @@ public class UserController {
 
     /**
      * 更新User并返回User
+     * @param tokenAO TokenAO
      * @param userDO User信息
      * @return UserVO
      *
@@ -165,8 +164,7 @@ public class UserController {
     // TODO: 2020/3/31 ADMIN可以控制修改一些信息，USER可以修改一些信息
     @TokenAuth(tokenType = {TokenType.USER, TokenType.ADMIN})
     @ErrorHandler
-    public Object put(HttpServletRequest request, @Validated(Group.class) UserDO userDO) {
-        TokenAO tokenAO = (TokenAO) request.getAttribute("tokenAO");
+    public Object put(TokenAO tokenAO, @Validated(Group.class) UserDO userDO) {
         if (!userDO.getId().equals(tokenAO.getId())) {
             return Result.fail(ErrorCode.FORBIDDEN_SUB_USER);
         }
@@ -178,7 +176,7 @@ public class UserController {
     /**
      * 修改头像
      *
-     * @param request HttpServletRequest
+     * @param tokenAO TokenAO
      * @param avatar MultipartFile
      * @return UserVO
      *
@@ -198,10 +196,9 @@ public class UserController {
     @TokenAuth(tokenType = TokenType.USER)
     @ErrorHandler
     public Object putAvatar(
-            HttpServletRequest request,
+            TokenAO tokenAO,
             @NotNull(message = "INVALID_PARAMETER_IS_BLANK: The id must be not blank.") @Id Integer id,
             @NotNull(message = "INVALID_PARAMETER_IS_NULL: The required avatar must be not null.") MultipartFile avatar) {
-        TokenAO tokenAO = (TokenAO) request.getAttribute("tokenAO");
         if (!tokenAO.getId().equals(id)) {
             return Result.fail(ErrorCode.FORBIDDEN_SUB_USER);
         }

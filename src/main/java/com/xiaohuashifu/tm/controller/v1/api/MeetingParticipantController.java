@@ -2,7 +2,7 @@ package com.xiaohuashifu.tm.controller.v1.api;
 
 import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.tm.aspect.annotation.ErrorHandler;
-import com.xiaohuashifu.tm.aspect.annotation.TokenAuth;
+import com.xiaohuashifu.tm.auth.TokenAuth;
 import com.xiaohuashifu.tm.constant.TokenType;
 import com.xiaohuashifu.tm.manager.MeetingParticipantManager;
 import com.xiaohuashifu.tm.pojo.ao.TokenAO;
@@ -19,7 +19,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotBlank;
 
 /**
@@ -66,10 +65,9 @@ public class MeetingParticipantController {
 	@TokenAuth(tokenType = TokenType.USER)
 	@ErrorHandler
 	public Object post(
-			HttpServletRequest request,
+			TokenAO tokenAO,
 			@Id Integer meetingId,
 			@NotBlank(message = "INVALID_PARAMETER_IS_BLANK: The qrcode must be not blank.") String qrcode) {
-		TokenAO tokenAO = (TokenAO) request.getAttribute("tokenAO");
 		Result<MeetingParticipantDO> result =
 				meetingParticipantService.saveMeetingParticipant(meetingId, tokenAO.getId(), qrcode);
 		return !result.isSuccess() ? result : mapper.map(result.getData(), MeetingParticipantVO.class);
@@ -77,7 +75,6 @@ public class MeetingParticipantController {
 
 	/**
 	 * 获取MeetingParticipant
-	 * @param request HttpServletRequest
 	 * @param query 查询参数，包含页码，页条数和会议编号
 	 * @return PageInfo<MeetingParticipantVO>
 	 *
@@ -88,7 +85,7 @@ public class MeetingParticipantController {
 	@ResponseStatus(value = HttpStatus.OK)
 	@TokenAuth(tokenType = {TokenType.USER, TokenType.ADMIN})
 	@ErrorHandler
-	public Object get(HttpServletRequest request, @Validated(GroupGet.class) MeetingParticipantQuery query) {
+	public Object get(@Validated(GroupGet.class) MeetingParticipantQuery query) {
 		Result<PageInfo<MeetingParticipantVO>> result = meetingParticipantManager.listMeetingParticipants(query);
 		if (!result.isSuccess()) {
 			return result;

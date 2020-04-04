@@ -82,6 +82,7 @@ public class AttendanceServiceImpl implements AttendanceService {
         }
 
         AttendanceDO attendanceDO0 = new AttendanceDO();
+        attendanceDO0.setUserId(attendanceDO.getUserId());
         attendanceDO0.setLatitude(attendanceDO.getLatitude());
         attendanceDO0.setLongitude(attendanceDO.getLongitude());
         attendanceDO0.setSignInTime(new Date());

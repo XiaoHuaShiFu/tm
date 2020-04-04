@@ -1,7 +1,7 @@
 package com.xiaohuashifu.tm.controller.v1.api;
 
 import com.xiaohuashifu.tm.aspect.annotation.ErrorHandler;
-import com.xiaohuashifu.tm.aspect.annotation.TokenAuth;
+import com.xiaohuashifu.tm.auth.TokenAuth;
 import com.xiaohuashifu.tm.constant.TokenType;
 import com.xiaohuashifu.tm.pojo.ao.TokenAO;
 import com.xiaohuashifu.tm.result.Result;
@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -58,6 +56,7 @@ public class WeChatController {
 
     /**
      * 表单事件获取到的formId
+     * @param tokenAO TokenAO
      * @param formId 表单事件获取到的formId
      * @return formId
      *
@@ -72,8 +71,7 @@ public class WeChatController {
     @ResponseStatus(value = HttpStatus.CREATED)
     @TokenAuth(tokenType = TokenType.USER)
     @ErrorHandler
-    public Object postFormId(HttpServletRequest request, String formId) {
-        TokenAO tokenAO = (TokenAO) request.getAttribute("tokenAO");
+    public Object postFormId(TokenAO tokenAO, String formId) {
         Result<String> result = weChatMpService.saveFormId(formId, tokenAO.getId());
         if (!result.isSuccess()) {
             return result;
