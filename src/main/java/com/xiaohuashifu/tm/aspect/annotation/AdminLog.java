@@ -5,10 +5,14 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import com.xiaohuashifu.tm.constant.AdminLogType;
+
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface AdminLog {
 	
 	String value() default "";
+	
+	AdminLogType type();
 	
 }

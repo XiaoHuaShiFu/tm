@@ -9,6 +9,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.xiaohuashifu.tm.aspect.annotation.AdminLog;
 import com.xiaohuashifu.tm.aspect.annotation.TokenAuth;
+import com.xiaohuashifu.tm.constant.AdminLogType;
 import com.xiaohuashifu.tm.constant.TokenType;
 
 @Controller
@@ -22,7 +23,7 @@ public class AdminController {
 	
 	@RequestMapping("index")
 	@TokenAuth(tokenType = {TokenType.ADMIN})
-	@AdminLog("登录")
+	@AdminLog(value = "登录", type = AdminLogType.LOGIN)
 	public ModelAndView index(HttpServletRequest request) {
 		ModelAndView model = new ModelAndView("admin/index");
 		model.addObject("token", request.getSession().getAttribute("token"));
