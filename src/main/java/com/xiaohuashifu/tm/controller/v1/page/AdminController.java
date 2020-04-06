@@ -1,9 +1,14 @@
 package com.xiaohuashifu.tm.controller.v1.page;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -14,6 +19,7 @@ import com.xiaohuashifu.tm.aspect.annotation.AdminLog;
 import com.xiaohuashifu.tm.aspect.annotation.TokenAuth;
 import com.xiaohuashifu.tm.constant.AdminLogType;
 import com.xiaohuashifu.tm.constant.TokenType;
+import com.xiaohuashifu.tm.pojo.do0.BookDO;
 import com.xiaohuashifu.tm.result.Result;
 import com.xiaohuashifu.tm.service.AdminService;
 
@@ -34,8 +40,8 @@ public class AdminController {
 	}
 	
 	@RequestMapping(value = "index", method = RequestMethod.GET)
-	@TokenAuth(tokenType = {TokenType.ADMIN})
-	@AdminLog(value = "登录", type = AdminLogType.LOGIN)
+//	@TokenAuth(tokenType = {TokenType.ADMIN})
+//	@AdminLog(value = "登录", type = AdminLogType.LOGIN)
 	public ModelAndView index(HttpServletRequest request) {
 		ModelAndView model = new ModelAndView("admin/index");
 		model.addObject("token", request.getSession().getAttribute("token"));
@@ -53,11 +59,36 @@ public class AdminController {
 	@ResponseBody
 	@RequestMapping(value = "announcement", method = RequestMethod.PUT)
 	public String updateAnnouncement(@RequestParam("announcement") String announcement) {
-		Result result = adminService.updateAnnouncement(announcement);
+		Result<?> result = adminService.updateAnnouncement(announcement);
 		if (result.isSuccess()) {
 			return "ok";
 		}
 		return "error";
+	}
+	
+	@RequestMapping(value = "books/{pageNum}", method = RequestMethod.GET)
+	public void receiveBookReq(HttpServletRequest request, HttpServletResponse response, @PathVariable("pageNum") Integer pageNum) {
+		try {
+			request.getRequestDispatcher("/v1/books/" + pageNum).forward(request, response);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@RequestMapping(value = "books", method = RequestMethod.GET)
+	public ModelAndView returnBooks(HttpServletRequest request, HttpServletResponse response) {
+		ModelAndView model = new ModelAndView("admin/books");
+		if (response.getStatus() != HttpStatus.NOT_FOUND.value()) {
+			List<BookDO> books = (List<BookDO>) request.getAttribute("books");
+			model.addObject(books);
+		}
+		return model;
+	}
+	
+	@RequestMapping(value = "people", method = RequestMethod.GET)
+	public ModelAndView peoplePage() {
+		ModelAndView model = new ModelAndView("admin/people");
+		return model;
 	}
 	
 }

@@ -81,9 +81,9 @@
         <div class="text-gray-400 text-uppercase px-3 px-lg-4 py-4 font-weight-bold small headings-font-family">MAIN</div>
         <ul class="sidebar-menu list-unstyled">
               <li class="sidebar-list-item"><a href="index.html" class="sidebar-link text-muted active"><i class="o-home-1 mr-3 text-gray"></i><span>Home</span></a></li>
-              <li class="sidebar-list-item"><a href="charts.html" class="sidebar-link text-muted"><i class="o-sales-up-1 mr-3 text-gray"></i><span>Charts</span></a></li>
-              <li class="sidebar-list-item"><a href="tables.html" class="sidebar-link text-muted"><i class="o-table-content-1 mr-3 text-gray"></i><span>Tables</span></a></li>
-              <li class="sidebar-list-item"><a href="forms.html" class="sidebar-link text-muted"><i class="o-survey-1 mr-3 text-gray"></i><span>Forms</span></a></li>
+              <li class="sidebar-list-item"><a href="people" class="sidebar-link text-muted"><i class="o-sales-up-1 mr-3 text-gray"></i><span>成员管理</span></a></li>
+              <li class="sidebar-list-item"><a href="books/1" class="sidebar-link text-muted"><i class="o-table-content-1 mr-3 text-gray"></i><span>图书管理</span></a></li>
+              <li class="sidebar-list-item"><a href="forms.html" class="sidebar-link text-muted"><i class="o-survey-1 mr-3 text-gray"></i><span>会议管理</span></a></li>
           <li class="sidebar-list-item"><a href="#" data-toggle="collapse" data-target="#pages" aria-expanded="false" aria-controls="pages" class="sidebar-link text-muted"><i class="o-wireframe-1 mr-3 text-gray"></i><span>Pages</span></a>
             <div id="pages" class="collapse">
               <ul class="sidebar-menu list-unstyled border-left border-primary border-thick">
@@ -438,7 +438,7 @@
                 <p class="mb-2 mb-md-0"></p>
               </div>
               <div class="col-md-6 text-center text-md-right text-gray-400">
-                <p class="mb-0">Copyright &copy; 2019.Company name All rights reserved.More Templates <a href="http://www.cssmoban.com/" target="_blank" title="模板之家">模板之家</a> - Collect from <a href="http://www.cssmoban.com/" title="网页模板" target="_blank">网页模板</a></p>
+              	<p class="mb-0">Copyright &copy; 2020.TM All rights reserved.</p>
               </div>
             </div>
           </div>
@@ -454,34 +454,34 @@
     <script th:src="@{/js/js.cookie.min.js}"></script>
     <script th:src="@{/js/charts-home.js}"></script>
     <script th:src="@{/js/front.js}"></script>
+  	<script type="text/javascript" th:inline="javascript">
+	  	[# th:if="${token}"]
+		 	sessionStorage.setItem("token", [[${token}]]);
+		 	console.log("token: " + sessionStorage.getItem("token"));
+	  	[/]
+	  	var announcement = [[${announcement}]];
+	  	
+	  	$("#announ_btn").click(function(){
+	  		if (announcement == $("#announcement").val()){
+	  			alert("相同公告不要重复发布");
+	  		}else{
+		  		$.ajax({
+		  			url : "announcement",
+		  	  		data : {
+		  	  			"announcement" : $("#announcement").val()
+		  	  		},
+		  	  		method : "PUT",
+		  			success : function(data){
+		  				if (data == "ok") {
+		  					announcement = $("#announcement").val();
+		  					alert("发布成功");
+		  				}
+		  				else alert("发布失败");
+		  			}
+		  	  	});
+	  		}
+	  	});
+  	</script>
   </body>
   
-  <script type="text/javascript" th:inline="javascript">
-  	[# th:if="${token}"]
-	 	sessionStorage.setItem("token", [[${token}]]);
-	 	console.log("token: " + sessionStorage.getItem("token"));
-  	[/]
-  	var announcement = [[${announcement}]];
-  	
-  	$("#announ_btn").click(function(){
-  		if (announcement == $("#announcement").val()){
-  			alert("相同公告不要重复发布");
-  		}else{
-	  		$.ajax({
-	  			url : "announcement",
-	  	  		data : {
-	  	  			"announcement" : $("#announcement").val()
-	  	  		},
-	  	  		method : "PUT",
-	  			success : function(data){
-	  				if (data == "ok") {
-	  					announcement = $("#announcement").val();
-	  					alert("发布成功");
-	  				}
-	  				else alert("发布失败");
-	  			}
-	  	  	});
-  		}
-  	});
-  </script>
 </html>
