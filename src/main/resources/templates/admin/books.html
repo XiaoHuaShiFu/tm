@@ -17,8 +17,9 @@
     <link rel="stylesheet" th:href="@{/css/orionicons.css}">
     <!-- theme stylesheet-->
     <link rel="stylesheet" th:href="@{/css/style.default.css}" id="theme-stylesheet">
-    <!-- Custom stylesheet - for your changes-->
-    <link rel="stylesheet" th:href="@{/css/custom.css}">
+    <!-- self-definited css-->
+    <link rel="stylesheet" th:href="@{/css/books.css}">
+    <link rel="stylesheet" th:href="@{/css/pagination.css}">
     <!-- Favicon-->
     <link rel="shortcut icon" th:href="@{/img/favicon.png?3}">
     <!-- Tweaks for older IEs--><!--[if lt IE 9]>
@@ -140,6 +141,7 @@
                 </div>
               </div>
             </div>
+            <div class="pgn_container"></div>
           </section>
         </div>
         <footer class="footer bg-white shadow align-self-end py-3 px-xl-5 w-100">
@@ -164,8 +166,9 @@
     <script th:src="@{/vendor/chart.js/Chart.min.js}"></script>
     <script th:src="@{/js/js.cookie.min.js}"></script>
     <script th:src="@{/js/front.js}"></script>
+    <script th:src="@{/js/pagination.js}"></script>
     <script type="text/javascript" th:inline="javascript">
-		
-  </script>
+		setPagination($(".pgn_container")[0], [[${total}]], [[${pageSize}]], [[${pageIndex}]]);
+ 	</script>
   </body>
 </html>

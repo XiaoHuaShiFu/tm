@@ -81,6 +81,9 @@ public class AdminController {
 		if (response.getStatus() != HttpStatus.NOT_FOUND.value()) {
 			List<BookDO> books = (List<BookDO>) request.getAttribute("books");
 			model.addObject(books);
+			model.addObject("total", request.getAttribute("total"));
+			model.addObject("pageSize", request.getAttribute("pageSize"));
+			model.addObject("pageIndex", request.getAttribute("pageNum"));
 		}
 		return model;
 	}

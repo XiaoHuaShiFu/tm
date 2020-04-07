@@ -66,10 +66,14 @@ public class BookController {
 	@ResponseStatus(HttpStatus.OK)
 	@RequestMapping(value = "{pageNum}", method = RequestMethod.GET)
 	public void getBooks(HttpServletRequest request, HttpServletResponse response, @PathVariable("pageNum") Integer pageNum) {
-		Result<PageInfo<BookDO>> result = bookService.listBooks(new BookQuery(pageNum));
+		BookQuery bookQuery = new BookQuery(pageNum);
+		Result<PageInfo<BookDO>> result = bookService.listBooks(bookQuery);
 		if (result.isSuccess()) {
 			List<BookDO> books = result.getData().getList();
 			request.setAttribute("books", books);
+			request.setAttribute("total", result.getData().getTotal());
+			request.setAttribute("pageSize", bookQuery.getPageSize());
+			request.setAttribute("pageNum", pageNum);
 			//这里先注释，等测试结束开放token时再删除注释
 //			TokenType type = null;  //当前使用者身份
 //			String token = request.getHeader("authorization");
