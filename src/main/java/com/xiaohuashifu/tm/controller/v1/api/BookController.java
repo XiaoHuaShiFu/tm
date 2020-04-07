@@ -69,9 +69,10 @@ public class BookController {
 		BookQuery bookQuery = new BookQuery(pageNum);
 		Result<PageInfo<BookDO>> result = bookService.listBooks(bookQuery);
 		if (result.isSuccess()) {
-			List<BookDO> books = result.getData().getList();
+			PageInfo<BookDO> booksInfo = result.getData();
+			List<BookDO> books = booksInfo.getList();
 			request.setAttribute("books", books);
-			request.setAttribute("total", result.getData().getTotal());
+			request.setAttribute("total", booksInfo.getTotal());
 			request.setAttribute("pageSize", bookQuery.getPageSize());
 			request.setAttribute("pageNum", pageNum);
 			//这里先注释，等测试结束开放token时再删除注释
