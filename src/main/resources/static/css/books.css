@@ -1,13 +1,45 @@
+/* func-bar*/
+.func-bar{
+	margin-top: 20px;
+	padding: 10px 0;
+	background-color: #fff;
+	box-shadow: 0 2px 12px 0 rgba(0,0,0,0.1);
+}
+
+.func-bar #add-btn{
+	display: inline-block;
+	padding: 3px;
+	color: #fff;
+	background-color: rgb(64, 158, 255);
+	border-radius: 3px;
+	cursor: pointer;
+	
+}
+
+.func-bar #add-btn:active{
+	background-color: rgb(24, 128, 255);
+}
+
 /* table */
-.table_wrapper{
+.table-wrapper{
 	flex: 0 0 100%;
 	max-width: 90%;
 	margin-left: 5%;
 }
 
-.pgn_container{
+.pgn-container{
 	width: 85%;
 	display: inline-block;
 	margin-top: 12px;
 	margin-left: 5%;
+}
+
+/*mask*/
+.mask>div>form{
+	margin: 20px 0;
+	padding: 0 60px;
+}
+
+.mask>div>form>div{
+	padding-top: 20px;
 }
