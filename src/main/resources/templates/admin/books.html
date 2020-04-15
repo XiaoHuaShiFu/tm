@@ -148,7 +148,7 @@
 					        </td>
 					        <td th:text="${book.state}">空</td>
 					        <td th:text="${book.available}? yes : no">yes</td>
-					        <td><span>删除</span></td>
+					        <td><span class="del-btn" th:del="${book.id}" onclick="deleteBooks(this);">删除</span></td>
 						</tr>
                       </tbody>
                     </table>
@@ -223,9 +223,11 @@
 		$("#add-btn").click(function(){  //点击添加书籍
 			$(".mask").attr("style", "display:block;");
 		});
+		
 		$(".icon-delete").click(function(){  //关闭添加书籍窗口
 			$(".mask").attr("style", "display:none");
 		});
+		
 		$("#add-submit").click(function(){  //点击提交
 			var book = {
 				numbering : $("#numbering").val(),
@@ -253,6 +255,27 @@
 				}
 			});	
 		})
+		
+		function deleteBooks(ele){
+			var delId = $(ele).attr("del");
+			if (confirm("是否删除id为" + delId + "的书籍")){
+				$.ajax({
+					url:"/v1/books",
+					data:{
+						id : delId
+					},
+					method:"DELETE",
+					success:function(data){
+						if (data == true){
+							$(ele).parent().parent().remove();
+							alert("删除成功");
+						}else {
+							alert("删除失败");
+						}
+					}
+				});
+			}
+		}
  	</script>
   </body>
 </html>

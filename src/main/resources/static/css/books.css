@@ -26,6 +26,10 @@
 	max-width: 90%;
 	margin-left: 5%;
 }
+.table-wrapper .del-btn{
+	color: #0181ff;
+	cursor: pointer;
+}
 
 .pgn-container{
 	width: 85%;

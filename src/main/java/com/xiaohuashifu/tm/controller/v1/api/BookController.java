@@ -42,7 +42,7 @@ public class BookController {
 		return result.isSuccess();
 	}
 	
-	@ResponseStatus(HttpStatus.NO_CONTENT)
+//	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@RequestMapping(method = RequestMethod.DELETE)
 	public Boolean deleteBook(@RequestParam("id") Integer id) {
 		Result<?> result = bookService.deleteBook(id);
