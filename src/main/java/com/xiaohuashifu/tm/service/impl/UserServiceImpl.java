@@ -1,6 +1,7 @@
 package com.xiaohuashifu.tm.service.impl;
 
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.tm.dao.UserMapper;
 import com.xiaohuashifu.tm.manager.WeChatMpManager;
 import com.xiaohuashifu.tm.manager.constant.WeChatMp;
@@ -138,14 +139,15 @@ public class UserServiceImpl implements UserService {
      * @return UserDOList
      */
     @Override
-    public Result<List<UserDO>> listUsers(UserQuery query) {
+    public Result<PageInfo<UserDO>> listUsers(UserQuery query) {
         PageHelper.startPage(query.getPageNum(), query.getPageSize());
         List<UserDO> userDOList = userMapper.listUsers(query);
+        PageInfo<UserDO> pageInfo = new PageInfo<>(userDOList);
         if (userDOList.size() < 1) {
             Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "Not found.");
         }
 
-        return Result.success(userDOList);
+        return Result.success(pageInfo);
     }
 
     /**

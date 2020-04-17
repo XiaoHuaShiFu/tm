@@ -1,5 +1,6 @@
 package com.xiaohuashifu.tm.controller.v1.api;
 
+import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.tm.aspect.annotation.ErrorHandler;
 import com.xiaohuashifu.tm.auth.TokenAuth;
 import com.xiaohuashifu.tm.constant.TokenType;
@@ -24,7 +25,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -129,14 +129,16 @@ public class UserController {
     @TokenAuth(tokenType = {TokenType.USER, TokenType.ADMIN})
     @ErrorHandler
     public Object get(UserQuery query) {
-        Result<List<UserDO>> result = userService.listUsers(query);
+        Result<PageInfo<UserDO>> result = userService.listUsers(query);
         if (!result.isSuccess()) {
             return result;
         }
 
-        return result.getData().stream()
+        PageInfo<UserVO> pageInfo = mapper.map(result.getData(), PageInfo.class);
+        pageInfo.setList(result.getData().getList().stream()
                 .map(userDO -> mapper.map(userDO, UserVO.class))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
+        return pageInfo;
     }
 
     /**

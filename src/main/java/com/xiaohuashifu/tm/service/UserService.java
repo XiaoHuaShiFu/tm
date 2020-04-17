@@ -1,5 +1,6 @@
 package com.xiaohuashifu.tm.service;
 
+import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.tm.pojo.do0.UserDO;
 import com.xiaohuashifu.tm.pojo.query.UserQuery;
 import com.xiaohuashifu.tm.result.Result;
@@ -26,7 +27,7 @@ public interface UserService {
 
     Result<UserDO> getUser(Integer id);
 
-    Result<List<UserDO>> listUsers(UserQuery query);
+    Result<PageInfo<UserDO>> listUsers(UserQuery query);
 
     Result<UserDO> updateUser(UserDO userDO);
 
