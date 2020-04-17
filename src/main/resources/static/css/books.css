@@ -6,7 +6,7 @@
 	box-shadow: 0 2px 12px 0 rgba(0,0,0,0.1);
 }
 
-.func-bar #add-btn{
+.func-bar #add-btn, #upd-btn{
 	display: inline-block;
 	padding: 3px;
 	color: #fff;
@@ -16,7 +16,7 @@
 	
 }
 
-.func-bar #add-btn:active{
+.func-bar #add-btn:active, #upd-btn:active{
 	background-color: rgb(24, 128, 255);
 }
 
@@ -26,7 +26,7 @@
 	max-width: 90%;
 	margin-left: 5%;
 }
-.table-wrapper .del-btn{
+.table-wrapper .upd-btn, .del-btn{
 	color: #0181ff;
 	cursor: pointer;
 }

@@ -51,7 +51,7 @@ public class BookController {
 	
 	@ResponseStatus(HttpStatus.OK)
 	@RequestMapping(method = RequestMethod.PUT)
-	public Boolean updateBook(BookDO book) {
+	public Boolean updateBook(@RequestPart("bookInfo") BookDO book) {
 		Result<?> result = bookService.updateBook(book);
 		return result.isSuccess();
 	}

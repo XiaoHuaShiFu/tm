@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import com.xiaohuashifu.tm.pojo.do0.BookDO;
+import com.xiaohuashifu.tm.pojo.do0.BookLogDO;
 
 @Mapper
 public interface BookMapper {
@@ -15,4 +16,8 @@ public interface BookMapper {
 	String getCoverUrlById(Integer id);
 	BookDO getBookById(Integer id);
 	List<BookDO> listBooks();
+	
+	void insertBookLog(@Param("bookLog") BookLogDO bookLog);
+	void updateBookLog(@Param("bookLog") BookLogDO bookLog);
+	void getBookLogByUserId(@Param("id") Integer id);
 }

@@ -31,4 +31,21 @@
   	select * from book
   </select>
   
+	<!--  借书相关  -->
+	<insert id="insertBookLog" parameterType="com.xiaohuashifu.tm.pojo.do0.BookLogDO">
+		insert into book (user_id, book_id, borrow_time, expiration_time, return_time, state)
+		values
+		(#{bookLog.userId}, #{bookLog.bookId}, #{bookLog.borrowTime},
+		#{bookLog.expirationTime}, #{bookLog.returnTime}, #{bookLog.state});
+	</insert>
+	
+	<update id="updateBookLog" parameterType="com.xiaohuashifu.tm.pojo.do0.BookLogDO">
+		update book_log set borrow_time = #{bookLog.borrowTime}, expiration_time=#{bookLog.expirationTime},
+		return_time = #{bookLog.returnTime}, state = #{bookLog.state}
+		where user_id = #{bookLog.userId} and book_id = #{bookLog.bookId};	
+	</update>
+	
+	<select id="getBookLogByUserId" parameterType="integer">
+		select * from book_log where user_id = #{id};
+	</select>
 </mapper>

@@ -113,7 +113,9 @@
         <div class="container-fluid px-xl-5">
         	<section>
         		<div class="func-bar table-wrapper">
-        			<span id="add-btn" onselectstart="return false;">添加书籍</span>
+        			<div style="padding: 0 20px;">
+       					<span id="add-btn" onselectstart="return false;">添加书籍</span>
+       				</div>
         		</div>
         	</section>
         	
@@ -148,7 +150,10 @@
 					        </td>
 					        <td th:text="${book.state}">空</td>
 					        <td th:text="${book.available}? yes : no">yes</td>
-					        <td><span class="del-btn" th:del="${book.id}" onclick="deleteBooks(this);">删除</span></td>
+					        <td>
+					        	<span class="upd-btn" th:upd="${book.id}" onclick="updateBooks(this);">修改</span>
+					        	<span class="del-btn" th:del="${book.id}" onclick="deleteBooks(this);">删除</span>
+					        </td>
 						</tr>
                       </tbody>
                     </table>
@@ -174,22 +179,22 @@
       </div>
     </div>
     
-    <!-- 遮罩层 -->
-    <div class="mask">
+    <!-- 添加书籍遮罩层 -->
+    <div id="add-mask" class="mask">
     	<div>
     		<form method="post" enctype="multipart/form-data">
     			<div>
-    				书籍编号<input id="numbering" type="text">
+    				书籍编号<input id="add-numbering" type="text">
     			</div>
     			<div>
-    				书名<input id="name" type="text">
+    				书名<input id="add-name" type="text">
     			</div>
     			<div>
-    				封面图片<input id="cover" type="file" accept=".jpg,.jpeg,.png">
+    				封面图片<input id="add-cover" type="file" accept=".jpg,.jpeg,.png">
     			</div>
     			<div>
     				状态
-	    			<select id="state">
+	    			<select id="add-state">
 						<option value="IDLE">空闲</option>
 						<option value="BOOKED">被预定</option>
 						<option value="BORROWED">借出</option>
@@ -197,13 +202,52 @@
 				</div>
 				<div>
 					是否上架
-					<select id="available">
+					<select id="add-available">
 						<option value="1">是</option>
 						<option value="0">否</option>
 					</select>
 				</div>
 				<div>
     				<input id="add-submit" type="button" value="提交">
+    			</div>
+    		</form>
+	    	<i class="iconfont icon-delete"></i>
+    	</div>
+    </div>
+    
+    <!-- 修改书籍遮罩层 -->
+    <div id="upd-mask" class="mask">
+    	<div>
+    		<form method="post" enctype="multipart/form-data">
+    			<div>id : 
+    				<span id="upd-id"></span>
+    			</div>
+    			<div>
+    				书籍编号<input id="upd-numbering" type="text">
+    			</div>
+    			<div>
+    				书名<input id="upd-name" type="text">
+    			</div>
+    			<div>
+    				封面图片<input id="upd-cover" type="file" accept=".jpg,.jpeg,.png">
+    			</div>
+    			<div>
+    				状态
+	    			<select id="upd-state">
+						<option value="IDLE">空闲</option>
+						<option value="BOOKED">被预定</option>
+						<option value="BORROWED">借出</option>
+					</select>
+				</div>
+				<div>
+					是否上架
+					<select id="upd-available">
+						<option value="1">是</option>
+						<option value="0">否</option>
+					</select>
+				</div>
+				<div>
+    				<input id="upd-submit" type="button" value="提交">
     			</div>
     		</form>
 	    	<i class="iconfont icon-delete"></i>
@@ -221,24 +265,24 @@
     <script type="text/javascript" th:inline="javascript">
 		setPagination($(".pgn-container")[0], [[${total}]], [[${pageSize}]], [[${pageIndex}]]);
 		$("#add-btn").click(function(){  //点击添加书籍
-			$(".mask").attr("style", "display:block;");
+			$("#add-mask").attr("style", "display:block;");
 		});
 		
-		$(".icon-delete").click(function(){  //关闭添加书籍窗口
+		$(".icon-delete").click(function(){  //关闭窗口
 			$(".mask").attr("style", "display:none");
 		});
 		
 		$("#add-submit").click(function(){  //点击提交
 			var book = {
-				numbering : $("#numbering").val(),
-				name : $("#name").val(),
-				state : $("#state").val(),
-				available : $("#available").val()
+				numbering : $("#add-numbering").val(),
+				name : $("#add-name").val(),
+				state : $("#add-state").val(),
+				available : $("#add-available").val()
 			};
 			
 			var formData = new FormData();
 			formData.append("bookInfo", new Blob([JSON.stringify(book)], {type: "application/json"}));
-			formData.append("cover", document.getElementById("cover").files[0]);
+			formData.append("cover", document.getElementById("add-cover").files[0]);
 			$.ajax({
 				url:"/v1/books",
 				contentType:false,
@@ -248,13 +292,62 @@
 				success:function(data){
 					if (data == true){
 						alert("添加成功");
-						$(".mask").attr("style", "display:none");
+						$("#add-mask").attr("style", "display:none");
 					}else {
 						alert("添加失败");
 					}
 				}
 			});	
 		})
+		
+		$("#upd-submit").click(function(){  //点击提交
+			var book = {
+				id : $("#upd-id").text(),
+				numbering : $("#upd-numbering").val(),
+				name : $("#upd-name").val(),
+				state : $("#upd-state").val(),
+				available : $("#upd-available").val()
+			};
+			
+			var formData = new FormData();
+			formData.append("bookInfo", new Blob([JSON.stringify(book)], {type: "application/json"}));
+			formData.append("cover", document.getElementById("upd-cover").files[0]);
+			$.ajax({
+				url:"/v1/books",
+				contentType:false,
+				processData:false,
+				data:formData,
+				method:"PUT",
+				success:function(data){
+					if (data == true){
+						alert("修改成功");
+						$("#upd-mask").attr("style", "display:none");
+					}else {
+						alert("修改失败");
+					}
+				}
+			});	
+		})
+		
+		function updateBooks(ele){  //弹出更新书籍的窗口
+			var updId = $(ele).attr("upd");
+			var parent = $(ele).parent().parent();
+			$("#upd-id").text(updId);
+			$("#upd-numbering").attr("value", parent.children()[1].innerText);
+			$("#upd-name").attr("value", parent.children()[2].innerText);
+			var state = parent.children()[4].innerText;
+			switch(state){
+				case "IDLE" : $($("#upd-state").children()[0]).attr("selected","selected");break;
+				case "BOOKED" : $($("#upd-state").children()[1]).attr("selected","selected");break;
+				case "BORROWED" : $($("#upd-state").children()[2]).attr("selected","selected");break;
+			}
+			var available = parent.children()[5].innerText;
+			switch(available){
+				case "yes" : $($("#upd-available").children()[0]).attr("selected","selected");break;
+				case "no" : $($("#upd-available").children()[1]).attr("selected","selected");break;
+			}
+			$("#upd-mask").attr("style", "display:block;");
+		}
 		
 		function deleteBooks(ele){
 			var delId = $(ele).attr("del");

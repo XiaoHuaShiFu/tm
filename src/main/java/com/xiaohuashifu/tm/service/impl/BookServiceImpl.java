@@ -14,6 +14,7 @@ import com.xiaohuashifu.tm.aspect.annotation.AdminLog;
 import com.xiaohuashifu.tm.constant.AdminLogType;
 import com.xiaohuashifu.tm.dao.BookMapper;
 import com.xiaohuashifu.tm.pojo.do0.BookDO;
+import com.xiaohuashifu.tm.pojo.do0.BookLogDO;
 import com.xiaohuashifu.tm.pojo.query.BookQuery;
 import com.xiaohuashifu.tm.service.BookService;
 import com.xiaohuashifu.tm.service.FileService;
@@ -34,7 +35,7 @@ public class BookServiceImpl implements BookService {
 	}
 
 	@Override
-	@AdminLog(value = "添加书籍", type = AdminLogType.INSERT)
+//	@AdminLog(value = "添加书籍", type = AdminLogType.INSERT)
 	public Result<BookDO> saveBook(BookDO book, MultipartFile cover) {
 		if (cover != null) {
 			String coverUrl = fileService.saveAndGetUrl(cover, BookConstant.PREFIX_COVER_FILE_DIRECTORY);
@@ -45,7 +46,7 @@ public class BookServiceImpl implements BookService {
 	}
 	
 	@Override
-	@AdminLog(value = "删除书籍", type = AdminLogType.DELETE)
+//	@AdminLog(value = "删除书籍", type = AdminLogType.DELETE)
 	public Result<Integer> deleteBook(Integer id) {
 		String coverUrl = bookMapper.getCoverUrlById(id);
 		if (coverUrl != null) {
@@ -56,7 +57,7 @@ public class BookServiceImpl implements BookService {
 	}
 	
 	@Override
-	@AdminLog(value = "更新书籍", type = AdminLogType.UPDATE)
+//	@AdminLog(value = "更新书籍", type = AdminLogType.UPDATE)
 	public Result<Map<String, BookDO>> updateBook(BookDO book) {
 		Result<BookDO> result = getBookById(book.getId());
 		if (!result.isSuccess()) {
@@ -97,6 +98,12 @@ public class BookServiceImpl implements BookService {
 		PageHelper.startPage(bookQuery);
 		PageInfo<BookDO> books = new PageInfo<BookDO>((Page<BookDO>) bookMapper.listBooks());
 		return Result.success(books);
+	}
+
+	@Override
+	public Result borrowBook(BookLogDO bookLog) {
+		bookMapper.insertBookLog(bookLog);
+		return Result.success();
 	}
 	
 }
