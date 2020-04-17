@@ -1,5 +1,6 @@
 package com.xiaohuashifu.tm.service.impl;
 
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.tm.dao.UserMapper;
@@ -141,7 +142,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Result<PageInfo<UserDO>> listUsers(UserQuery query) {
         PageHelper.startPage(query.getPageNum(), query.getPageSize());
-        List<UserDO> userDOList = userMapper.listUsers(query);
+        Page<UserDO> userDOList = (Page<UserDO>) userMapper.listUsers(query);
         PageInfo<UserDO> pageInfo = new PageInfo<>(userDOList);
         if (userDOList.size() < 1) {
             Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "Not found.");

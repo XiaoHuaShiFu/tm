@@ -31,13 +31,6 @@
 	cursor: pointer;
 }
 
-.pgn-container{
-	width: 85%;
-	display: inline-block;
-	margin-top: 12px;
-	margin-left: 5%;
-}
-
 /*mask*/
 .mask>div>form{
 	margin: 20px 0;

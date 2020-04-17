@@ -15,23 +15,29 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.tm.aspect.annotation.AdminLog;
 import com.xiaohuashifu.tm.aspect.annotation.TokenAuth;
 import com.xiaohuashifu.tm.constant.AdminLogType;
 import com.xiaohuashifu.tm.constant.TokenType;
 import com.xiaohuashifu.tm.pojo.do0.BookDO;
+import com.xiaohuashifu.tm.pojo.do0.UserDO;
+import com.xiaohuashifu.tm.pojo.query.UserQuery;
 import com.xiaohuashifu.tm.result.Result;
 import com.xiaohuashifu.tm.service.AdminService;
+import com.xiaohuashifu.tm.service.UserService;
 
 @Controller
 @RequestMapping("v1/admin")
 public class AdminController {
 	
 	private final AdminService adminService;
+	private final UserService userService;
 	
 	@Autowired
-	public AdminController(AdminService adminService) {
+	public AdminController(AdminService adminService, UserService userService) {
 		this.adminService = adminService;
+		this.userService = userService;
 	}
 	
 	@RequestMapping(value = "login", method = RequestMethod.GET)
@@ -88,9 +94,21 @@ public class AdminController {
 		return model;
 	}
 	
-	@RequestMapping(value = "people", method = RequestMethod.GET)
-	public ModelAndView peoplePage() {
-		ModelAndView model = new ModelAndView("admin/people");
+	@RequestMapping(value = "members/{pageNum}", method = RequestMethod.GET)
+	public ModelAndView returnMembers(@PathVariable("pageNum") Integer pageNum) {
+		ModelAndView model = new ModelAndView("admin/members");
+		UserQuery userQuery = new UserQuery(pageNum);
+		Result<PageInfo<UserDO>> result = userService.listUsers(userQuery);
+		if (result.isSuccess()) {
+			PageInfo<UserDO> usersInfo = result.getData();
+			List<UserDO> users = usersInfo.getList();
+			model.addObject("users", users);
+			model.addObject("total", usersInfo.getTotal());
+			model.addObject("pageSize", userQuery.getPageSize());
+			model.addObject("pageIndex", pageNum);
+		}else {
+			model.addObject("error", "error");
+		}
 		return model;
 	}
 	

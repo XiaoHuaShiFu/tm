@@ -56,6 +56,10 @@ public class UserQuery {
     public UserQuery() {
     }
 
+    public UserQuery(Integer pageNum) {
+    	this.pageNum = pageNum;
+    }
+    
     public UserQuery(Integer pageNum, Integer pageSize, Integer id, List<Integer> idList, String jobNumber,
                      String nickName, String fullName, Gender gender, String phone, String email, Department department,
                      Boolean available) {

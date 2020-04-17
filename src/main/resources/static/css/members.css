@@ -1,0 +1,16 @@
+/* table */
+.table-wrapper {
+	flex: 0 0 100%;
+	max-width: 100%;
+}
+
+.table-wrapper img {
+	width: 20px;
+	height: 20px;
+	cursor: pointer;
+}
+
+.table-wrapper .kill-btn{
+	color: #0181ff;
+	cursor: pointer;
+}
