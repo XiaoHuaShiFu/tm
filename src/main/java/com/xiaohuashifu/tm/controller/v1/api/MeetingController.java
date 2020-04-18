@@ -3,6 +3,7 @@ package com.xiaohuashifu.tm.controller.v1.api;
 import com.xiaohuashifu.tm.aspect.annotation.ErrorHandler;
 import com.xiaohuashifu.tm.aspect.annotation.TokenAuth;
 import com.xiaohuashifu.tm.constant.TokenType;
+import com.xiaohuashifu.tm.manager.MeetingManager;
 import com.xiaohuashifu.tm.pojo.ao.MeetingQrcodeAO;
 import com.xiaohuashifu.tm.pojo.ao.TokenAO;
 import com.xiaohuashifu.tm.pojo.group.GroupPost;
@@ -38,11 +39,14 @@ import java.util.stream.Collectors;
 public class MeetingController {
 	private final MeetingService meetingService;
 
+	private final MeetingManager meetingManager;
+
 	private final Mapper mapper;
 
 	@Autowired
-	public MeetingController(MeetingService meetingService, Mapper mapper) {
+	public MeetingController(MeetingService meetingService, MeetingManager meetingManager, Mapper mapper) {
 		this.meetingService = meetingService;
+		this.meetingManager = meetingManager;
 		this.mapper = mapper;
 	}
 
@@ -97,11 +101,10 @@ public class MeetingController {
 		return !result.isSuccess() ? result : mapper.map(result.getData(), MeetingVO.class);
 	}
 
-	// TODO: 2020/4/2 这里可以让manager来做
 	/**
 	 * 查询Meeting
 	 * @param query 查询参数
-	 * @return PageInfo<MeetingDO>
+	 * @return PageInfo<MeetingVO>
 	 *
 	 * @success:
 	 * HttpStatus.OK
@@ -111,13 +114,10 @@ public class MeetingController {
 	@TokenAuth(tokenType = {TokenType.USER, TokenType.ADMIN})
 	@ErrorHandler
 	public Object get(MeetingQuery query) {
-		Result<PageInfo> result = meetingService.listMeetings(query);
+		Result<PageInfo<MeetingVO>> result = meetingManager.listMeetings(query);
 		if (!result.isSuccess()) {
 			return result;
 		}
-		result.getData().setList((List) result.getData().getList().stream()
-				.map(meetingDO -> mapper.map(meetingDO, MeetingVO.class))
-				.collect(Collectors.toList()));
 		return result.getData();
 	}
 

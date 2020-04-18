@@ -48,9 +48,9 @@ public class MeetingServiceImpl implements MeetingService {
 	 * @return PageInfo<MeetingDO>
 	 */
 	@Override
-	public Result<PageInfo> listMeetings(MeetingQuery meetingQuery) {
+	public Result<PageInfo<MeetingDO>> listMeetings(MeetingQuery meetingQuery) {
 		PageHelper.startPage(meetingQuery);
-		PageInfo meetings = new PageInfo<>(meetingMapper.listMeetings(meetingQuery));
+		PageInfo<MeetingDO> meetings = new PageInfo<>(meetingMapper.listMeetings(meetingQuery));
 		return Result.success(meetings);
 	}
 

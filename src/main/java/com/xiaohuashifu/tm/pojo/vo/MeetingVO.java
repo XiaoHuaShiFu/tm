@@ -23,12 +23,13 @@ public class MeetingVO {
 
 	private MeetingState state;
 
+	private UserVO user;
 
 	public MeetingVO() {
 	}
 
 	public MeetingVO(Integer id, Integer userId, String name, Date startTime, Date endTime, String place,
-					 String department, String content, MeetingState state) {
+					 String department, String content, MeetingState state, UserVO user) {
 		this.id = id;
 		this.userId = userId;
 		this.name = name;
@@ -38,6 +39,7 @@ public class MeetingVO {
 		this.department = department;
 		this.content = content;
 		this.state = state;
+		this.user = user;
 	}
 
 	public Integer getId() {
@@ -112,6 +114,14 @@ public class MeetingVO {
 		this.state = state;
 	}
 
+	public UserVO getUser() {
+		return user;
+	}
+
+	public void setUser(UserVO user) {
+		this.user = user;
+	}
+
 	@Override
 	public String toString() {
 		return "MeetingVO{" +
@@ -124,6 +134,7 @@ public class MeetingVO {
 				", department='" + department + '\'' +
 				", content='" + content + '\'' +
 				", state=" + state +
+				", user=" + user +
 				'}';
 	}
 }
