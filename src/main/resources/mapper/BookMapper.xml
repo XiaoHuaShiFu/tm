@@ -27,6 +27,10 @@
   	select * from book where id = #{id};
   </select>
   
+  <select id="getBooksByName" parameterType="string" resultType="com.xiaohuashifu.tm.pojo.do0.BookDO">
+  	select * from book where name like CONCAT('%', #{name}, '%')
+  </select>
+  
   <select id="listBooks" resultType="com.xiaohuashifu.tm.pojo.do0.BookDO">
   	select * from book
   </select>

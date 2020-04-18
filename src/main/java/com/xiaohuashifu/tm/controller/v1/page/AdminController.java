@@ -22,9 +22,11 @@ import com.xiaohuashifu.tm.constant.AdminLogType;
 import com.xiaohuashifu.tm.constant.TokenType;
 import com.xiaohuashifu.tm.pojo.do0.BookDO;
 import com.xiaohuashifu.tm.pojo.do0.UserDO;
+import com.xiaohuashifu.tm.pojo.query.BookQuery;
 import com.xiaohuashifu.tm.pojo.query.UserQuery;
 import com.xiaohuashifu.tm.result.Result;
 import com.xiaohuashifu.tm.service.AdminService;
+import com.xiaohuashifu.tm.service.BookService;
 import com.xiaohuashifu.tm.service.UserService;
 
 @Controller
@@ -33,11 +35,13 @@ public class AdminController {
 	
 	private final AdminService adminService;
 	private final UserService userService;
+	private final BookService bookService;
 	
 	@Autowired
-	public AdminController(AdminService adminService, UserService userService) {
+	public AdminController(AdminService adminService, UserService userService, BookService bookService) {
 		this.adminService = adminService;
 		this.userService = userService;
+		this.bookService = bookService;
 	}
 	
 	@RequestMapping(value = "login", method = RequestMethod.GET)
@@ -72,24 +76,48 @@ public class AdminController {
 		return "error";
 	}
 	
-	@RequestMapping(value = "books/{pageNum}", method = RequestMethod.GET)
-	public void receiveBookReq(HttpServletRequest request, HttpServletResponse response, @PathVariable("pageNum") Integer pageNum) {
-		try {
-			request.getRequestDispatcher("/v1/books/" + pageNum).forward(request, response);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+//	@RequestMapping(value = "books/{pageNum}", method = RequestMethod.GET)
+//	public void receiveBookReq(HttpServletRequest request, HttpServletResponse response, @PathVariable("pageNum") Integer pageNum) {
+//		try {
+//			request.getRequestDispatcher("/v1/books/" + pageNum).forward(request, response);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//	}
 	
-	@RequestMapping(value = "books", method = RequestMethod.GET)
-	public ModelAndView returnBooks(HttpServletRequest request, HttpServletResponse response) {
+//	@RequestMapping(value = "books", method = RequestMethod.GET)
+//	public ModelAndView returnBooks(HttpServletRequest request, HttpServletResponse response) {
+//		ModelAndView model = new ModelAndView("admin/books");
+//		if (response.getStatus() != HttpStatus.NOT_FOUND.value()) {
+//			List<BookDO> books = (List<BookDO>) request.getAttribute("books");
+//			model.addObject(books);
+//			model.addObject("total", request.getAttribute("total"));
+//			model.addObject("pageSize", request.getAttribute("pageSize"));
+//			model.addObject("pageIndex", request.getAttribute("pageNum"));
+//		}
+//		return model;
+//	}
+	
+	@RequestMapping(value = "books/{pageNum}", method = RequestMethod.GET)
+	public ModelAndView getBooksByName(@PathVariable("pageNum") Integer pageNum,
+			@RequestParam(value = "name", required = false) String name) {
 		ModelAndView model = new ModelAndView("admin/books");
-		if (response.getStatus() != HttpStatus.NOT_FOUND.value()) {
-			List<BookDO> books = (List<BookDO>) request.getAttribute("books");
-			model.addObject(books);
-			model.addObject("total", request.getAttribute("total"));
-			model.addObject("pageSize", request.getAttribute("pageSize"));
-			model.addObject("pageIndex", request.getAttribute("pageNum"));
+		BookQuery bookQuery = new BookQuery(pageNum);
+		Result<PageInfo<BookDO>> result = null;
+		if(name == null) {
+			result = bookService.listBooks(bookQuery);
+		}else {
+			result = bookService.getBooksByName(name, bookQuery);			
+		}
+		if (result.isSuccess()) {
+			PageInfo<BookDO> booksInfo = result.getData();
+			List<BookDO> books = booksInfo.getList();
+			model.addObject("books", books);
+			model.addObject("total", booksInfo.getTotal());
+			model.addObject("pageSize", bookQuery.getPageSize());
+			model.addObject("pageIndex", pageNum);
+		}else {
+			model.addObject("error", "error");
 		}
 		return model;
 	}

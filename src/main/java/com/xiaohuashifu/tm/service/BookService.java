@@ -16,6 +16,7 @@ public interface BookService {
 	Result<Map<String, BookDO>> updateBook(BookDO book);
 	Result<Integer> updateCover(Integer id, MultipartFile cover);
 	Result<BookDO> getBookById(Integer id);
+	Result<PageInfo<BookDO>> getBooksByName(String name, BookQuery bookQuery);
 	Result<PageInfo<BookDO>> listBooks(BookQuery bookQuery);
 	
 	Result borrowBook(BookLogDO bookLog);

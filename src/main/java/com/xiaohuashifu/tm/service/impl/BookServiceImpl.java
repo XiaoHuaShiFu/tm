@@ -93,6 +93,14 @@ public class BookServiceImpl implements BookService {
 	}
 	
 	@Override
+	public Result<PageInfo<BookDO>> getBooksByName(String name, BookQuery bookQuery) {
+		//设置分页规则
+		PageHelper.startPage(bookQuery);
+		PageInfo<BookDO> books = new PageInfo<BookDO>((Page<BookDO>) bookMapper.getBooksByName(name));
+		return Result.success(books);
+	}
+	
+	@Override
 	public Result<PageInfo<BookDO>> listBooks(BookQuery bookQuery) {
 		//设置分页规则
 		PageHelper.startPage(bookQuery);

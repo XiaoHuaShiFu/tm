@@ -13,7 +13,11 @@
 	background-color: rgb(64, 158, 255);
 	border-radius: 3px;
 	cursor: pointer;
-	
+}
+
+.func-bar form{
+	display: inline;
+	float: right;
 }
 
 .func-bar #add-btn:active, #upd-btn:active{
