@@ -152,7 +152,7 @@
 					        <td th:text="${user.point}">空</td>
 					        <td th:text="${user.available}? 正常 : 封停">正常</td>
 					        <td>
-					        	<span class="kill-btn">封号</span>
+					        	<span class="fbd-btn" th:fbd="${user.id}" th:text="${user.available}? 封号 : 解封" onclick="forbid(this);">封号</span>
 					        </td>
 						</tr>
                       </tbody>
@@ -189,6 +189,37 @@
     <script th:src="@{/js/pagination.js}"></script>
     <script type="text/javascript" th:inline="javascript">
    		setPagination($(".pgn-container")[0], [[${total}]], [[${pageSize}]], [[${pageIndex}]]);
+   		
+   		function forbid(ele){
+   			var fbdId = $(ele).attr("fbd");
+   			var available;
+   			if (ele.innerText == "封号"){
+   				available = false;
+   			}else {
+   				available = true;
+   			}
+   			$.ajax({
+   				url:"/v1/users/available",
+   				method:"PUT",
+   				data:{
+   					id:fbdId,
+   					available:available
+   				},
+   				success:function(data){
+   					if (data == true){
+   						if (!available){
+   							$(ele).text("解封");
+   							$(ele).parent().prev().text("封停");
+   						}else {
+   							$(ele).text("封号");
+   							$(ele).parent().prev().text("正常");
+   						}
+   					}else{
+   						alert("操作失败");
+   					}
+   				}
+   			});
+   		}
     </script>
   </body>
 </html>

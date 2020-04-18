@@ -209,4 +209,25 @@ public class UserController {
         return result.isSuccess() ? mapper.map(result.getData(), UserVO.class) : result;
     }
 
+    /**
+     * 管理员封号和解封成员
+     * 
+     * @param id 成员id
+     */
+    @RequestMapping(value = "/available", method = RequestMethod.PUT)
+    @ResponseStatus(value = HttpStatus.OK)
+//    @TokenAuth(tokenType = TokenType.ADMIN)
+    public Object putAvailable(@RequestParam("id") Integer id, @RequestParam("available") Boolean available) {
+    	Result<UserDO> result = userService.getUser(id);
+    	if (!result.isSuccess()) {
+    		return false;
+    	}
+    	UserDO user = result.getData();
+    	user.setAvailable(available);
+    	Result<UserDO> udResult = userService.updateUser(user);
+    	if (!udResult.isSuccess()) {
+    		return false;
+    	}
+    	return true;
+    }
 }
