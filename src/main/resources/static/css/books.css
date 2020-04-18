@@ -5,8 +5,7 @@
 	background-color: #fff;
 	box-shadow: 0 2px 12px 0 rgba(0,0,0,0.1);
 }
-
-.func-bar #add-btn, #upd-btn{
+.func-bar #add-btn{
 	display: inline-block;
 	padding: 3px;
 	color: #fff;
@@ -14,14 +13,12 @@
 	border-radius: 3px;
 	cursor: pointer;
 }
-
+.func-bar #add-btn:active{
+	background-color: rgb(24, 128, 255);
+}
 .func-bar form{
 	display: inline;
 	float: right;
-}
-
-.func-bar #add-btn:active, #upd-btn:active{
-	background-color: rgb(24, 128, 255);
 }
 
 /* table */

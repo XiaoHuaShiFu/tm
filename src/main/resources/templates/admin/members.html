@@ -111,6 +111,33 @@
           <!-- 主体表格 -->
           <section class="py-5">
             <div class="row">
+            	<section style="width: 100%">
+	        		<div class="func-bar clearfix">
+	        			<div style="padding: 0 20px;">
+	        				<form method="get">
+	       						<input name="jobNumber" type="text" placeholder="输入工号">
+	       						<input type="submit" value="查询">
+	       					</form>
+	        				<form action="1" method="get">
+		       					<select name="department">
+		       						<option value="ALL">所有</option>
+		       						<option value="UNKNOWN">未知</option>
+		       						<option value="ZZB">制造部</option>
+		       						<option value="XSB">销售部</option>
+		       						<option value="RSB">人事部</option>
+		       						<option value="YFB">研发部</option>
+		       						<option value="CWB">财务部</option>
+		       						<option value="CGB">采购部</option>
+		       						<option value="PZB">品质部</option>
+		       						<option value="GZB">管制部</option>
+		       						<option value="KFB">客服部</option>
+		       					</select>
+		       					<input type="submit" value="查询">
+	       					</form>
+	       				</div>
+	        		</div>
+	        	</section>
+            
               <div class="col-lg-6 mb-4 table-wrapper">
                 <div class="card">
                   <div class="card-header">

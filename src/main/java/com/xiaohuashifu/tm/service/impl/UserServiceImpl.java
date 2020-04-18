@@ -3,6 +3,7 @@ package com.xiaohuashifu.tm.service.impl;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.xiaohuashifu.tm.constant.Department;
 import com.xiaohuashifu.tm.dao.UserMapper;
 import com.xiaohuashifu.tm.manager.WeChatMpManager;
 import com.xiaohuashifu.tm.manager.constant.WeChatMp;
@@ -86,6 +87,21 @@ public class UserServiceImpl implements UserService {
         return Result.success(userDO);
     }
 
+    /**
+     * 获取对应部门的user
+     */
+    @Override
+    public Result<PageInfo<UserDO>> getUserByDepartment(Department department, UserQuery userQuery) {
+    	PageHelper.startPage(userQuery);
+    	Page<UserDO> userDOList = (Page<UserDO>) userMapper.getUsersByDepartment(department);
+    	PageInfo<UserDO> pageInfo = new PageInfo<>(userDOList);
+    	if (userDOList.size() < 1) {
+            Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "Not found.");
+        }
+
+        return Result.success(pageInfo);
+    }
+    
     /**
      * 保存User
      * @param code String

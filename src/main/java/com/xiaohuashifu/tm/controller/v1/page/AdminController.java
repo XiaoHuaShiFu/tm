@@ -1,5 +1,6 @@
 package com.xiaohuashifu.tm.controller.v1.page;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,6 +20,7 @@ import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.tm.aspect.annotation.AdminLog;
 import com.xiaohuashifu.tm.aspect.annotation.TokenAuth;
 import com.xiaohuashifu.tm.constant.AdminLogType;
+import com.xiaohuashifu.tm.constant.Department;
 import com.xiaohuashifu.tm.constant.TokenType;
 import com.xiaohuashifu.tm.pojo.do0.BookDO;
 import com.xiaohuashifu.tm.pojo.do0.UserDO;
@@ -32,23 +34,23 @@ import com.xiaohuashifu.tm.service.UserService;
 @Controller
 @RequestMapping("v1/admin")
 public class AdminController {
-	
+
 	private final AdminService adminService;
 	private final UserService userService;
 	private final BookService bookService;
-	
+
 	@Autowired
 	public AdminController(AdminService adminService, UserService userService, BookService bookService) {
 		this.adminService = adminService;
 		this.userService = userService;
 		this.bookService = bookService;
 	}
-	
+
 	@RequestMapping(value = "login", method = RequestMethod.GET)
 	public String login() {
 		return "admin/login";
 	}
-	
+
 	@RequestMapping(value = "index", method = RequestMethod.GET)
 //	@TokenAuth(tokenType = {TokenType.ADMIN})
 //	@AdminLog(value = "登录", type = AdminLogType.LOGIN)
@@ -59,13 +61,13 @@ public class AdminController {
 		Result<String> result = adminService.getAnnouncement();
 		if (result.isSuccess()) {
 			model.addObject("announcement", result.getData());
-		}else {
-			model.setViewName("admin/error");	
+		} else {
+			model.setViewName("admin/error");
 			model.addObject("error_msg", "服务器获取公告时发生错误");
 		}
 		return model;
 	}
-	
+
 	@ResponseBody
 	@RequestMapping(value = "announcement", method = RequestMethod.PUT)
 	public String updateAnnouncement(@RequestParam("announcement") String announcement) {
@@ -75,7 +77,7 @@ public class AdminController {
 		}
 		return "error";
 	}
-	
+
 //	@RequestMapping(value = "books/{pageNum}", method = RequestMethod.GET)
 //	public void receiveBookReq(HttpServletRequest request, HttpServletResponse response, @PathVariable("pageNum") Integer pageNum) {
 //		try {
@@ -84,7 +86,7 @@ public class AdminController {
 //			e.printStackTrace();
 //		}
 //	}
-	
+
 //	@RequestMapping(value = "books", method = RequestMethod.GET)
 //	public ModelAndView returnBooks(HttpServletRequest request, HttpServletResponse response) {
 //		ModelAndView model = new ModelAndView("admin/books");
@@ -97,17 +99,17 @@ public class AdminController {
 //		}
 //		return model;
 //	}
-	
+
 	@RequestMapping(value = "books/{pageNum}", method = RequestMethod.GET)
 	public ModelAndView getBooksByName(@PathVariable("pageNum") Integer pageNum,
 			@RequestParam(value = "name", required = false) String name) {
 		ModelAndView model = new ModelAndView("admin/books");
 		BookQuery bookQuery = new BookQuery(pageNum);
 		Result<PageInfo<BookDO>> result = null;
-		if(name == null) {
+		if (name == null) {
 			result = bookService.listBooks(bookQuery);
-		}else {
-			result = bookService.getBooksByName(name, bookQuery);			
+		} else {
+			result = bookService.getBooksByName(name.trim(), bookQuery);
 		}
 		if (result.isSuccess()) {
 			PageInfo<BookDO> booksInfo = result.getData();
@@ -116,28 +118,44 @@ public class AdminController {
 			model.addObject("total", booksInfo.getTotal());
 			model.addObject("pageSize", bookQuery.getPageSize());
 			model.addObject("pageIndex", pageNum);
-		}else {
+		} else {
 			model.addObject("error", "error");
 		}
 		return model;
 	}
-	
+
 	@RequestMapping(value = "members/{pageNum}", method = RequestMethod.GET)
-	public ModelAndView returnMembers(@PathVariable("pageNum") Integer pageNum) {
+	public ModelAndView returnMembers(@PathVariable("pageNum") Integer pageNum,
+			@RequestParam(value = "jobNumber", required = false) String jobNumber,
+			@RequestParam(value = "department", required = false) Department department) {
 		ModelAndView model = new ModelAndView("admin/members");
 		UserQuery userQuery = new UserQuery(pageNum);
-		Result<PageInfo<UserDO>> result = userService.listUsers(userQuery);
+		Result<?> result = null;
+		if (jobNumber != null) {
+			result = userService.getUserByJobNumber(jobNumber.trim());
+		} else if (department != null) {
+			result = userService.getUserByDepartment(department, userQuery);
+		} else {
+			result = userService.listUsers(userQuery);
+		}
 		if (result.isSuccess()) {
-			PageInfo<UserDO> usersInfo = result.getData();
-			List<UserDO> users = usersInfo.getList();
+			Object data = result.getData();
+			List<UserDO> users = null;
+			if(data instanceof UserDO) {  //根据工号得到的结果
+				users = new ArrayList<>();
+				users.add((UserDO) data);
+			}else {
+				PageInfo<UserDO> usersInfo = (PageInfo<UserDO>) result.getData();
+				users = usersInfo.getList();
+				model.addObject("total", usersInfo.getTotal());
+				model.addObject("pageSize", userQuery.getPageSize());
+				model.addObject("pageIndex", pageNum);
+			}
 			model.addObject("users", users);
-			model.addObject("total", usersInfo.getTotal());
-			model.addObject("pageSize", userQuery.getPageSize());
-			model.addObject("pageIndex", pageNum);
-		}else {
+		} else {
 			model.addObject("error", "error");
 		}
 		return model;
 	}
-	
+
 }

@@ -112,6 +112,10 @@
         from user
         where openid = #{openid, jdbcType=CHAR}
     </select>
+    
+    <select id="getUsersByDepartment" parameterType="com.xiaohuashifu.tm.constant.Department" resultType="com.xiaohuashifu.tm.pojo.do0.UserDO">
+    	select * from user where department = #{department}
+    </select>
 
     <select id="getCountByOpenid" parameterType="string" resultType="int">
         select

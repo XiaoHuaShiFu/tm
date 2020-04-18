@@ -1,12 +1,11 @@
 package com.xiaohuashifu.tm.service;
 
 import com.github.pagehelper.PageInfo;
+import com.xiaohuashifu.tm.constant.Department;
 import com.xiaohuashifu.tm.pojo.do0.UserDO;
 import com.xiaohuashifu.tm.pojo.query.UserQuery;
 import com.xiaohuashifu.tm.result.Result;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 /**
  * 描述: 用户Service
@@ -22,6 +21,8 @@ public interface UserService {
     Result<UserDO> getUserByCode(String code);
 
     Result<UserDO> getUserByJobNumber(String jobNumber);
+    
+    Result<PageInfo<UserDO>> getUserByDepartment(Department department, UserQuery userQuery);
 
     Result<UserDO> saveUser(UserDO userDO, String code);
 

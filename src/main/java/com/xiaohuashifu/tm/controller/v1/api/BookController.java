@@ -2,9 +2,6 @@ package com.xiaohuashifu.tm.controller.v1.api;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -65,6 +62,19 @@ public class BookController {
 	
 	@ResponseStatus(HttpStatus.OK)
 	@RequestMapping(value = "{pageNum}", method = RequestMethod.GET)
+	public Object getBooks(@PathVariable("pageNum") Integer pageNum) {
+		BookQuery bookQuery = new BookQuery(pageNum);
+		Result<PageInfo<BookDO>> result = bookService.listBooks(bookQuery);
+		if (!result.isSuccess()) {
+			return result.getMessage();
+		}
+		PageInfo<BookDO> booksInfo = result.getData();
+		List<BookDO> books = booksInfo.getList();
+		return books;
+	}
+	
+	/*@ResponseStatus(HttpStatus.OK)
+	@RequestMapping(value = "{pageNum}", method = RequestMethod.GET)
 	public void getBooks(HttpServletRequest request, HttpServletResponse response, @PathVariable("pageNum") Integer pageNum) {
 		BookQuery bookQuery = new BookQuery(pageNum);
 		Result<PageInfo<BookDO>> result = bookService.listBooks(bookQuery);
@@ -98,6 +108,6 @@ public class BookController {
 		}else {
 			response.setStatus(HttpStatus.NOT_FOUND.value());
 		}
-	}
+	}*/
 	
 }

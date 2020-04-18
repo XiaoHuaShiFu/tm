@@ -19,5 +19,5 @@ public interface BookService {
 	Result<PageInfo<BookDO>> getBooksByName(String name, BookQuery bookQuery);
 	Result<PageInfo<BookDO>> listBooks(BookQuery bookQuery);
 	
-	Result borrowBook(BookLogDO bookLog);
+	Result<BookLogDO> borrowBook(BookLogDO bookLog);
 }
