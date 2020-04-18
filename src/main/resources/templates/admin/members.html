@@ -85,7 +85,7 @@
               <li class="sidebar-list-item"><a href="/v1/admin/index" class="sidebar-link text-muted"><i class="o-home-1 mr-3 text-gray"></i><span>Home</span></a></li>
               <li class="sidebar-list-item"><a href="1" class="sidebar-link text-muted active"><i class="o-sales-up-1 mr-3 text-gray"></i><span>成员管理</span></a></li>
               <li class="sidebar-list-item"><a href="/v1/admin/books/1" class="sidebar-link text-muted"><i class="o-table-content-1 mr-3 text-gray"></i><span>图书管理</span></a></li>
-              <li class="sidebar-list-item"><a href="forms.html" class="sidebar-link text-muted"><i class="o-survey-1 mr-3 text-gray"></i><span>Forms</span></a></li>
+              <li class="sidebar-list-item"><a href="/v1/admin/meetings/1" class="sidebar-link text-muted"><i class="o-survey-1 mr-3 text-gray"></i><span>会议管理</span></a></li>
           <li class="sidebar-list-item"><a href="#" data-toggle="collapse" data-target="#pages" aria-expanded="false" aria-controls="pages" class="sidebar-link text-muted"><i class="o-wireframe-1 mr-3 text-gray"></i><span>Pages</span></a>
             <div id="pages" class="collapse">
               <ul class="sidebar-menu list-unstyled border-left border-primary border-thick">
@@ -108,10 +108,7 @@
       </div>
       <div class="page-holder w-100 d-flex flex-wrap">
         <div class="container-fluid px-xl-5">
-          <!-- 主体表格 -->
-          <section class="py-5">
-            <div class="row">
-            	<section style="width: 100%">
+        	<section class="func-bar-wrapper">
 	        		<div class="func-bar clearfix">
 	        			<div style="padding: 0 20px;">
 	        				<form method="get">
@@ -120,7 +117,8 @@
 	       					</form>
 	        				<form action="1" method="get">
 		       					<select name="department">
-		       						<option value="ALL">所有</option>
+		       						<option value="">所有</option>
+		       						<option value="ALL">公司</option>
 		       						<option value="UNKNOWN">未知</option>
 		       						<option value="ZZB">制造部</option>
 		       						<option value="XSB">销售部</option>
@@ -137,7 +135,10 @@
 	       				</div>
 	        		</div>
 	        	</section>
-            
+        
+          <!-- 主体表格 -->
+          <section class="py-5">
+            <div class="row">
               <div class="col-lg-6 mb-4 table-wrapper">
                 <div class="card">
                   <div class="card-header">

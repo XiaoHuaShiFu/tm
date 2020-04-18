@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.tm.dao.MeetingMapper;
@@ -50,7 +51,7 @@ public class MeetingServiceImpl implements MeetingService {
 	@Override
 	public Result<PageInfo<MeetingDO>> listMeetings(MeetingQuery meetingQuery) {
 		PageHelper.startPage(meetingQuery);
-		PageInfo<MeetingDO> meetings = new PageInfo<>(meetingMapper.listMeetings(meetingQuery));
+		PageInfo<MeetingDO> meetings = new PageInfo<>((Page<MeetingDO>) meetingMapper.listMeetings(meetingQuery));
 		return Result.success(meetings);
 	}
 

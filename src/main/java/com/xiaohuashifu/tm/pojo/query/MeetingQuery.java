@@ -29,6 +29,10 @@ public class MeetingQuery {
     private MeetingState state;
 
     public MeetingQuery() {}
+    
+    public MeetingQuery(Integer pageNum) {
+    	this.pageNum = pageNum;
+    }
 
 	public MeetingQuery(Integer pageNum, Integer pageSize, Integer id, List<Integer> idList, String name, String place,
 						Department department, MeetingState state) {

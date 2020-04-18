@@ -4,10 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,10 +20,13 @@ import com.xiaohuashifu.tm.aspect.annotation.TokenAuth;
 import com.xiaohuashifu.tm.constant.AdminLogType;
 import com.xiaohuashifu.tm.constant.Department;
 import com.xiaohuashifu.tm.constant.TokenType;
+import com.xiaohuashifu.tm.manager.MeetingManager;
 import com.xiaohuashifu.tm.pojo.do0.BookDO;
 import com.xiaohuashifu.tm.pojo.do0.UserDO;
 import com.xiaohuashifu.tm.pojo.query.BookQuery;
+import com.xiaohuashifu.tm.pojo.query.MeetingQuery;
 import com.xiaohuashifu.tm.pojo.query.UserQuery;
+import com.xiaohuashifu.tm.pojo.vo.MeetingVO;
 import com.xiaohuashifu.tm.result.Result;
 import com.xiaohuashifu.tm.service.AdminService;
 import com.xiaohuashifu.tm.service.BookService;
@@ -38,12 +39,15 @@ public class AdminController {
 	private final AdminService adminService;
 	private final UserService userService;
 	private final BookService bookService;
-
+	private final MeetingManager meetingManager;
+	
 	@Autowired
-	public AdminController(AdminService adminService, UserService userService, BookService bookService) {
+	public AdminController(AdminService adminService, UserService userService,
+			BookService bookService, MeetingManager meetingManager) {
 		this.adminService = adminService;
 		this.userService = userService;
 		this.bookService = bookService;
+		this.meetingManager = meetingManager;
 	}
 
 	@RequestMapping(value = "login", method = RequestMethod.GET)
@@ -125,7 +129,7 @@ public class AdminController {
 	}
 
 	@RequestMapping(value = "members/{pageNum}", method = RequestMethod.GET)
-	public ModelAndView returnMembers(@PathVariable("pageNum") Integer pageNum,
+	public ModelAndView members(@PathVariable("pageNum") Integer pageNum,
 			@RequestParam(value = "jobNumber", required = false) String jobNumber,
 			@RequestParam(value = "department", required = false) Department department) {
 		ModelAndView model = new ModelAndView("admin/members");
@@ -153,6 +157,35 @@ public class AdminController {
 			}
 			model.addObject("users", users);
 		} else {
+			model.addObject("error", "error");
+		}
+		return model;
+	}
+	
+	@RequestMapping(value = "meetings/{pageNum}", method = RequestMethod.GET)
+	public ModelAndView meetings(@PathVariable("pageNum") Integer pageNum, 
+			@RequestParam(value = "name", required = false) String name) {
+		ModelAndView model = new ModelAndView("admin/meetings");
+		Result result = null;
+		MeetingQuery meetingQuery = new MeetingQuery(pageNum);
+		if (name != null) {
+//			result = meetingService.getMeeting(id);
+		}else {
+			result = meetingManager.listMeetings(meetingQuery);
+		}
+		if (result.isSuccess()) {
+			PageInfo<MeetingVO> meetingsInfo = (PageInfo<MeetingVO>) result.getData();
+			List<MeetingVO> meetings = meetingsInfo.getList();
+			for(MeetingVO meeting : meetings) {
+				if(meeting.getContent().length() > 5) {
+					meeting.setContent(new StringBuilder(meeting.getContent().substring(0, 5)).append("...").toString());
+				}
+			}
+			model.addObject("meetings", meetings);
+			model.addObject("total", meetingsInfo.getTotal());
+			model.addObject("pageSize", meetingQuery.getPageSize());
+			model.addObject("pageIndex", pageNum);
+		}else {
 			model.addObject("error", "error");
 		}
 		return model;

@@ -1,9 +1,4 @@
 /* func-bar*/
-.func-bar-wrapper{
-	width: 100%;
-	margin-top: 30px;
-}
-
 .func-bar{
 	flex: 0 0 100%;
 	max-width: 100%;
@@ -18,14 +13,11 @@
 	float: right;
 }
 
-.func-bar form:nth-child(2){
-	margin-right: 15px;
-}
-
 /* table */
 .table-wrapper {
 	flex: 0 0 100%;
 	max-width: 100%;
+	margin-top: 25px;
 }
 
 .table-wrapper img {
@@ -34,7 +26,7 @@
 	cursor: pointer;
 }
 
-.table-wrapper .fbd-btn{
+.table-wrapper .see-btn, .del-btn{
 	color: #0181ff;
 	cursor: pointer;
 }
