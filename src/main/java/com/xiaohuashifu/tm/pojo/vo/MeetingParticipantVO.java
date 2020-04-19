@@ -19,12 +19,14 @@ public class MeetingParticipantVO {
 
     private Date participationTime;
 
+    private MeetingVO meeting;
+    
     private UserVO user;
 
     public MeetingParticipantVO() {
     }
 
-    public MeetingParticipantVO(Integer id, Integer meetingId, Integer userId, Date participationTime, UserVO user) {
+    public MeetingParticipantVO(Integer id, Integer meetingId, Integer userId, Date participationTime, MeetingVO meeting, UserVO user) {
         this.id = id;
         this.meetingId = meetingId;
         this.userId = userId;
@@ -64,6 +66,14 @@ public class MeetingParticipantVO {
         this.participationTime = participationTime;
     }
 
+    public MeetingVO getMeeting() {
+    	return meeting;
+    }
+    
+    public void setMeeting(MeetingVO meeting) {
+    	this.meeting = meeting;
+    }
+    
     public UserVO getUser() {
         return user;
     }
@@ -79,6 +89,7 @@ public class MeetingParticipantVO {
                 ", meetingId=" + meetingId +
                 ", userId=" + userId +
                 ", participationTime=" + participationTime +
+                ", meeting=" + meeting +
                 ", user=" + user +
                 '}';
     }

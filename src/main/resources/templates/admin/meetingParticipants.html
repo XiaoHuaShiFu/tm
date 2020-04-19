@@ -85,7 +85,7 @@
               <li class="sidebar-list-item"><a href="/v1/admin/index" class="sidebar-link text-muted"><i class="o-home-1 mr-3 text-gray"></i><span>Home</span></a></li>
               <li class="sidebar-list-item"><a href="/v1/admin/members/1" class="sidebar-link text-muted"><i class="o-sales-up-1 mr-3 text-gray"></i><span>成员管理</span></a></li>
               <li class="sidebar-list-item"><a href="/v1/admin/books/1" class="sidebar-link text-muted"><i class="o-table-content-1 mr-3 text-gray"></i><span>图书管理</span></a></li>
-              <li class="sidebar-list-item"><a href="1" class="sidebar-link text-muted active"><i class="o-survey-1 mr-3 text-gray"></i><span>会议管理</span></a></li>
+              <li class="sidebar-list-item"><a href="/v1/admin/meetings/1" class="sidebar-link text-muted active"><i class="o-survey-1 mr-3 text-gray"></i><span>会议管理</span></a></li>
           <li class="sidebar-list-item"><a href="#" data-toggle="collapse" data-target="#pages" aria-expanded="false" aria-controls="pages" class="sidebar-link text-muted"><i class="o-wireframe-1 mr-3 text-gray"></i><span>Pages</span></a>
             <div id="pages" class="collapse">
               <ul class="sidebar-menu list-unstyled border-left border-primary border-thick">
@@ -108,45 +108,35 @@
       </div>
       <div class="page-holder w-100 d-flex flex-wrap">
         <div class="container-fluid px-xl-5">
+        	<section class="func-bar-wrapper">
+        		<div>
+        			<a class="back-btn" onclick="back();">&lt;返回</a>
+        		</div>
+        	</section>
           <!-- 主体表格 -->
           <section class="py-5">
             <div class="row">
               <div class="col-lg-6 mb-4 table-wrapper">
                 <div class="card">
                   <div class="card-header">
-                    <h6 class="text-uppercase mb-0">会议信息</h6>
+                    <h6 class="text-uppercase mb-0">会议参加信息</h6>
                   </div>
                   <div class="card-body">                           
                     <table class="table table-striped card-text">
                       <thead>
                         <tr>
                           <th>id</th>
-                          <th>上传者</th>
                           <th>会议名</th>
-                          <th>开始时间</th>
-                          <th>结束时间</th>
-                          <th>地点</th>
-                          <th>参与部门</th>
-                          <th>会议内容</th>
-                          <th>状态</th>
-                          <th>操作</th>
+                          <th>用户名</th>
+                          <th>加入时间</th>
                         </tr>
                       </thead>
                       <tbody>
-                        <tr th:each="meeting : ${meetings}">
-					        <td th:text="${meeting.id}">空</td>
-					        <td th:text="${meeting.user.fullName}">空</td>
-					        <td th:text="${meeting.name}">空</td>
-					        <td th:text="${#dates.format(meeting.startTime, 'yyyy-MM-dd HH:mm:ss')}">空</td>
-					        <td th:text="${#dates.format(meeting.startTime, 'yyyy-MM-dd HH:mm:ss')}">空</td>
-					        <td th:text="${meeting.place}">空</td>
-					        <td th:text="${meeting.department}">空</td>
-					        <td th:text="${meeting.content}">空</td>
-					        <td th:text="${meeting.state}">空</td>
-					        <td>
-					        	<span class="see-btn" th:see="${meeting.id}" onclick="showParticipants(this);">查看</span>
-					        	<span class="del-btn" th:del="${meeting.id}">删除</span>
-					        </td>
+                        <tr th:each="meetingParticipant : ${meetingParticipants}">
+					        <td th:text="${meetingParticipant.id}">空</td>
+					        <td th:text="${meetingParticipant.meeting.name}">空</td>
+					        <td th:text="${meetingParticipant.user.fullName}">空</td>
+					        <td th:text="${#dates.format(meetingParticipant.participationTime, 'yyyy-MM-dd HH:mm:ss')}">空</td>
 						</tr>
                       </tbody>
                     </table>
@@ -183,8 +173,8 @@
     <script type="text/javascript" th:inline="javascript">
    		setPagination($(".pgn-container")[0], [[${total}]], [[${pageSize}]], [[${pageIndex}]]);
    		
-   		function showParticipants(ele){
-    		window.location.href = window.location.href.substring(0, window.location.href.lastIndexOf('/') + 1) + $(ele).attr("see") + '/participants/1?prevPageNum=' + [[${pageIndex}]];
+   		function back(){
+   			window.location.href = window.location.href.substring(0, window.location.href.lastIndexOf("meetings")) + "meetings/" + [[${prevPageNum}]];
    		}
     </script>
   </body>

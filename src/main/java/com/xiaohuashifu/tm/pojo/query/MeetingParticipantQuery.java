@@ -26,6 +26,11 @@ public class MeetingParticipantQuery {
     public MeetingParticipantQuery() {
     }
 
+    public MeetingParticipantQuery(Integer pageNum, Integer meetingId) {
+        this.pageNum = pageNum;
+        this.meetingId = meetingId;
+    }
+    
     public MeetingParticipantQuery(Integer pageNum, Integer pageSize, Integer meetingId) {
         this.pageNum = pageNum;
         this.pageSize = pageSize;

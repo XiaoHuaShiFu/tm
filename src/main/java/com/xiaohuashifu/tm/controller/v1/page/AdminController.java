@@ -21,11 +21,14 @@ import com.xiaohuashifu.tm.constant.AdminLogType;
 import com.xiaohuashifu.tm.constant.Department;
 import com.xiaohuashifu.tm.constant.TokenType;
 import com.xiaohuashifu.tm.manager.MeetingManager;
+import com.xiaohuashifu.tm.manager.MeetingParticipantManager;
 import com.xiaohuashifu.tm.pojo.do0.BookDO;
 import com.xiaohuashifu.tm.pojo.do0.UserDO;
 import com.xiaohuashifu.tm.pojo.query.BookQuery;
+import com.xiaohuashifu.tm.pojo.query.MeetingParticipantQuery;
 import com.xiaohuashifu.tm.pojo.query.MeetingQuery;
 import com.xiaohuashifu.tm.pojo.query.UserQuery;
+import com.xiaohuashifu.tm.pojo.vo.MeetingParticipantVO;
 import com.xiaohuashifu.tm.pojo.vo.MeetingVO;
 import com.xiaohuashifu.tm.result.Result;
 import com.xiaohuashifu.tm.service.AdminService;
@@ -40,14 +43,17 @@ public class AdminController {
 	private final UserService userService;
 	private final BookService bookService;
 	private final MeetingManager meetingManager;
+	private final MeetingParticipantManager meetingParticipantManager;
 	
 	@Autowired
 	public AdminController(AdminService adminService, UserService userService,
-			BookService bookService, MeetingManager meetingManager) {
+			BookService bookService, MeetingManager meetingManager,
+			MeetingParticipantManager meetingParticipantManager) {
 		this.adminService = adminService;
 		this.userService = userService;
 		this.bookService = bookService;
 		this.meetingManager = meetingManager;
+		this.meetingParticipantManager = meetingParticipantManager;
 	}
 
 	@RequestMapping(value = "login", method = RequestMethod.GET)
@@ -176,8 +182,8 @@ public class AdminController {
 		if (result.isSuccess()) {
 			PageInfo<MeetingVO> meetingsInfo = (PageInfo<MeetingVO>) result.getData();
 			List<MeetingVO> meetings = meetingsInfo.getList();
-			for(MeetingVO meeting : meetings) {
-				if(meeting.getContent().length() > 5) {
+			for (MeetingVO meeting : meetings) {
+				if (meeting.getContent().length() > 5) {
 					meeting.setContent(new StringBuilder(meeting.getContent().substring(0, 5)).append("...").toString());
 				}
 			}
@@ -185,6 +191,26 @@ public class AdminController {
 			model.addObject("total", meetingsInfo.getTotal());
 			model.addObject("pageSize", meetingQuery.getPageSize());
 			model.addObject("pageIndex", pageNum);
+		}else {
+			model.addObject("error", "error");
+		}
+		return model;
+	}
+	
+	@RequestMapping(value = "meetings/{meetingId}/participants/{pageNum}", method = RequestMethod.GET)
+	public ModelAndView meetingParticipants(@PathVariable("meetingId") Integer meetingId, @PathVariable("pageNum") Integer pageNum,
+			@RequestParam("prevPageNum") Integer prevPageNum) {
+		ModelAndView model = new ModelAndView("admin/meetingParticipants");
+		MeetingParticipantQuery query = new MeetingParticipantQuery(pageNum, meetingId);
+		Result<PageInfo<MeetingParticipantVO>> result = meetingParticipantManager.listMeetingParticipants(query);
+		if (result.isSuccess()) {
+			PageInfo<MeetingParticipantVO> participantsInfo = result.getData();
+			List<MeetingParticipantVO> participants = participantsInfo.getList();
+			model.addObject("meetingParticipants", participants);
+			model.addObject("total", participantsInfo.getTotal());
+			model.addObject("pageSize", query.getPageSize());
+			model.addObject("pageIndex", pageNum);
+			model.addObject("prevPageNum", prevPageNum);
 		}else {
 			model.addObject("error", "error");
 		}

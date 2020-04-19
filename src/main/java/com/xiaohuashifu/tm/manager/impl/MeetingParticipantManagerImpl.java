@@ -2,13 +2,16 @@ package com.xiaohuashifu.tm.manager.impl;
 
 import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.tm.manager.MeetingParticipantManager;
+import com.xiaohuashifu.tm.pojo.do0.MeetingDO;
 import com.xiaohuashifu.tm.pojo.do0.MeetingParticipantDO;
 import com.xiaohuashifu.tm.pojo.do0.UserDO;
 import com.xiaohuashifu.tm.pojo.query.MeetingParticipantQuery;
 import com.xiaohuashifu.tm.pojo.vo.MeetingParticipantVO;
+import com.xiaohuashifu.tm.pojo.vo.MeetingVO;
 import com.xiaohuashifu.tm.pojo.vo.UserVO;
 import com.xiaohuashifu.tm.result.Result;
 import com.xiaohuashifu.tm.service.MeetingParticipantService;
+import com.xiaohuashifu.tm.service.MeetingService;
 import com.xiaohuashifu.tm.service.UserService;
 import org.dozer.Mapper;
 import org.slf4j.Logger;
@@ -32,13 +35,17 @@ public class MeetingParticipantManagerImpl implements MeetingParticipantManager 
 
     private final MeetingParticipantService meetingParticipantService;
 
+    private final MeetingService meetingService;
+    
     private final UserService userService;
 
     private final Mapper mapper;
 
     @Autowired
-    public MeetingParticipantManagerImpl(MeetingParticipantService meetingParticipantService, UserService userService, Mapper mapper) {
+    public MeetingParticipantManagerImpl(MeetingParticipantService meetingParticipantService,
+    		MeetingService meetingService, UserService userService, Mapper mapper) {
         this.meetingParticipantService = meetingParticipantService;
+        this.meetingService = meetingService;
         this.userService = userService;
         this.mapper = mapper;
     }
@@ -58,7 +65,10 @@ public class MeetingParticipantManagerImpl implements MeetingParticipantManager 
                 .map((meetingParticipantDO)->{
                     Result<UserDO> userDOResult = userService.getUser(meetingParticipantDO.getUserId());
                     UserVO userVO = mapper.map(userDOResult.getData(), UserVO.class);
+                    Result<MeetingDO> meetingDOResult = meetingService.getMeeting(meetingParticipantDO.getMeetingId());
+                    MeetingVO meetingVO = mapper.map(meetingDOResult.getData(), MeetingVO.class);
                     MeetingParticipantVO meetingParticipantVO = mapper.map(meetingParticipantDO, MeetingParticipantVO.class);
+                    meetingParticipantVO.setMeeting(meetingVO);
                     meetingParticipantVO.setUser(userVO);
                     return meetingParticipantVO;
                 }).collect(Collectors.toList());

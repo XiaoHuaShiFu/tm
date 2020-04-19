@@ -1,4 +1,13 @@
 /* func-bar*/
+.func-bar-wrapper{
+	margin-top: 25px;
+}
+
+.func-bar-wrapper .back-btn{
+	color: #0066dd !important;
+	cursor: pointer;
+}
+
 .func-bar{
 	flex: 0 0 100%;
 	max-width: 100%;
@@ -17,7 +26,6 @@
 .table-wrapper {
 	flex: 0 0 100%;
 	max-width: 100%;
-	margin-top: 25px;
 }
 
 .table-wrapper img {
