@@ -234,7 +234,7 @@
    					available:available
    				},
    				success:function(data){
-   					if (data == true){
+   					if (data != false){
    						if (!available){
    							$(ele).text("解封");
    							$(ele).parent().prev().text("封停");

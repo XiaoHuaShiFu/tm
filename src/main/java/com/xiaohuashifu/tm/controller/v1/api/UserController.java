@@ -1,8 +1,10 @@
 package com.xiaohuashifu.tm.controller.v1.api;
 
 import com.github.pagehelper.PageInfo;
+import com.xiaohuashifu.tm.aspect.annotation.AdminLog;
 import com.xiaohuashifu.tm.aspect.annotation.ErrorHandler;
 import com.xiaohuashifu.tm.auth.TokenAuth;
+import com.xiaohuashifu.tm.constant.AdminLogType;
 import com.xiaohuashifu.tm.constant.TokenType;
 import com.xiaohuashifu.tm.pojo.ao.TokenAO;
 import com.xiaohuashifu.tm.pojo.do0.UserDO;
@@ -25,6 +27,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -217,7 +225,25 @@ public class UserController {
     @RequestMapping(value = "/available", method = RequestMethod.PUT)
     @ResponseStatus(value = HttpStatus.OK)
 //    @TokenAuth(tokenType = TokenType.ADMIN)
+    @AdminLog(type = AdminLogType.UPDATE)
     public Object putAvailable(@RequestParam("id") Integer id, @RequestParam("available") Boolean available) {
+    	try {
+	    	Method method = UserController.class.getMethod("putAvailable", Integer.class, Boolean.class);
+	        AdminLog adminLog = method.getAnnotation(AdminLog.class);
+	        InvocationHandler invocationHandler = Proxy.getInvocationHandler(adminLog);
+	        Field value = invocationHandler.getClass().getDeclaredField("memberValues");
+	        value.setAccessible(true);
+	        Map<String, Object> memberValues = (Map<String, Object>) value.get(invocationHandler);
+	        String info = null;
+	        if (available) {
+	        	info = "解封";
+	        }else {
+	        	info = "封号";
+	        }
+	        memberValues.put("value", info);
+    	}catch (Exception e) {
+    		System.err.println(e);
+    	}
     	Result<UserDO> result = userService.getUser(id);
     	if (!result.isSuccess()) {
     		return false;
@@ -228,6 +254,11 @@ public class UserController {
     	if (!udResult.isSuccess()) {
     		return false;
     	}
-    	return true;
+    	user.setPassword(null);
+    	user.setOpenid(null);
+    	user.setAvatarUrl(null);
+    	user.setCreateTime(null);
+    	user.setUpdateTime(null);
+    	return Result.success(user);
     }
 }

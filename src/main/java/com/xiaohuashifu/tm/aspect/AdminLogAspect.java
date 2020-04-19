@@ -45,7 +45,8 @@ public class AdminLogAspect {
 	@Pointcut("@annotation(com.xiaohuashifu.tm.aspect.annotation.AdminLog) && @annotation(adminLog)")
 	public void loginPoint(AdminLog adminLog) {}
 	
-	@Pointcut("@annotation(com.xiaohuashifu.tm.aspect.annotation.AdminLog) && @annotation(adminLog) && within(com.xiaohuashifu.tm.service.impl.*)")
+	@Pointcut("@annotation(com.xiaohuashifu.tm.aspect.annotation.AdminLog) && @annotation(adminLog)"
+			+ "&& (within(com.xiaohuashifu.tm.service.impl.*) || within(com.xiaohuashifu.tm.controller.v1.api.*))")
 	public void servicePoint(AdminLog adminLog) {}
 	
 	@AfterReturning(value = "loginPoint(adminLog)", returning = "model")
@@ -74,7 +75,8 @@ public class AdminLogAspect {
 		}
 		Object data = result.getData();
 		AdminLogDO adminLogDO = new AdminLogDO();
-		adminLogDO.setAdminId(currentAdminId);
+//		adminLogDO.setAdminId(currentAdminId);
+		adminLogDO.setAdminId(1);
 		if (adminLog.type().equals(AdminLogType.INSERT)) {
 			adminLogDO.setContent(adminLog.value() + ", 添加的数据 : " + data.toString());
 		}else if (adminLog.type().equals(AdminLogType.UPDATE)) {
