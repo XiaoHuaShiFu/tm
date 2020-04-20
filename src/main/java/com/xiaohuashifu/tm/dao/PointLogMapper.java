@@ -9,7 +9,7 @@ import com.xiaohuashifu.tm.pojo.do0.PointLogDO;
 
 @Mapper
 public interface PointLogMapper {
-	void insertPointLog(@Param("pointLog") PointLogDO pointLog);
-	List<PointLogDO> getPointLogByUserId(Integer id);
-	List<PointLogDO> listPointLog();
+	int insertPointLog(@Param("pointLog") PointLogDO pointLog);
+	List<PointLogDO> getPointLogsByUserId(Integer id);
+	List<PointLogDO> listPointLogs();
 }

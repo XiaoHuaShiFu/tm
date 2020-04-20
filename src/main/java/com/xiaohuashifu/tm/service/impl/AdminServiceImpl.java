@@ -44,7 +44,10 @@ public class AdminServiceImpl implements AdminService {
 
 	@Override
 	public Result saveAdminLog(AdminLogDO adminLogDO) {
-		adminMapper.insertAdminLog(adminLogDO);
+		int count = adminMapper.insertAdminLog(adminLogDO);
+		if (count < 1) {
+			return Result.fail(ErrorCode.INTERNAL_ERROR, "Insert admin log failed.");
+		}
 		return Result.success();
 	}
 
@@ -60,7 +63,10 @@ public class AdminServiceImpl implements AdminService {
 		Map<String, String> map = new HashMap<String, String>();
 		String oldAnnocement = adminMapper.getAnnouncement();
 		map.put("oldValue", oldAnnocement);
-		adminMapper.updateAnnouncement(announcement);
+		int count = adminMapper.updateAnnouncement(announcement);
+		if (count < 1) {
+			return Result.fail(ErrorCode.INTERNAL_ERROR, "Update announcement failed.");
+		}
 		map.put("newValue", announcement);
 		return Result.success(map);
 	}

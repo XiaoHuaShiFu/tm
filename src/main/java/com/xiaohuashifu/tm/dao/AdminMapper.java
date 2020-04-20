@@ -9,7 +9,7 @@ import com.xiaohuashifu.tm.pojo.do0.AdminLogDO;
 @Mapper
 public interface AdminMapper {
 	AdminDO getAdminByJobNumber(@Param("jobNumber") String jobNumber);
-	void insertAdminLog(@Param("adminLog") AdminLogDO adminLogDO);
+	int insertAdminLog(@Param("adminLog") AdminLogDO adminLogDO);
 	String getAnnouncement();
-	void updateAnnouncement(@Param("announcement") String announcement);
+	int updateAnnouncement(@Param("announcement") String announcement);
 }

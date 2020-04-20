@@ -9,16 +9,16 @@ import com.xiaohuashifu.tm.pojo.do0.BookLogDO;
 
 @Mapper
 public interface BookMapper {
-	void insert(@Param("book") BookDO book);
-	void delete(Integer id);
-	void updateBook(@Param("book") BookDO book);
-	void updateCover(@Param("id") Integer id, @Param("cover_url") String coverUrl);
+	int insert(@Param("book") BookDO book);
+	int delete(Integer id);
+	int updateBook(@Param("book") BookDO book);
+	int updateCover(@Param("id") Integer id, @Param("cover_url") String coverUrl);
 	String getCoverUrlById(Integer id);
 	BookDO getBookById(Integer id);
 	List<BookDO> getBooksByName(String name);
 	List<BookDO> listBooks();
 	
-	void insertBookLog(@Param("bookLog") BookLogDO bookLog);
-	void updateBookLog(@Param("bookLog") BookLogDO bookLog);
-	void getBookLogByUserId(@Param("id") Integer id);
+	int insertBookLog(@Param("bookLog") BookLogDO bookLog);
+	int updateBookLog(@Param("bookLog") BookLogDO bookLog);
+	List<BookLogDO> getBookLogByUserId(@Param("id") Integer id);
 }

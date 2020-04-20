@@ -41,7 +41,10 @@ public class BookServiceImpl implements BookService {
 			String coverUrl = fileService.saveAndGetUrl(cover, BookConstant.PREFIX_COVER_FILE_DIRECTORY);
 			book.setCoverUrl(coverUrl);
 		}
-		bookMapper.insert(book);
+		int count = bookMapper.insert(book);
+		if (count < 1) {
+			return Result.fail(ErrorCode.INTERNAL_ERROR, "Insert book failed.");
+		}
 		return Result.success(book);
 	}
 	
@@ -52,7 +55,10 @@ public class BookServiceImpl implements BookService {
 		if (coverUrl != null) {
 			fileService.delete(coverUrl);
 		}
-		bookMapper.delete(id);
+		int count = bookMapper.delete(id);
+		if (count < 1) {
+			return Result.fail(ErrorCode.INTERNAL_ERROR, "Delete book failed.");
+		}
 		return Result.success(id);
 	}
 	
@@ -69,7 +75,10 @@ public class BookServiceImpl implements BookService {
 		if (book.getCoverUrl() == null || "".equals(book.getCoverUrl())) book.setCoverUrl(oldBook.getCoverUrl());
 		if (book.getState() == null) book.setState(oldBook.getState());
 		if (book.getAvailable() == null) book.setAvailable(oldBook.getAvailable());
-		bookMapper.updateBook(book);
+		int count = bookMapper.updateBook(book);
+		if (count < 1) {
+			return Result.fail(ErrorCode.INTERNAL_ERROR, "update book failed.");
+		}
 		Map<String, BookDO> map = new HashMap<String, BookDO>();
 		map.put("oldValue", oldBook);
 		map.put("newValue", book);
@@ -83,7 +92,10 @@ public class BookServiceImpl implements BookService {
 			fileService.delete(coverUrl);
 		}
 		coverUrl = fileService.saveAndGetUrl(cover, BookConstant.PREFIX_COVER_FILE_DIRECTORY);
-		bookMapper.updateCover(id, coverUrl);
+		int count = bookMapper.updateCover(id, coverUrl);
+		if (count < 1) {
+			return Result.fail(ErrorCode.INTERNAL_ERROR, "Update book coverurl failed.");
+		}
 		return Result.success(id);
 	}
 	
@@ -110,7 +122,10 @@ public class BookServiceImpl implements BookService {
 
 	@Override
 	public Result borrowBook(BookLogDO bookLog) {
-		bookMapper.insertBookLog(bookLog);
+		int count = bookMapper.insertBookLog(bookLog);
+		if (count < 1) {
+			return Result.fail(ErrorCode.INTERNAL_ERROR, "Insert book log failed.");
+		}
 		return Result.success();
 	}
 	
