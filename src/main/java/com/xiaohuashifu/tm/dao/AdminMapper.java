@@ -1,5 +1,7 @@
 package com.xiaohuashifu.tm.dao;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -8,8 +10,10 @@ import com.xiaohuashifu.tm.pojo.do0.AdminLogDO;
 
 @Mapper
 public interface AdminMapper {
-	AdminDO getAdminByJobNumber(@Param("jobNumber") String jobNumber);
+	AdminDO getAdminById(Integer id);
+	AdminDO getAdminByJobNumber(String jobNumber);
 	int insertAdminLog(@Param("adminLog") AdminLogDO adminLogDO);
+	List<AdminLogDO> listAdminLogs();
 	String getAnnouncement();
 	int updateAnnouncement(@Param("announcement") String announcement);
 }

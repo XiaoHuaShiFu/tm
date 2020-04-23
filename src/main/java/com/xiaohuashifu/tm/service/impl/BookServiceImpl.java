@@ -1,6 +1,7 @@
 package com.xiaohuashifu.tm.service.impl;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -105,19 +106,26 @@ public class BookServiceImpl implements BookService {
 	}
 	
 	@Override
-	public Result<PageInfo<BookDO>> getBooksByName(String name, BookQuery bookQuery) {
-		//设置分页规则
+	public Result<PageInfo<BookDO>> listBooksByName(String name, BookQuery bookQuery) {
 		PageHelper.startPage(bookQuery);
-		PageInfo<BookDO> books = new PageInfo<BookDO>((Page<BookDO>) bookMapper.getBooksByName(name));
-		return Result.success(books);
+		List<BookDO> books = bookMapper.getBooksByName(name);
+		if (books == null) {
+			return Result.fail(ErrorCode.INTERNAL_ERROR, "Get books failed.");
+		}
+		PageInfo<BookDO> booksInfo = new PageInfo<>((Page<BookDO>) books);
+		return Result.success(booksInfo);
 	}
 	
 	@Override
 	public Result<PageInfo<BookDO>> listBooks(BookQuery bookQuery) {
 		//设置分页规则
 		PageHelper.startPage(bookQuery);
-		PageInfo<BookDO> books = new PageInfo<BookDO>((Page<BookDO>) bookMapper.listBooks());
-		return Result.success(books);
+		List<BookDO> books = bookMapper.listBooks();
+		if (books == null) {
+			return Result.fail(ErrorCode.INTERNAL_ERROR, "Get books failed.");
+		}
+		PageInfo<BookDO> booksInfo = new PageInfo<>((Page<BookDO>) books);
+		return Result.success(booksInfo);
 	}
 
 	@Override

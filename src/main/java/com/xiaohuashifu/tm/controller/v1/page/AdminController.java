@@ -20,14 +20,17 @@ import com.xiaohuashifu.tm.aspect.annotation.TokenAuth;
 import com.xiaohuashifu.tm.constant.AdminLogType;
 import com.xiaohuashifu.tm.constant.Department;
 import com.xiaohuashifu.tm.constant.TokenType;
+import com.xiaohuashifu.tm.manager.AdminLogManager;
 import com.xiaohuashifu.tm.manager.MeetingManager;
 import com.xiaohuashifu.tm.manager.MeetingParticipantManager;
 import com.xiaohuashifu.tm.pojo.do0.BookDO;
 import com.xiaohuashifu.tm.pojo.do0.UserDO;
+import com.xiaohuashifu.tm.pojo.query.AdminLogQuery;
 import com.xiaohuashifu.tm.pojo.query.BookQuery;
 import com.xiaohuashifu.tm.pojo.query.MeetingParticipantQuery;
 import com.xiaohuashifu.tm.pojo.query.MeetingQuery;
 import com.xiaohuashifu.tm.pojo.query.UserQuery;
+import com.xiaohuashifu.tm.pojo.vo.AdminLogVO;
 import com.xiaohuashifu.tm.pojo.vo.MeetingParticipantVO;
 import com.xiaohuashifu.tm.pojo.vo.MeetingVO;
 import com.xiaohuashifu.tm.result.Result;
@@ -44,16 +47,18 @@ public class AdminController {
 	private final BookService bookService;
 	private final MeetingManager meetingManager;
 	private final MeetingParticipantManager meetingParticipantManager;
+	private final AdminLogManager adminLogManager;
 	
 	@Autowired
 	public AdminController(AdminService adminService, UserService userService,
-			BookService bookService, MeetingManager meetingManager,
-			MeetingParticipantManager meetingParticipantManager) {
+			BookService bookService, MeetingManager meetingManager,MeetingParticipantManager meetingParticipantManager,
+			AdminLogManager adminLogManager) {
 		this.adminService = adminService;
 		this.userService = userService;
 		this.bookService = bookService;
 		this.meetingManager = meetingManager;
 		this.meetingParticipantManager = meetingParticipantManager;
+		this.adminLogManager = adminLogManager;
 	}
 
 	@RequestMapping(value = "login", method = RequestMethod.GET)
@@ -119,7 +124,7 @@ public class AdminController {
 		if (name == null) {
 			result = bookService.listBooks(bookQuery);
 		} else {
-			result = bookService.getBooksByName(name.trim(), bookQuery);
+			result = bookService.listBooksByName(name.trim(), bookQuery);
 		}
 		if (result.isSuccess()) {
 			PageInfo<BookDO> booksInfo = result.getData();
@@ -212,6 +217,24 @@ public class AdminController {
 			model.addObject("pageIndex", pageNum);
 			model.addObject("prevPageNum", prevPageNum);
 		}else {
+			model.addObject("error", "error");
+		}
+		return model;
+	}
+	
+	@RequestMapping(value = "adminLogs/{pageNum}", method = RequestMethod.GET)
+	public ModelAndView adminLogs(@PathVariable("pageNum") Integer pageNum) {
+		ModelAndView model = new ModelAndView("admin/adminLogs");
+		AdminLogQuery adminLogQuery = new AdminLogQuery(pageNum);
+		Result<PageInfo<AdminLogVO>> result = adminLogManager.listAdminLogs(adminLogQuery);
+		if (result.isSuccess()) {
+			PageInfo<AdminLogVO> adminLogsInfo = result.getData();
+			List<AdminLogVO> adminLogs = adminLogsInfo.getList();
+			model.addObject("adminLogs", adminLogs);
+			model.addObject("total", adminLogsInfo.getTotal());
+			model.addObject("pageSize", adminLogQuery.getPageSize());
+			model.addObject("pageIndex", pageNum);
+		} else {
 			model.addObject("error", "error");
 		}
 		return model;

@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.xiaohuashifu.tm.dao.AdminMapper">
+    <select id="getAdminById" parameterType="integer" resultType="com.xiaohuashifu.tm.pojo.do0.AdminDO">
+        select * from admin where id = #{id};
+    </select>
+
 	<select id="getAdminByJobNumber" parameterType="string" resultType="com.xiaohuashifu.tm.pojo.do0.AdminDO">
 		select *
 		from admin
@@ -10,6 +14,10 @@
 	<insert id="insertAdminLog">
 		insert into admin_log (admin_id, content) values (#{adminLog.adminId}, #{adminLog.content});
 	</insert>
+	
+	<select id="listAdminLogs" resultType="com.xiaohuashifu.tm.pojo.do0.AdminLogDO">
+		select * from admin_log
+	</select>
 	
 	<select id="getAnnouncement" resultType="string">
 		select content from announcement limit 1;

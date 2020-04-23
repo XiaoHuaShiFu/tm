@@ -3,6 +3,7 @@ package com.xiaohuashifu.tm.service.impl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
@@ -14,6 +15,7 @@ import com.xiaohuashifu.tm.result.ErrorCode;
 import com.xiaohuashifu.tm.result.Result;
 import com.xiaohuashifu.tm.service.PointLogService;
 
+@Service("pointLogService")
 public class PointLogServiceImpl implements PointLogService {
 
 	private final PointLogMapper pointLogMapper;

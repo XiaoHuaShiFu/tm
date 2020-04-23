@@ -6,6 +6,7 @@ public class AdminLogDO {
 	private Integer id;
 	private Integer adminId;
 	private String content;
+	private Date operateTime;
 	private Date createTime;
 	private Date updateTime;
 	
@@ -40,6 +41,14 @@ public class AdminLogDO {
 		this.content = content;
 	}
 	
+	public Date getOperateTime() {
+		return operateTime;
+	}
+	
+	public void setOperateTime(Date operateTime) {
+		this.operateTime = operateTime;
+	}
+	
 	public Date getCreateTime() {
 		return createTime;
 	}
@@ -55,6 +64,5 @@ public class AdminLogDO {
 	public void setUpdateTime(Date updateTime) {
 		this.updateTime = updateTime;
 	}
-	
 	
 }

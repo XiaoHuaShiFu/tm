@@ -4,6 +4,10 @@
 	clear:both;
 }
 
+.center-align{
+	text-align: center;
+}
+
 /*弹出输入框*/
 .mask{
 	display: none;

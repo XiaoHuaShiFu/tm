@@ -2,7 +2,7 @@ package com.xiaohuashifu.tm.pojo.query;
 
 public class BookQuery {
 	private Integer pageNum = 1;
-    private Integer pageSize = 5;  //默认一页5条数据
+    private Integer pageSize = 10;  //默认一页10条数据
     
     public BookQuery() {}
     
