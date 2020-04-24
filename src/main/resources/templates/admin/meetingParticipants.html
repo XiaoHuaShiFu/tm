@@ -114,6 +114,35 @@
         			<a class="back-btn" onclick="back();">&lt;返回</a>
         		</div>
         	</section>
+        	<!-- 会议信息 -->
+        	<section class="info-wrapper">
+        	   <div class="row">
+        	       <div class="col-lg-6 mb-4 table-wrapper">
+        	           <div class="card">
+        	               <div class="card-header">
+		                       <h6 class="text-uppercase mb-0">会议信息</h6>
+		                   </div>
+		                   <div class="card-body">
+		                       <div>
+		                           <span style="margin-right: 20px;">
+		                               <span class="key-word">会议id:&nbsp;</span>
+		                               <span th:text="${meeting.id}"></span>
+		                           </span>
+		                           <span style="margin-right: 20px;">
+		                               <span class="key-word">会议名:&nbsp;</span>
+		                               <span th:text="${meeting.name}"></span>
+		                           </span>
+		                       </div>
+		                       <div>
+                                   <span class="key-word">会议内容:&nbsp;</span>
+                                   <span th:text="${meeting.content}"></span>
+		                       </div>
+		                   </div>
+        	           </div>
+        	       </div>
+        	   </div>
+        	</section>
+        	
           <!-- 主体表格 -->
           <section class="py-5">
             <div class="row">

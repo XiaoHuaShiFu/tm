@@ -15,7 +15,7 @@ public interface BookMapper {
 	int updateCover(@Param("id") Integer id, @Param("cover_url") String coverUrl);
 	String getCoverUrlById(Integer id);
 	BookDO getBookById(Integer id);
-	List<BookDO> getBooksByName(String name);
+	List<BookDO> listBooksByName(String name);
 	List<BookDO> listBooks();
 	
 	int insertBookLog(@Param("bookLog") BookLogDO bookLog);

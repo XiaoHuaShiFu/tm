@@ -106,9 +106,9 @@ public class BookServiceImpl implements BookService {
 	}
 	
 	@Override
-	public Result<PageInfo<BookDO>> listBooksByName(String name, BookQuery bookQuery) {
+	public Result<PageInfo<BookDO>> listBooksByName(BookQuery bookQuery) {
 		PageHelper.startPage(bookQuery);
-		List<BookDO> books = bookMapper.getBooksByName(name);
+		List<BookDO> books = bookMapper.listBooksByName(bookQuery.getName());
 		if (books == null) {
 			return Result.fail(ErrorCode.INTERNAL_ERROR, "Get books failed.");
 		}

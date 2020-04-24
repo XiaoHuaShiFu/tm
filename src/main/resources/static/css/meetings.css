@@ -22,6 +22,14 @@
 	float: right;
 }
 
+.info-wrapper{
+	padding-top: 10px;
+}
+
+.info-wrapper .key-word{
+    font-weight: bold;
+}
+
 /* table */
 .table-wrapper {
 	flex: 0 0 100%;

@@ -24,6 +24,7 @@ import com.xiaohuashifu.tm.manager.AdminLogManager;
 import com.xiaohuashifu.tm.manager.MeetingManager;
 import com.xiaohuashifu.tm.manager.MeetingParticipantManager;
 import com.xiaohuashifu.tm.pojo.do0.BookDO;
+import com.xiaohuashifu.tm.pojo.do0.MeetingDO;
 import com.xiaohuashifu.tm.pojo.do0.UserDO;
 import com.xiaohuashifu.tm.pojo.query.AdminLogQuery;
 import com.xiaohuashifu.tm.pojo.query.BookQuery;
@@ -36,6 +37,7 @@ import com.xiaohuashifu.tm.pojo.vo.MeetingVO;
 import com.xiaohuashifu.tm.result.Result;
 import com.xiaohuashifu.tm.service.AdminService;
 import com.xiaohuashifu.tm.service.BookService;
+import com.xiaohuashifu.tm.service.MeetingService;
 import com.xiaohuashifu.tm.service.UserService;
 
 @Controller
@@ -45,17 +47,20 @@ public class AdminController {
 	private final AdminService adminService;
 	private final UserService userService;
 	private final BookService bookService;
+	private final MeetingService meetingService;
 	private final MeetingManager meetingManager;
 	private final MeetingParticipantManager meetingParticipantManager;
 	private final AdminLogManager adminLogManager;
 	
 	@Autowired
 	public AdminController(AdminService adminService, UserService userService,
-			BookService bookService, MeetingManager meetingManager,MeetingParticipantManager meetingParticipantManager,
+			BookService bookService, MeetingService meetingService,
+			MeetingManager meetingManager,MeetingParticipantManager meetingParticipantManager,
 			AdminLogManager adminLogManager) {
 		this.adminService = adminService;
 		this.userService = userService;
 		this.bookService = bookService;
+		this.meetingService = meetingService;
 		this.meetingManager = meetingManager;
 		this.meetingParticipantManager = meetingParticipantManager;
 		this.adminLogManager = adminLogManager;
@@ -68,7 +73,7 @@ public class AdminController {
 
 	@RequestMapping(value = "index", method = RequestMethod.GET)
 //	@TokenAuth(tokenType = {TokenType.ADMIN})
-	@AdminLog(value = "登录", type = AdminLogType.LOGIN)
+//	@AdminLog(value = "登录", type = AdminLogType.LOGIN)
 	public ModelAndView index(HttpServletRequest request) {
 		ModelAndView model = new ModelAndView("admin/index");
 		model.addObject("token", request.getSession().getAttribute("token"));
@@ -124,7 +129,8 @@ public class AdminController {
 		if (name == null) {
 			result = bookService.listBooks(bookQuery);
 		} else {
-			result = bookService.listBooksByName(name.trim(), bookQuery);
+			bookQuery.setName(name.trim());
+			result = bookService.listBooksByName(bookQuery);
 		}
 		if (result.isSuccess()) {
 			PageInfo<BookDO> booksInfo = result.getData();
@@ -219,15 +225,17 @@ public class AdminController {
 			@RequestParam("prevPageNum") Integer prevPageNum) {
 		ModelAndView model = new ModelAndView("admin/meetingParticipants");
 		MeetingParticipantQuery query = new MeetingParticipantQuery(pageNum, meetingId);
-		Result<PageInfo<MeetingParticipantVO>> result = meetingParticipantManager.listMeetingParticipants(query);
-		if (result.isSuccess()) {
-			PageInfo<MeetingParticipantVO> participantsInfo = result.getData();
+		Result<PageInfo<MeetingParticipantVO>> participantResult = meetingParticipantManager.listMeetingParticipants(query);
+		Result<MeetingDO> meetingResult = meetingService.getMeeting(meetingId);
+		if (participantResult.isSuccess() && meetingResult.isSuccess()) {
+			PageInfo<MeetingParticipantVO> participantsInfo = participantResult.getData();
 			List<MeetingParticipantVO> participants = participantsInfo.getList();
 			model.addObject("meetingParticipants", participants);
 			model.addObject("total", participantsInfo.getTotal());
 			model.addObject("pageSize", query.getPageSize());
 			model.addObject("pageIndex", pageNum);
 			model.addObject("prevPageNum", prevPageNum);
+			model.addObject("meeting", meetingResult.getData());
 		}else {
 			model.addObject("error", "error");
 		}
