@@ -68,7 +68,7 @@ public class AdminController {
 
 	@RequestMapping(value = "index", method = RequestMethod.GET)
 //	@TokenAuth(tokenType = {TokenType.ADMIN})
-//	@AdminLog(value = "登录", type = AdminLogType.LOGIN)
+	@AdminLog(value = "登录", type = AdminLogType.LOGIN)
 	public ModelAndView index(HttpServletRequest request) {
 		ModelAndView model = new ModelAndView("admin/index");
 		model.addObject("token", request.getSession().getAttribute("token"));

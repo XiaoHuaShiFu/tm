@@ -83,7 +83,7 @@ public class AdminServiceImpl implements AdminService {
 	}
 
 	@Override
-	@AdminLog(value = "更新公告", type = AdminLogType.UPDATE)
+	@AdminLog(value = "'更新公告'", type = AdminLogType.UPDATE)
 	public Result<Map<String, String>> updateAnnouncement(String announcement) {
 		Map<String, String> map = new HashMap<String, String>();
 		String oldAnnocement = adminMapper.getAnnouncement();

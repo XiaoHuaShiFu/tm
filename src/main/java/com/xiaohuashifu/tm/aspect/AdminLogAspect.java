@@ -9,6 +9,8 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.expression.EvaluationContext;
+import org.springframework.expression.ExpressionParser;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -33,13 +35,18 @@ public class AdminLogAspect {
 	private Integer currentAdminId;
 	private final AdminService adminService;
 	private final TokenService tokenService;
+	private final ExpressionParser expressionParser;
+	private final EvaluationContext evaluationContext;
 	private static final Logger logger = LoggerFactory.getLogger(AdminLogAspect.class);
 	
 	@Autowired
-	public AdminLogAspect(AdminService adminService, TokenService tokenService) {
+	public AdminLogAspect(AdminService adminService, TokenService tokenService,
+			ExpressionParser expressionParser, EvaluationContext evaluationContext) {
 		this.currentAdminId = null;
 		this.adminService = adminService;
 		this.tokenService = tokenService;
+		this.expressionParser = expressionParser;
+		this.evaluationContext = evaluationContext;
 	}
 	
 	@Pointcut("@annotation(com.xiaohuashifu.tm.aspect.annotation.AdminLog) && @annotation(adminLog)")
@@ -74,21 +81,22 @@ public class AdminLogAspect {
 			return;
 		}
 		Object data = result.getData();
+		String logValue = expressionParser.parseExpression(adminLog.value()).getValue(evaluationContext, String.class);
 		AdminLogDO adminLogDO = new AdminLogDO();
 //		adminLogDO.setAdminId(currentAdminId);
 		adminLogDO.setAdminId(1);
 		if (adminLog.type().equals(AdminLogType.INSERT)) {
-			adminLogDO.setContent(adminLog.value() + ", 添加的数据 : " + data.toString());
+			adminLogDO.setContent(logValue + ", 添加的数据 : " + data.toString());
 		}else if (adminLog.type().equals(AdminLogType.UPDATE)) {
 			if (data instanceof HashMap) {
 				Map<String, Object> dataMap = (HashMap<String, Object>) data;
-				adminLogDO.setContent(adminLog.value() + "。更新前的数据 : " + dataMap.get("oldValue") 
+				adminLogDO.setContent(logValue + "。更新前的数据 : " + dataMap.get("oldValue") 
 					+ ";  更新后的数据 : " + dataMap.get("newValue"));
 			}else {
-				adminLogDO.setContent(adminLog.value() + ", 更新的数据 : " + data.toString());
+				adminLogDO.setContent(logValue + ", 更新的数据 : " + data.toString());
 			}
 		}else if (adminLog.type().equals(AdminLogType.DELETE)) {
-			adminLogDO.setContent(adminLog.value() + ", 删除的数据id是 : " + data.toString());
+			adminLogDO.setContent(logValue + ", 删除的数据id是 : " + data.toString());
 		}
 		adminService.saveAdminLog(adminLogDO);
 	}

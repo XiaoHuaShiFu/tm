@@ -20,6 +20,7 @@ import com.xiaohuashifu.tm.validator.annotation.WeChatMpCode;
 
 import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.expression.EvaluationContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -49,11 +50,14 @@ public class UserController {
 
     private final Mapper mapper;
 
+    private final EvaluationContext evaluationContext;
+    
     private final UserService userService;
 
     @Autowired
-    public UserController(Mapper mapper, UserService userService) {
+    public UserController(Mapper mapper, EvaluationContext evaluationContext, UserService userService) {
         this.mapper = mapper;
+        this.evaluationContext = evaluationContext;
         this.userService = userService;
     }
 
@@ -221,39 +225,24 @@ public class UserController {
      * 管理员封号和解封成员
      * 
      * @param id 成员id
+     * @param available 将要设置的user的available的值
      */
     @RequestMapping(value = "/available", method = RequestMethod.PUT)
     @ResponseStatus(value = HttpStatus.OK)
 //    @TokenAuth(tokenType = TokenType.ADMIN)
-    @AdminLog(type = AdminLogType.UPDATE)
+    @AdminLog(value = "#available ? '解封' : '封号'", type = AdminLogType.UPDATE)
     public Object putAvailable(@RequestParam("id") Integer id, @RequestParam("available") Boolean available) {
-    	try {
-	    	Method method = UserController.class.getMethod("putAvailable", Integer.class, Boolean.class);
-	        AdminLog adminLog = method.getAnnotation(AdminLog.class);
-	        InvocationHandler invocationHandler = Proxy.getInvocationHandler(adminLog);
-	        Field value = invocationHandler.getClass().getDeclaredField("memberValues");
-	        value.setAccessible(true);
-	        Map<String, Object> memberValues = (Map<String, Object>) value.get(invocationHandler);
-	        String info = null;
-	        if (available) {
-	        	info = "解封";
-	        }else {
-	        	info = "封号";
-	        }
-	        memberValues.put("value", info);
-    	}catch (Exception e) {
-    		System.err.println(e);
-    	}
     	Result<UserDO> result = userService.getUser(id);
     	if (!result.isSuccess()) {
-    		return false;
+    		return Result.fail(ErrorCode.INTERNAL_ERROR, "Get user failed");
     	}
     	UserDO user = result.getData();
     	user.setAvailable(available);
     	Result<UserDO> udResult = userService.updateUser(user);
     	if (!udResult.isSuccess()) {
-    		return false;
+    		return Result.fail(ErrorCode.INTERNAL_ERROR, "Update user failed");
     	}
+    	evaluationContext.setVariable("available", available);
     	user.setPassword(null);
     	user.setOpenid(null);
     	user.setAvatarUrl(null);

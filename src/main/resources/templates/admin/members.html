@@ -235,7 +235,7 @@
    					available:available
    				},
    				success:function(data){
-   					if (data != false){
+   					if (data.success == true){
    						if (!available){
    							$(ele).text("解封");
    							$(ele).parent().prev().text("封停");
@@ -244,7 +244,7 @@
    							$(ele).parent().prev().text("正常");
    						}
    					}else{
-   						alert("操作失败");
+   						alert("操作失败，" + data.message);
    					}
    				}
    			});

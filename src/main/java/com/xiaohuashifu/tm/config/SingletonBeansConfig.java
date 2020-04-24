@@ -7,6 +7,13 @@ import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.expression.EvaluationContext;
+import org.springframework.expression.Expression;
+import org.springframework.expression.ExpressionParser;
+import org.springframework.expression.ParseException;
+import org.springframework.expression.ParserContext;
+import org.springframework.expression.spel.standard.SpelExpressionParser;
+import org.springframework.expression.spel.support.SimpleEvaluationContext;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
@@ -73,6 +80,20 @@ public class SingletonBeansConfig {
     public Mapper mapper() {
         return DozerBeanMapperBuilder.buildDefault();
     }
-
+    
+    /**
+     * springEL表达式解析器配置
+     * @return ExpressionParser
+     */
+    @Bean
+    public ExpressionParser expressionParser() {
+    	return new SpelExpressionParser();
+    }
+    
+    @Bean
+    public EvaluationContext evaluationContext() {
+    	EvaluationContext context = SimpleEvaluationContext.forReadOnlyDataBinding().build();
+    	return context;
+    }
 
 }

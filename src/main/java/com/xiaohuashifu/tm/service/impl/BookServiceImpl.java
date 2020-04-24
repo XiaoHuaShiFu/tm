@@ -36,7 +36,7 @@ public class BookServiceImpl implements BookService {
 	}
 
 	@Override
-//	@AdminLog(value = "添加书籍", type = AdminLogType.INSERT)
+	@AdminLog(value = "'添加书籍'", type = AdminLogType.INSERT)
 	public Result<BookDO> saveBook(BookDO book, MultipartFile cover) {
 		if (cover != null) {
 			String coverUrl = fileService.saveAndGetUrl(cover, BookConstant.PREFIX_COVER_FILE_DIRECTORY);
@@ -50,7 +50,7 @@ public class BookServiceImpl implements BookService {
 	}
 	
 	@Override
-//	@AdminLog(value = "删除书籍", type = AdminLogType.DELETE)
+	@AdminLog(value = "'删除书籍'", type = AdminLogType.DELETE)
 	public Result<Integer> deleteBook(Integer id) {
 		String coverUrl = bookMapper.getCoverUrlById(id);
 		if (coverUrl != null) {
@@ -64,7 +64,7 @@ public class BookServiceImpl implements BookService {
 	}
 	
 	@Override
-//	@AdminLog(value = "更新书籍", type = AdminLogType.UPDATE)
+	@AdminLog(value = "'更新书籍'", type = AdminLogType.UPDATE)
 	public Result<Map<String, BookDO>> updateBook(BookDO book) {
 		Result<BookDO> result = getBookById(book.getId());
 		if (!result.isSuccess()) {
