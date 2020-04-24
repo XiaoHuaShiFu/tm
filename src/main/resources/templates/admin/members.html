@@ -116,20 +116,23 @@
 	       						<input name="jobNumber" type="text" placeholder="输入工号">
 	       						<input type="submit" value="查询">
 	       					</form>
-	        				<form action="1" method="get">
+	        				<form id="condition-form" action="1" method="get">
+	        				    <input id="sort" type="hidden" name="sort" value="false">
+	        				    <span id="sort-btn" onselectstart="return false;" th:class="${sort}? 'sort-btn-active':''">按积分降序</span>
+                                <span>选择部门</span>
 		       					<select name="department">
 		       						<option value="">所有</option>
-		       						<option value="ALL">公司</option>
-		       						<option value="UNKNOWN">未知</option>
-		       						<option value="ZZB">制造部</option>
-		       						<option value="XSB">销售部</option>
-		       						<option value="RSB">人事部</option>
-		       						<option value="YFB">研发部</option>
-		       						<option value="CWB">财务部</option>
-		       						<option value="CGB">采购部</option>
-		       						<option value="PZB">品质部</option>
-		       						<option value="GZB">管制部</option>
-		       						<option value="KFB">客服部</option>
+		       						<option value="ALL" th:selected="${#strings.equals(department, 'ALL')}">公司</option>
+		       						<option value="UNKNOWN" th:selected="${#strings.equals(department, 'UNKNOWN')}">未知</option>
+		       						<option value="ZZB" th:selected="${#strings.equals(department, 'ZZB')}">制造部</option>
+		       						<option value="XSB" th:selected="${#strings.equals(department, 'XSB')}">销售部</option>
+		       						<option value="RSB" th:selected="${#strings.equals(department, 'RSB')}">人事部</option>
+		       						<option value="YFB" th:selected="${#strings.equals(department, 'YFB')}">研发部</option>
+		       						<option value="CWB" th:selected="${#strings.equals(department, 'CWB')}">财务部</option>
+		       						<option value="CGB" th:selected="${#strings.equals(department, 'CGB')}">采购部</option>
+		       						<option value="PZB" th:selected="${#strings.equals(department, 'PZB')}">品质部</option>
+		       						<option value="GZB" th:selected="${#strings.equals(department, 'GZB')}">管制部</option>
+		       						<option value="KFB" th:selected="${#strings.equals(department, 'KFB')}">客服部</option>
 		       					</select>
 		       					<input type="submit" value="查询">
 	       					</form>
@@ -218,6 +221,17 @@
     <script th:src="@{/js/pagination.js}"></script>
     <script type="text/javascript" th:inline="javascript">
    		setPagination($(".pgn-container")[0], [[${total}]], [[${pageSize}]], [[${pageIndex}]]);
+   		
+   		$("#sort-btn").click(function(){
+   			if ($(this).attr("class") == undefined || $(this).attr("class") == null){ //选择按积分降序
+	   			$(this).attr("class", "sort-btn-active");
+	   		    $("#sort").attr("value", "true");
+   			}else {
+   				$(this).removeAttr("class");
+   				$("#sort").attr("value", "false");
+   			}
+   			$("#condition-form").submit();
+   		});
    		
    		function forbid(ele){
    			var fbdId = $(ele).attr("fbd");

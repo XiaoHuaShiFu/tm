@@ -22,6 +22,23 @@
 	margin-right: 15px;
 }
 
+.func-bar form #sort-btn{
+    display: inline-block;
+    padding: 3px;
+    margin-right: 20px;
+    color: #fff;
+    background-color: rgb(64, 158, 255);
+    border-radius: 3px;
+    cursor: pointer;
+}
+.func-bar form #sort-btn:active{
+    background-color: rgb(24, 128, 255);
+}
+
+.func-bar form .sort-btn-active{
+    background-color: rgb(24, 128, 255) !important;
+}
+
 /* table */
 .table-wrapper {
 	flex: 0 0 100%;

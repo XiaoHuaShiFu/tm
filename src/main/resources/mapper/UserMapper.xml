@@ -113,8 +113,12 @@
         where openid = #{openid, jdbcType=CHAR}
     </select>
     
-    <select id="getUsersByDepartment" parameterType="com.xiaohuashifu.tm.constant.Department" resultType="com.xiaohuashifu.tm.pojo.do0.UserDO">
+    <select id="listUsersByDepartment" parameterType="com.xiaohuashifu.tm.constant.Department" resultType="com.xiaohuashifu.tm.pojo.do0.UserDO">
     	select * from user where department = #{department}
+    </select>
+    
+    <select id="listUsersByDepartmentPointDesc" parameterType="com.xiaohuashifu.tm.constant.Department" resultType="com.xiaohuashifu.tm.pojo.do0.UserDO">
+        select * from user where department = #{department} order by point desc
     </select>
 
     <select id="getCountByOpenid" parameterType="string" resultType="int">
@@ -166,6 +170,50 @@
             </if>
         </where>
         order by update_time desc
+    </select>
+    
+    <select id="listUsersPointDesc" parameterType="com.xiaohuashifu.tm.pojo.query.UserQuery"
+            resultType="com.xiaohuashifu.tm.pojo.do0.UserDO">
+        select
+        <include refid="Base_Column_List"/>
+        from user
+        <where>
+            <if test="id != null">
+                and id = #{id, jdbcType=INTEGER}
+            </if>
+            <if test="idList != null">
+                id in (
+                    <foreach collection="idList"  item="item" index="index" separator=",">
+                        #{item}
+                    </foreach>
+                )
+            </if>
+            <if test="jobNumber != null">
+                and job_number like "%"#{jobNumber, jdbcType=CHAR}"%"
+            </if>
+            <if test="nickName != null">
+                and nick_name like "%"#{nickName, jdbcType=VARCHAR}"%"
+            </if>
+            <if test="fullName != null">
+                and full_name like "%"#{fullName, jdbcType=VARCHAR}"%"
+            </if>
+            <if test="gender != null">
+                and gender = #{gender, jdbcType=CHAR}
+            </if>
+            <if test="phone != null">
+                and phone like "%"#{phone, jdbcType=CHAR}"%"
+            </if>
+            <if test="email != null">
+                and email like "%"#{email, jdbcType=VARCHAR}"%"
+            </if>
+            <if test="department != null">
+                and department = #{department, jdbcType=CHAR}
+            </if>
+            <if test="available != null">
+                and available = #{available, jdbcType=BOOLEAN}
+            </if>
+        </where>
+        order by point desc
     </select>
 
     <update id="updateUser" parameterType="com.xiaohuashifu.tm.pojo.do0.UserDO">

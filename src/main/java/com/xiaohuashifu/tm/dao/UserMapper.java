@@ -44,7 +44,14 @@ public interface UserMapper {
      * @param department 部门
      * @return UserDOList
      */
-    List<UserDO> getUsersByDepartment(Department department);
+    List<UserDO> listUsersByDepartment(Department department);
+    
+    /**
+     * 按积分降序，获取对应部门的用户
+     * @param department 部门
+     * @returnUserDOList
+     */
+    List<UserDO> listUsersByDepartmentPointDesc(Department department);
     
     /**
      * 获取openid对应用户的数量，用于判断此openid的用户是否已经存在数据库力
@@ -60,6 +67,14 @@ public interface UserMapper {
      * @return UserDOList
      */
     List<UserDO> listUsers(UserQuery query);
+    
+    /**
+     * 获取按积分降序排列的用户列表
+     *
+     * @param query 查询参数
+     * @return UserDOList
+     */
+    List<UserDO> listUsersPointDesc(UserQuery query);
 
     /**
      * 更新用户信息

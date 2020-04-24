@@ -142,21 +142,31 @@ public class AdminController {
 	@RequestMapping(value = "members/{pageNum}", method = RequestMethod.GET)
 	public ModelAndView members(@PathVariable("pageNum") Integer pageNum,
 			@RequestParam(value = "jobNumber", required = false) String jobNumber,
-			@RequestParam(value = "department", required = false) Department department) {
+			@RequestParam(value = "department", required = false) Department department,
+			@RequestParam(value = "sort", required = false, defaultValue = "false") Boolean sort) {
 		ModelAndView model = new ModelAndView("admin/members");
 		UserQuery userQuery = new UserQuery(pageNum);
 		Result<?> result = null;
 		if (jobNumber != null) {
 			result = userService.getUserByJobNumber(jobNumber.trim());
 		} else if (department != null) {
-			result = userService.getUserByDepartment(department, userQuery);
+			userQuery.setDepartment(department);
+			if (sort == false) {
+				result = userService.listUsersByDepartment(userQuery);
+			}else {
+				result = userService.listUsersByDepartmentPointDesc(userQuery);
+			}
 		} else {
-			result = userService.listUsers(userQuery);
+			if (sort == false) {
+				result = userService.listUsers(userQuery);
+			}else {
+				result = userService.listUsersPointDesc(userQuery);
+			}
 		}
 		if (result.isSuccess()) {
 			Object data = result.getData();
 			List<UserDO> users = null;
-			if(data instanceof UserDO) {  //根据工号得到的结果
+			if (data instanceof UserDO) {  //根据工号得到的结果
 				users = new ArrayList<>();
 				users.add((UserDO) data);
 			}else {
@@ -165,6 +175,8 @@ public class AdminController {
 				model.addObject("total", usersInfo.getTotal());
 				model.addObject("pageSize", userQuery.getPageSize());
 				model.addObject("pageIndex", pageNum);
+				model.addObject("department", department);
+				model.addObject("sort", sort);
 			}
 			model.addObject("users", users);
 		} else {

@@ -22,13 +22,17 @@ public interface UserService {
 
     Result<UserDO> getUserByJobNumber(String jobNumber);
     
-    Result<PageInfo<UserDO>> getUserByDepartment(Department department, UserQuery userQuery);
+    Result<PageInfo<UserDO>> listUsersByDepartment(UserQuery userQuery);
+    
+    Result<PageInfo<UserDO>> listUsersByDepartmentPointDesc(UserQuery userQuery);
 
     Result<UserDO> saveUser(UserDO userDO, String code);
 
     Result<UserDO> getUser(Integer id);
 
     Result<PageInfo<UserDO>> listUsers(UserQuery query);
+    
+    Result<PageInfo<UserDO>> listUsersPointDesc(UserQuery query);
 
     Result<UserDO> updateUser(UserDO userDO);
 

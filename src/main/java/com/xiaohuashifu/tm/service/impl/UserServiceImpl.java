@@ -91,14 +91,27 @@ public class UserServiceImpl implements UserService {
      * 获取对应部门的user
      */
     @Override
-    public Result<PageInfo<UserDO>> getUserByDepartment(Department department, UserQuery userQuery) {
+    public Result<PageInfo<UserDO>> listUsersByDepartment(UserQuery userQuery) {
     	PageHelper.startPage(userQuery);
-    	Page<UserDO> userDOList = (Page<UserDO>) userMapper.getUsersByDepartment(department);
+    	Page<UserDO> userDOList = (Page<UserDO>) userMapper.listUsersByDepartment(userQuery.getDepartment());
     	PageInfo<UserDO> pageInfo = new PageInfo<>(userDOList);
     	if (userDOList.size() < 1) {
             Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "Not found.");
         }
-
+        return Result.success(pageInfo);
+    }
+    
+    /**
+     * 按积分降序，获取对应部门的user
+     */
+    @Override
+    public Result<PageInfo<UserDO>> listUsersByDepartmentPointDesc(UserQuery userQuery) {
+    	PageHelper.startPage(userQuery);
+    	Page<UserDO> userDOList = (Page<UserDO>) userMapper.listUsersByDepartmentPointDesc(userQuery.getDepartment());
+    	PageInfo<UserDO> pageInfo = new PageInfo<>(userDOList);
+    	if (userDOList.size() < 1) {
+            Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "Not found.");
+        }
         return Result.success(pageInfo);
     }
     
@@ -150,7 +163,7 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * 获取UserDOList通过查询参数qquery
+     * 获取UserDOList通过查询参数query
      *
      * @param query 查询参数
      * @return UserDOList
@@ -164,6 +177,23 @@ public class UserServiceImpl implements UserService {
             Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "Not found.");
         }
 
+        return Result.success(pageInfo);
+    }
+    
+    /**
+     * 按照积分降序，获取UserDOList
+     *
+     * @param query 查询参数
+     * @return UserDOList
+     */
+    @Override
+    public Result<PageInfo<UserDO>> listUsersPointDesc(UserQuery query) {
+        PageHelper.startPage(query.getPageNum(), query.getPageSize());
+        Page<UserDO> userDOList = (Page<UserDO>) userMapper.listUsersPointDesc(query);
+        PageInfo<UserDO> pageInfo = new PageInfo<>(userDOList);
+        if (userDOList.size() < 1) {
+            Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "Not found.");
+        }
         return Result.success(pageInfo);
     }
 
