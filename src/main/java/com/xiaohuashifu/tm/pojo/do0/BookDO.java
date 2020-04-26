@@ -1,5 +1,7 @@
 package com.xiaohuashifu.tm.pojo.do0;
 
+import java.util.Date;
+
 import com.xiaohuashifu.tm.constant.BookState;
 
 public class BookDO {
@@ -9,6 +11,8 @@ public class BookDO {
 	private String coverUrl;
 	private BookState state;
 	private Integer available;
+	private Date createTime;
+	private Date updateTime;
 	
 	public Integer getId() {
 		return id;
@@ -58,6 +62,22 @@ public class BookDO {
 		this.available = available;
 	}
 	
+	public Date getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
+	}
+
+	public Date getUpdateTime() {
+		return updateTime;
+	}
+
+	public void setUpdateTime(Date updateTime) {
+		this.updateTime = updateTime;
+	}
+
 	@Override
 	public String toString() {
 		return "Book{" +
@@ -66,6 +86,8 @@ public class BookDO {
                 ", name='" + name + '\'' +
                 ", state=" + state +
                 ", available=" + available +
+                ", createTime=" + createTime +
+                ", updateTime=" + updateTime +
                 '}';
 	}
 	
