@@ -4,6 +4,9 @@
     <sql id="Base_Column_List">
         id, user_id, latitude, longitude, sign_in_time, sign_out_time, available, create_time, update_time
     </sql>
+    <sql id="Attendance_Column_List">
+        attendance.id, user_id, latitude, longitude, sign_in_time, sign_out_time, attendance.available, attendance.create_time, attendance.update_time
+    </sql>
 
     <insert id="insertAttendance" parameterType="com.xiaohuashifu.tm.pojo.do0.AttendanceDO"
             useGeneratedKeys="true" keyProperty="id">
@@ -15,8 +18,11 @@
     <select id="listAttendances" parameterType="com.xiaohuashifu.tm.pojo.query.AttendanceQuery"
             resultType="com.xiaohuashifu.tm.pojo.do0.AttendanceDO">
         select
-        <include refid="Base_Column_List"/>
+        <include refid="Attendance_Column_List"/>
         from attendance
+        <if test="department != null">
+            inner join user on attendance.user_id = user.id
+        </if>
         <where>
             <if test="id != null">
                 and id = #{id, jdbcType=INTEGER}
@@ -33,6 +39,12 @@
             </if>
             <if test="available != null">
                 and available = #{available, jdbcType=BOOLEAN}
+            </if>
+            <if test="department != null">
+                and department = #{department}
+            </if>
+            <if test="month != null">
+                and MONTH(sign_in_time) = #{month, jdbcType=INTEGER}
             </if>
         </where>
         order by update_time desc

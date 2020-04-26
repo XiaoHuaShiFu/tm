@@ -2,6 +2,8 @@ package com.xiaohuashifu.tm.pojo.query;
 
 import java.util.List;
 
+import com.xiaohuashifu.tm.constant.Department;
+
 /**
  * 描述:
  *
@@ -22,8 +24,15 @@ public class AttendanceQuery {
     private List<Integer> idList;
 
     private Boolean available;
+    
+    private Department department;
+    
+    private Integer month;
 
-    public AttendanceQuery() {
+    public AttendanceQuery() {}
+    
+    public AttendanceQuery(Integer pageNum) {
+    	this.pageNum = pageNum;
     }
 
     public AttendanceQuery(Integer pageNum, Integer pageSize, Integer id, Integer userId, List<Integer> idList,
@@ -83,8 +92,24 @@ public class AttendanceQuery {
     public void setAvailable(Boolean available) {
         this.available = available;
     }
+    
+    public Department getDepartment() {
+		return department;
+	}
 
-    @Override
+	public void setDepartment(Department department) {
+		this.department = department;
+	}
+
+	public Integer getMonth() {
+		return month;
+	}
+
+	public void setMonth(Integer month) {
+		this.month = month;
+	}
+
+	@Override
     public String toString() {
         return "AttendanceQuery{" +
                 "pageNum=" + pageNum +
@@ -93,6 +118,8 @@ public class AttendanceQuery {
                 ", userId=" + userId +
                 ", idList=" + idList +
                 ", available=" + available +
+                ", department=" + department +
+                ", month=" + month +
                 '}';
     }
 }

@@ -12,7 +12,7 @@ public interface AttendanceMapper {
     int insertAttendance(AttendanceDO attendanceDO);
 
     List<AttendanceDO> listAttendances(AttendanceQuery attendanceQuery);
-
+    
     int updateAttendance(AttendanceDO attendanceDO);
 
     AttendanceDO selectAttendance(Integer id);

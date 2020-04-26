@@ -21,17 +21,20 @@ import com.xiaohuashifu.tm.constant.AdminLogType;
 import com.xiaohuashifu.tm.constant.Department;
 import com.xiaohuashifu.tm.constant.TokenType;
 import com.xiaohuashifu.tm.manager.AdminLogManager;
+import com.xiaohuashifu.tm.manager.AttendanceManager;
 import com.xiaohuashifu.tm.manager.MeetingManager;
 import com.xiaohuashifu.tm.manager.MeetingParticipantManager;
 import com.xiaohuashifu.tm.pojo.do0.BookDO;
 import com.xiaohuashifu.tm.pojo.do0.MeetingDO;
 import com.xiaohuashifu.tm.pojo.do0.UserDO;
 import com.xiaohuashifu.tm.pojo.query.AdminLogQuery;
+import com.xiaohuashifu.tm.pojo.query.AttendanceQuery;
 import com.xiaohuashifu.tm.pojo.query.BookQuery;
 import com.xiaohuashifu.tm.pojo.query.MeetingParticipantQuery;
 import com.xiaohuashifu.tm.pojo.query.MeetingQuery;
 import com.xiaohuashifu.tm.pojo.query.UserQuery;
 import com.xiaohuashifu.tm.pojo.vo.AdminLogVO;
+import com.xiaohuashifu.tm.pojo.vo.AttendanceVO;
 import com.xiaohuashifu.tm.pojo.vo.MeetingParticipantVO;
 import com.xiaohuashifu.tm.pojo.vo.MeetingVO;
 import com.xiaohuashifu.tm.result.Result;
@@ -50,19 +53,21 @@ public class AdminController {
 	private final MeetingService meetingService;
 	private final MeetingManager meetingManager;
 	private final MeetingParticipantManager meetingParticipantManager;
+	private final AttendanceManager attendanceManager;
 	private final AdminLogManager adminLogManager;
 	
 	@Autowired
 	public AdminController(AdminService adminService, UserService userService,
 			BookService bookService, MeetingService meetingService,
 			MeetingManager meetingManager,MeetingParticipantManager meetingParticipantManager,
-			AdminLogManager adminLogManager) {
+			AttendanceManager attendanceManager, AdminLogManager adminLogManager) {
 		this.adminService = adminService;
 		this.userService = userService;
 		this.bookService = bookService;
 		this.meetingService = meetingService;
 		this.meetingManager = meetingManager;
 		this.meetingParticipantManager = meetingParticipantManager;
+		this.attendanceManager = attendanceManager;
 		this.adminLogManager = adminLogManager;
 	}
 
@@ -174,9 +179,9 @@ public class AdminController {
 			List<UserDO> users = null;
 			if (data instanceof UserDO) {  //根据工号得到的结果
 				users = new ArrayList<>();
-				users.add((UserDO) data);
+				users.add((UserDO)data);
 			}else {
-				PageInfo<UserDO> usersInfo = (PageInfo<UserDO>) result.getData();
+				PageInfo<UserDO> usersInfo = (PageInfo<UserDO>)result.getData();
 				users = usersInfo.getList();
 				model.addObject("total", usersInfo.getTotal());
 				model.addObject("pageSize", userQuery.getPageSize());
@@ -242,6 +247,34 @@ public class AdminController {
 		return model;
 	}
 	
+	@RequestMapping(value = "attendances/{pageNum}", method = RequestMethod.GET)
+	public ModelAndView attendances(@PathVariable("pageNum") Integer pageNum,
+			@RequestParam(value = "department", required = false) Department department,
+			@RequestParam(value = "month", required = false) Integer month) {
+		ModelAndView model = new ModelAndView("admin/attendances");
+		AttendanceQuery attendanceQuery = new AttendanceQuery(pageNum);
+		if (department != null) {
+			attendanceQuery.setDepartment(department);
+		}
+		if (month != null) {
+			attendanceQuery.setMonth(month);
+		}
+		Result<PageInfo<AttendanceVO>> result = attendanceManager.listAttendances(attendanceQuery);
+		if (result.isSuccess()) {
+			PageInfo<AttendanceVO> attendancesInfo = result.getData();
+			List<AttendanceVO> attendances = attendancesInfo.getList();
+			model.addObject("attendances", attendances);
+			model.addObject("total", attendancesInfo.getTotal());
+			model.addObject("pageSize", attendanceQuery.getPageSize());
+			model.addObject("pageIndex", pageNum);
+			model.addObject("department", department);
+			model.addObject("month", month);
+		}else {
+			model.addObject("error", "error");
+		}
+		return model;
+	}
+	
 	@RequestMapping(value = "adminLogs/{pageNum}", method = RequestMethod.GET)
 	public ModelAndView adminLogs(@PathVariable("pageNum") Integer pageNum) {
 		ModelAndView model = new ModelAndView("admin/adminLogs");
@@ -259,5 +292,5 @@ public class AdminController {
 		}
 		return model;
 	}
-
+	
 }
