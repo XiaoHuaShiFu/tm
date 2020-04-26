@@ -160,19 +160,14 @@ public class AdminController {
 		Result<?> result = null;
 		if (jobNumber != null) {
 			result = userService.getUserByJobNumber(jobNumber.trim());
-		} else if (department != null) {
-			userQuery.setDepartment(department);
-			if (sort == false) {
-				result = userService.listUsersByDepartment(userQuery);
-			}else {
-				result = userService.listUsersByDepartmentPointDesc(userQuery);
-			}
 		} else {
-			if (sort == false) {
-				result = userService.listUsers(userQuery);
-			}else {
-				result = userService.listUsersPointDesc(userQuery);
+			if (department != null) {
+				userQuery.setDepartment(department);
 			}
+			if (sort == true) {
+				userQuery.setOrderByPoint(true);
+			}
+			result = userService.listUsers(userQuery);
 		}
 		if (result.isSuccess()) {
 			Object data = result.getData();

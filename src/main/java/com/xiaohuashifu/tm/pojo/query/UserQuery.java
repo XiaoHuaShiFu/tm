@@ -52,6 +52,8 @@ public class UserQuery {
     private Department department;
 
     private Boolean available;
+    
+    private Boolean orderByPoint;
 
     public UserQuery() {
     }
@@ -173,7 +175,15 @@ public class UserQuery {
         this.available = available;
     }
 
-    @Override
+    public Boolean getOrderByPoint() {
+		return orderByPoint;
+	}
+
+	public void setOrderByPoint(Boolean orderByPoint) {
+		this.orderByPoint = orderByPoint;
+	}
+
+	@Override
     public String toString() {
         return "UserQuery{" +
                 "pageNum=" + pageNum +
@@ -188,6 +198,7 @@ public class UserQuery {
                 ", email='" + email + '\'' +
                 ", department=" + department +
                 ", available=" + available +
+                ", orderByPoint=" + orderByPoint +
                 '}';
     }
 }
