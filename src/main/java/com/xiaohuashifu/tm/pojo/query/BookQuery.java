@@ -63,6 +63,9 @@ public class BookQuery {
         return "BookQuery{" +
                 "pageNum=" + pageNum +
                 ", pageSize=" + pageSize +
+                ", id=" + id +
+                ", numbering=" + numbering +
+                ", name=" + name +
                 '}';
     }
 }

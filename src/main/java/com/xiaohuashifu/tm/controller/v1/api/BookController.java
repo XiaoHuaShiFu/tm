@@ -1,5 +1,8 @@
 package com.xiaohuashifu.tm.controller.v1.api;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,10 +12,15 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.github.pagehelper.PageInfo;
+import com.xiaohuashifu.tm.auth.TokenAuth;
+import com.xiaohuashifu.tm.constant.BookLogState;
+import com.xiaohuashifu.tm.constant.BookState;
 import com.xiaohuashifu.tm.constant.TokenType;
 import com.xiaohuashifu.tm.pojo.ao.TokenAO;
 import com.xiaohuashifu.tm.pojo.do0.BookDO;
+import com.xiaohuashifu.tm.pojo.do0.BookLogDO;
 import com.xiaohuashifu.tm.pojo.query.BookQuery;
+import com.xiaohuashifu.tm.result.ErrorCode;
 import com.xiaohuashifu.tm.result.Result;
 import com.xiaohuashifu.tm.service.BookService;
 import com.xiaohuashifu.tm.service.TokenService;
@@ -55,9 +63,9 @@ public class BookController {
 	
 	@ResponseStatus(HttpStatus.OK)
 	@RequestMapping(value = "cover", method = RequestMethod.PUT)
-	public String updateCover(@RequestParam("id") Integer id, @RequestParam("cover") MultipartFile cover) {
+	public Boolean updateCover(@RequestParam("id") Integer id, @RequestParam("cover") MultipartFile cover) {
 		Result<?> result = bookService.updateCover(id, cover);
-		return result.isSuccess().toString();
+		return result.isSuccess();
 	}
 	
 	@ResponseStatus(HttpStatus.OK)
@@ -66,48 +74,33 @@ public class BookController {
 		BookQuery bookQuery = new BookQuery(pageNum);
 		Result<PageInfo<BookDO>> result = bookService.listBooks(bookQuery);
 		if (!result.isSuccess()) {
-			return result.getMessage();
+			return result;
 		}
 		PageInfo<BookDO> booksInfo = result.getData();
 		List<BookDO> books = booksInfo.getList();
 		return books;
 	}
 	
-	/*@ResponseStatus(HttpStatus.OK)
-	@RequestMapping(value = "{pageNum}", method = RequestMethod.GET)
-	public void getBooks(HttpServletRequest request, HttpServletResponse response, @PathVariable("pageNum") Integer pageNum) {
-		BookQuery bookQuery = new BookQuery(pageNum);
-		Result<PageInfo<BookDO>> result = bookService.listBooks(bookQuery);
-		if (result.isSuccess()) {
-			PageInfo<BookDO> booksInfo = result.getData();
-			List<BookDO> books = booksInfo.getList();
-			request.setAttribute("books", books);
-			request.setAttribute("total", booksInfo.getTotal());
-			request.setAttribute("pageSize", bookQuery.getPageSize());
-			request.setAttribute("pageNum", pageNum);
-			//这里先注释，等测试结束开放token时再删除注释
-//			TokenType type = null;  //当前使用者身份
-//			String token = request.getHeader("authorization");
-//			Result<TokenAO> tokenResult = tokenService.getToken(token);
-//			if (result.isSuccess()) {
-//				type = tokenResult.getData().getType();
-//			}else {
-//				response.setStatus(HttpStatus.BAD_REQUEST.value());
-//			}
-			try {
-				//这里先注释，等测试结束开放token时再删除注释
-//				if (TokenType.USER.equals(type)) {
-//					request.getRequestDispatcher("/v1/user/books").forward(request, response);
-//				}else {
-//					request.getRequestDispatcher("/v1/admin/books").forward(request, response);					
-//				}
-				request.getRequestDispatcher("/v1/admin/books").forward(request, response);   //用于测试admin
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}else {
-			response.setStatus(HttpStatus.NOT_FOUND.value());
+	@ResponseStatus(HttpStatus.OK)
+	@RequestMapping(value = "{bookId}", method = RequestMethod.POST)
+	@TokenAuth(tokenType = TokenType.USER)
+	public Object postBookLog(TokenAO tokenAO, @PathVariable("bookId") Integer bookId,
+			@RequestParam("state") BookLogState bookLogState) {
+		Result<BookDO> bookResult = bookService.getBookById(bookId);
+		if (!bookResult.isSuccess()) {
+			return bookResult;
 		}
-	}*/
+		BookDO book = bookResult.getData();
+		if (!BookState.IDLE.equals(book.getState())) {
+			return Result.fail(ErrorCode.FORBIDDEN, "The book is not available");
+		}
+		BookLogDO bookLog = new BookLogDO();
+		bookLog.setBookId(bookId);
+		bookLog.setUserId(tokenAO.getId());
+		bookLog.setBorrowTime(new Date());
+		bookLog.setState(bookLogState);
+		Result<BookLogDO> result = bookService.saveBookLog(bookLog);
+		return result;
+	}
 	
 }

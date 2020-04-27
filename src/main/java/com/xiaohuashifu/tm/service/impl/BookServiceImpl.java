@@ -1,11 +1,15 @@
 package com.xiaohuashifu.tm.service.impl;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.github.pagehelper.Page;
@@ -13,11 +17,14 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.tm.aspect.annotation.AdminLog;
 import com.xiaohuashifu.tm.constant.AdminLogType;
+import com.xiaohuashifu.tm.constant.BookLogState;
+import com.xiaohuashifu.tm.constant.BookState;
 import com.xiaohuashifu.tm.dao.BookMapper;
 import com.xiaohuashifu.tm.pojo.do0.BookDO;
 import com.xiaohuashifu.tm.pojo.do0.BookLogDO;
 import com.xiaohuashifu.tm.pojo.query.BookQuery;
 import com.xiaohuashifu.tm.service.BookService;
+import com.xiaohuashifu.tm.service.CacheService;
 import com.xiaohuashifu.tm.service.FileService;
 import com.xiaohuashifu.tm.service.constant.BookConstant;
 import com.xiaohuashifu.tm.result.ErrorCode;
@@ -28,11 +35,13 @@ public class BookServiceImpl implements BookService {
 
 	private final BookMapper bookMapper;
 	private final FileService fileService;
+	private final CacheService cacheService;
 	
 	@Autowired
-	public BookServiceImpl(BookMapper bookMapper, FileService fileService) {
+	public BookServiceImpl(BookMapper bookMapper, FileService fileService, CacheService cacheService) {
 		this.bookMapper = bookMapper;
 		this.fileService = fileService;
+		this.cacheService = cacheService;
 	}
 
 	@Override
@@ -106,21 +115,10 @@ public class BookServiceImpl implements BookService {
 	}
 	
 	@Override
-	public Result<PageInfo<BookDO>> listBooksByName(BookQuery bookQuery) {
-		PageHelper.startPage(bookQuery);
-		List<BookDO> books = bookMapper.listBooksByName(bookQuery.getName());
-		if (books == null) {
-			return Result.fail(ErrorCode.INTERNAL_ERROR, "Get books failed.");
-		}
-		PageInfo<BookDO> booksInfo = new PageInfo<>((Page<BookDO>) books);
-		return Result.success(booksInfo);
-	}
-	
-	@Override
 	public Result<PageInfo<BookDO>> listBooks(BookQuery bookQuery) {
 		//设置分页规则
 		PageHelper.startPage(bookQuery);
-		List<BookDO> books = bookMapper.listBooks();
+		List<BookDO> books = bookMapper.listBooks(bookQuery);
 		if (books == null) {
 			return Result.fail(ErrorCode.INTERNAL_ERROR, "Get books failed.");
 		}
@@ -129,12 +127,34 @@ public class BookServiceImpl implements BookService {
 	}
 
 	@Override
-	public Result borrowBook(BookLogDO bookLog) {
+	@Transactional
+	public Result<BookLogDO> saveBookLog(BookLogDO bookLog) {
+		BookDO book = new BookDO();
+		book.setId(bookLog.getBookId());
+		if (BookLogState.BOOKED.equals(bookLog.getState())) {
+			bookLog.setExpirationTime(Date.from(LocalDateTime.now().plusDays(1).atZone(ZoneId.systemDefault()).toInstant()));
+			book.setState(BookState.BOOKED);
+			String key = new StringBuilder("bookId:").append(bookLog.getBookId()).toString();
+			cacheService.set(key, bookLog.getUserId().toString());
+			cacheService.expire(key, 86400);
+		}else if (BookLogState.BORROWED.equals(bookLog.getState())) {
+			bookLog.setExpirationTime(Date.from(LocalDateTime.now().plusDays(30).atZone(ZoneId.systemDefault()).toInstant()));
+			book.setState(BookState.BORROWED);
+			cacheService.del(new StringBuilder("bookId:").append(bookLog.getBookId()).toString());
+		}else if (BookLogState.GIVE_UP.equals(bookLog.getState())) {
+			bookLog.setExpirationTime(new Date());
+			book.setState(BookState.IDLE);
+			cacheService.del(new StringBuilder("bookId:").append(bookLog.getBookId()).toString());
+		}
 		int count = bookMapper.insertBookLog(bookLog);
 		if (count < 1) {
 			return Result.fail(ErrorCode.INTERNAL_ERROR, "Insert book log failed.");
 		}
-		return Result.success();
+		count = bookMapper.updateBook(book);
+		if (count < 1) {
+			return Result.fail(ErrorCode.INTERNAL_ERROR, "Update book state failed.");
+		}
+		return Result.success(bookLog);
 	}
 	
 }

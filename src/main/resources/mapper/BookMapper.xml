@@ -1,43 +1,70 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.xiaohuashifu.tm.dao.BookMapper">
-  <insert id="insert" parameterType="com.xiaohuashifu.tm.pojo.do0.BookDO">
-    insert into book (numbering, name, cover_url)
-    values (#{book.numbering}, #{book.name}, #{book.coverUrl});
-  </insert>
+    <sql id="bookColumn">
+        id, numbering, name, cover_url, state, available, create_time, update_time
+    </sql>
+    
+    <sql id="bookLogColumn">
+        id, user_id, book_id, borrow_time, expiration_time, return_time, state, create_time, update_time
+    </sql>
+
+	<insert id="insert" parameterType="com.xiaohuashifu.tm.pojo.do0.BookDO">
+	  insert into book (numbering, name, cover_url)
+	  values (#{book.numbering}, #{book.name}, #{book.coverUrl});
+	</insert>
   
-  <delete id="delete" parameterType="integer">
-  	delete from book where id = #{id};
-  </delete>
-  
-  <update id="updateBook" parameterType="com.xiaohuashifu.tm.pojo.do0.BookDO">
-  	update book set numbering = #{book.numbering}, name = #{book.name}, state = #{book.state}, available = #{book.available}
-  	 where id = #{book.id};
-  </update>
-  
-  <update id="updateCover">
-  	update book set cover_url = #{cover_url} where id = #{id};
-  </update>
-  
-  <select id="getCoverUrlById" parameterType="integer" resultType="string">
-  	select cover_url from book where id = #{id};
-  </select>
-  
-  <select id="getBookById" parameterType="integer" resultType="com.xiaohuashifu.tm.pojo.do0.BookDO">
-  	select * from book where id = #{id};
-  </select>
-  
-  <select id="listBooksByName" parameterType="string" resultType="com.xiaohuashifu.tm.pojo.do0.BookDO">
-  	select * from book where name like CONCAT('%', #{name}, '%')
-  </select>
-  
-  <select id="listBooks" resultType="com.xiaohuashifu.tm.pojo.do0.BookDO">
-  	select * from book
-  </select>
+	<delete id="delete" parameterType="integer">
+		delete from book where id = #{id};
+	</delete>
+	
+	<update id="updateBook" parameterType="com.xiaohuashifu.tm.pojo.do0.BookDO">
+		update book
+		<set>
+		    <if test="numbering != null">
+		        numbering = #{numbering},
+		    </if>
+		    <if test="name != null">
+		        name = #{name},
+		    </if>
+		    <if test="state != null">
+		        state = #{state},
+		    </if>
+		    <if test="available != null">
+		        available = #{available}
+		    </if>
+		</set>
+		 where id = #{id};
+	</update>
+	
+	<update id="updateCover">
+		update book set cover_url = #{cover_url} where id = #{id};
+	</update>
+	
+	<select id="getCoverUrlById" parameterType="integer" resultType="string">
+		select cover_url from book where id = #{id};
+	</select>
+	
+	<select id="getBookById" parameterType="integer" resultType="com.xiaohuashifu.tm.pojo.do0.BookDO">
+		select 
+		<include refid="bookColumn"/>
+		from book where id = #{id};
+	</select>
+	
+	<select id="listBooks" parameterType="com.xiaohuashifu.tm.pojo.query.BookQuery" resultType="com.xiaohuashifu.tm.pojo.do0.BookDO">
+		select 
+		<include refid="bookColumn"/>
+		from book
+		<where>
+		    <if test="name != null">
+		        name like CONCAT('%', #{name}, '%')
+		    </if>
+		</where>
+	</select>
   
 	<!--  借书相关  -->
 	<insert id="insertBookLog" parameterType="com.xiaohuashifu.tm.pojo.do0.BookLogDO">
-		insert into book (user_id, book_id, borrow_time, expiration_time, return_time, state)
+		insert into book_log (user_id, book_id, borrow_time, expiration_time, return_time, state)
 		values
 		(#{bookLog.userId}, #{bookLog.bookId}, #{bookLog.borrowTime},
 		#{bookLog.expirationTime}, #{bookLog.returnTime}, #{bookLog.state});
@@ -50,6 +77,8 @@
 	</update>
 	
 	<select id="getBookLogByUserId" parameterType="integer">
-		select * from book_log where user_id = #{id};
+		select 
+		<include refid="bookLogColumn"/>
+		from book_log where user_id = #{id};
 	</select>
 </mapper>

@@ -126,17 +126,14 @@ public class AdminController {
 //	}
 
 	@RequestMapping(value = "books/{pageNum}", method = RequestMethod.GET)
-	public ModelAndView getBooksByName(@PathVariable("pageNum") Integer pageNum,
+	public ModelAndView getBooks(@PathVariable("pageNum") Integer pageNum,
 			@RequestParam(value = "name", required = false) String name) {
 		ModelAndView model = new ModelAndView("admin/books");
 		BookQuery bookQuery = new BookQuery(pageNum);
-		Result<PageInfo<BookDO>> result = null;
-		if (name == null) {
-			result = bookService.listBooks(bookQuery);
-		} else {
+		if (name != null) {
 			bookQuery.setName(name.trim());
-			result = bookService.listBooksByName(bookQuery);
 		}
+		Result<PageInfo<BookDO>> result = bookService.listBooks(bookQuery);
 		if (result.isSuccess()) {
 			PageInfo<BookDO> booksInfo = result.getData();
 			List<BookDO> books = booksInfo.getList();

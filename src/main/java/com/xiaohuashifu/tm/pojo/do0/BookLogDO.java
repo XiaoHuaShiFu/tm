@@ -2,7 +2,7 @@ package com.xiaohuashifu.tm.pojo.do0;
 
 import java.util.Date;
 
-import com.xiaohuashifu.tm.constant.BookState;
+import com.xiaohuashifu.tm.constant.BookLogState;
 
 public class BookLogDO {
 	private Integer id;
@@ -11,7 +11,7 @@ public class BookLogDO {
 	private Date borrowTime;
 	private Date expirationTime;
 	private Date returnTime;
-	private BookState state;
+	private BookLogState state;
 	private Date createTime;
 	private Date updateTime;
 	
@@ -63,11 +63,11 @@ public class BookLogDO {
 		this.returnTime = returnTime;
 	}
 	
-	public BookState getState() {
+	public BookLogState getState() {
 		return state;
 	}
 	
-	public void setState(BookState state) {
+	public void setState(BookLogState state) {
 		this.state = state;
 	}
 	
@@ -86,4 +86,12 @@ public class BookLogDO {
 	public void setUpdateTime(Date updateTime) {
 		this.updateTime = updateTime;
 	}
+
+	@Override
+	public String toString() {
+		return "BookLogDO [id=" + id + ", userId=" + userId + ", bookId=" + bookId + ", borrowTime=" + borrowTime
+				+ ", expirationTime=" + expirationTime + ", returnTime=" + returnTime + ", state=" + state
+				+ ", createTime=" + createTime + ", updateTime=" + updateTime + "]";
+	}
+	
 }
