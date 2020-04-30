@@ -9,6 +9,7 @@ import com.xiaohuashifu.tm.constant.BookState;
 import com.xiaohuashifu.tm.dao.BookMapper;
 import com.xiaohuashifu.tm.pojo.do0.BookDO;
 import com.xiaohuashifu.tm.pojo.do0.BookLogDO;
+import com.xiaohuashifu.tm.pojo.query.BookLogQuery;
 import com.xiaohuashifu.tm.pojo.query.BookQuery;
 import com.xiaohuashifu.tm.result.ErrorCode;
 import com.xiaohuashifu.tm.result.Result;
@@ -100,7 +101,11 @@ public class BookServiceImpl implements BookService {
 	
 	@Override
 	public Result<BookDO> getBookById(Integer id){
-		return Result.success(bookMapper.getBookById(id));
+		BookDO book = bookMapper.getBookById(id);
+		if (book == null) {
+			return Result.fail(ErrorCode.INTERNAL_ERROR, "Get book failed.");
+		}
+		return Result.success(book);
 	}
 
 	/**
@@ -149,6 +154,16 @@ public class BookServiceImpl implements BookService {
 			return Result.fail(ErrorCode.INTERNAL_ERROR, "Update book state failed.");
 		}
 		return Result.success(bookLog);
+	}
+
+	@Override
+	public Result<PageInfo<BookLogDO>> listBookLogs(BookLogQuery bookLogQuery) {
+		PageHelper.startPage(bookLogQuery);
+		PageInfo<BookLogDO> pageInfo = new PageInfo<>(bookMapper.listBookLogs(bookLogQuery));
+		if (pageInfo.getList().size() == 0) {
+			return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "Not found.");
+		}
+		return Result.success(pageInfo);
 	}
 	
 }

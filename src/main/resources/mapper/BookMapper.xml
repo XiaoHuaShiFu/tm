@@ -48,7 +48,7 @@
 	<select id="getBookById" parameterType="integer" resultType="com.xiaohuashifu.tm.pojo.do0.BookDO">
 		select 
 		<include refid="bookColumn"/>
-		from book where id = #{id};
+		from book where id = #{id}
 	</select>
 
 	<select id="listBooks" parameterType="com.xiaohuashifu.tm.pojo.query.BookQuery"
@@ -97,9 +97,10 @@
 		where user_id = #{bookLog.userId} and book_id = #{bookLog.bookId};	
 	</update>
 	
-	<select id="getBookLogByUserId" parameterType="integer">
-		select 
-		<include refid="bookLogColumn"/>
-		from book_log where user_id = #{id};
+	<select id="listBookLogs" parameterType="com.xiaohuashifu.tm.pojo.query.BookLogQuery"
+	    resultType="com.xiaohuashifu.tm.pojo.do0.BookLogDO">
+	    select
+	    <include refid="bookLogColumn"/>
+	    from book_log
 	</select>
 </mapper>

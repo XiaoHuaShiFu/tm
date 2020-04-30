@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import com.xiaohuashifu.tm.pojo.do0.BookDO;
 import com.xiaohuashifu.tm.pojo.do0.BookLogDO;
+import com.xiaohuashifu.tm.pojo.query.BookLogQuery;
 import com.xiaohuashifu.tm.pojo.query.BookQuery;
 
 @Mapper
@@ -26,5 +27,5 @@ public interface BookMapper {
 	
 	int insertBookLog(@Param("bookLog") BookLogDO bookLog);
 	int updateBookLog(@Param("bookLog") BookLogDO bookLog);
-	List<BookLogDO> listBookLogs();
+	List<BookLogDO> listBookLogs(BookLogQuery bookLogQuery);
 }

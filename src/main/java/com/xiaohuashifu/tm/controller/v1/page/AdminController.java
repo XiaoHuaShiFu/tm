@@ -25,20 +25,24 @@ import com.xiaohuashifu.tm.constant.Department;
 import com.xiaohuashifu.tm.constant.TokenType;
 import com.xiaohuashifu.tm.manager.AdminLogManager;
 import com.xiaohuashifu.tm.manager.AttendanceManager;
+import com.xiaohuashifu.tm.manager.BookLogManager;
 import com.xiaohuashifu.tm.manager.MeetingManager;
 import com.xiaohuashifu.tm.manager.MeetingParticipantManager;
 import com.xiaohuashifu.tm.pojo.ao.TokenAO;
 import com.xiaohuashifu.tm.pojo.do0.BookDO;
+import com.xiaohuashifu.tm.pojo.do0.BookLogDO;
 import com.xiaohuashifu.tm.pojo.do0.MeetingDO;
 import com.xiaohuashifu.tm.pojo.do0.UserDO;
 import com.xiaohuashifu.tm.pojo.query.AdminLogQuery;
 import com.xiaohuashifu.tm.pojo.query.AttendanceQuery;
+import com.xiaohuashifu.tm.pojo.query.BookLogQuery;
 import com.xiaohuashifu.tm.pojo.query.BookQuery;
 import com.xiaohuashifu.tm.pojo.query.MeetingParticipantQuery;
 import com.xiaohuashifu.tm.pojo.query.MeetingQuery;
 import com.xiaohuashifu.tm.pojo.query.UserQuery;
 import com.xiaohuashifu.tm.pojo.vo.AdminLogVO;
 import com.xiaohuashifu.tm.pojo.vo.AttendanceVO;
+import com.xiaohuashifu.tm.pojo.vo.BookLogVO;
 import com.xiaohuashifu.tm.pojo.vo.MeetingParticipantVO;
 import com.xiaohuashifu.tm.pojo.vo.MeetingVO;
 import com.xiaohuashifu.tm.result.Result;
@@ -55,6 +59,7 @@ public class AdminController {
 	private final AdminService adminService;
 	private final UserService userService;
 	private final BookService bookService;
+	private final BookLogManager bookLogManager;
 	private final MeetingService meetingService;
 	private final MeetingManager meetingManager;
 	private final MeetingParticipantManager meetingParticipantManager;
@@ -64,13 +69,15 @@ public class AdminController {
 	
 	@Autowired
 	public AdminController(AdminService adminService, UserService userService,
-			BookService bookService, MeetingService meetingService,
-			MeetingManager meetingManager,MeetingParticipantManager meetingParticipantManager,
+			BookService bookService, BookLogManager bookLogManager,
+			MeetingService meetingService, MeetingManager meetingManager,
+			MeetingParticipantManager meetingParticipantManager,
 			AttendanceManager attendanceManager, AdminLogManager adminLogManager,
 			TokenService tokenService) {
 		this.adminService = adminService;
 		this.userService = userService;
 		this.bookService = bookService;
+		this.bookLogManager = bookLogManager;
 		this.meetingService = meetingService;
 		this.meetingManager = meetingManager;
 		this.meetingParticipantManager = meetingParticipantManager;
@@ -128,28 +135,6 @@ public class AdminController {
 		return "error";
 	}
 
-//	@RequestMapping(value = "books/{pageNum}", method = RequestMethod.GET)
-//	public void receiveBookReq(HttpServletRequest request, HttpServletResponse response, @PathVariable("pageNum") Integer pageNum) {
-//		try {
-//			request.getRequestDispatcher("/v1/books/" + pageNum).forward(request, response);
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//	}
-
-//	@RequestMapping(value = "books", method = RequestMethod.GET)
-//	public ModelAndView returnBooks(HttpServletRequest request, HttpServletResponse response) {
-//		ModelAndView model = new ModelAndView("admin/books");
-//		if (response.getStatus() != HttpStatus.NOT_FOUND.value()) {
-//			List<BookDO> books = (List<BookDO>) request.getAttribute("books");
-//			model.addObject(books);
-//			model.addObject("total", request.getAttribute("total"));
-//			model.addObject("pageSize", request.getAttribute("pageSize"));
-//			model.addObject("pageIndex", request.getAttribute("pageNum"));
-//		}
-//		return model;
-//	}
-
 	@RequestMapping(value = "books/{pageNum}", method = RequestMethod.GET)
 	public ModelAndView getBooks(@PathVariable("pageNum") Integer pageNum,
 			@RequestParam(value = "name", required = false) String name) {
@@ -167,6 +152,25 @@ public class AdminController {
 			model.addObject("pageSize", bookQuery.getPageSize());
 			model.addObject("pageIndex", pageNum);
 		} else {
+			model.addObject("error", "error");
+		}
+		return model;
+	}
+	
+	@RequestMapping(value = "bookLogs/{pageNum}", method = RequestMethod.GET)
+	public ModelAndView getBookLogs(@PathVariable("pageNum") Integer pageNum,
+			@RequestParam(value = "username", required = false) String username) {
+		ModelAndView model = new ModelAndView("admin/bookLogs");
+		BookLogQuery bookLogQuery = new BookLogQuery(pageNum);
+		Result<PageInfo<BookLogVO>> result = bookLogManager.listBookLogs(bookLogQuery);
+		if (result.isSuccess()) {
+			PageInfo<BookLogVO> bookLogsInfo = result.getData();
+			List<BookLogVO> bookLogs = bookLogsInfo.getList();
+			model.addObject("bookLogs", bookLogs);
+			model.addObject("total", bookLogsInfo.getTotal());
+			model.addObject("pageSize", bookLogQuery.getPageSize());
+			model.addObject("pageIndex", pageNum);
+		}else {
 			model.addObject("error", "error");
 		}
 		return model;

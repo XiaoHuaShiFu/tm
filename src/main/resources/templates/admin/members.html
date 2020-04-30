@@ -72,7 +72,7 @@
           <li class="nav-item dropdown ml-auto"><a id="userInfo" href="http://example.com" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle"><img src="img/avatar-6.jpg" alt="Jason Doe" style="max-width: 2.5rem;" class="img-fluid rounded-circle shadow"></a>
             <div aria-labelledby="userInfo" class="dropdown-menu"><a href="#" class="dropdown-item"><strong class="d-block text-uppercase headings-font-family">Mark Stephen</strong><small>Web Developer</small></a>
               <div class="dropdown-divider"></div><a href="#" class="dropdown-item">Settings</a><a href="#" class="dropdown-item">Activity log       </a>
-              <div class="dropdown-divider"></div><a href="login.html" class="dropdown-item">Logout</a>
+              <div class="dropdown-divider"></div><a href="/v1/admin/login" class="dropdown-item">Logout</a>
             </div>
           </li>
         </ul>
@@ -82,22 +82,29 @@
       <div id="sidebar" class="sidebar py-3">
         <div class="text-gray-400 text-uppercase px-3 px-lg-4 py-4 font-weight-bold small headings-font-family">MAIN</div>
         <ul class="sidebar-menu list-unstyled">
-              <li class="sidebar-list-item"><a href="/v1/admin/index" class="sidebar-link text-muted"><i class="o-home-1 mr-3 text-gray"></i><span>Home</span></a></li>
-              <li class="sidebar-list-item"><a href="1" class="sidebar-link text-muted active"><i class="o-sales-up-1 mr-3 text-gray"></i><span>成员管理</span></a></li>
-              <li class="sidebar-list-item"><a href="/v1/admin/books/1" class="sidebar-link text-muted"><i class="o-table-content-1 mr-3 text-gray"></i><span>图书管理</span></a></li>
-              <li class="sidebar-list-item"><a href="/v1/admin/meetings/1" class="sidebar-link text-muted"><i class="o-survey-1 mr-3 text-gray"></i><span>会议管理</span></a></li>
-              <li class="sidebar-list-item"><a href="/v1/admin/adminLogs/1" class="sidebar-link text-muted"><i class="o-paperwork-1 mr-3 text-gray"></i><span>日志信息</span></a></li>
-          <li class="sidebar-list-item"><a href="#" data-toggle="collapse" data-target="#pages" aria-expanded="false" aria-controls="pages" class="sidebar-link text-muted"><i class="o-wireframe-1 mr-3 text-gray"></i><span>值班管理</span></a>
-            <div id="pages" class="collapse">
-              <ul class="sidebar-menu list-unstyled border-left border-primary border-thick">
-                <li class="sidebar-list-item"><a href="/v1/admin/attendances/1" class="sidebar-link text-muted pl-lg-5">签到信息</a></li>
-                <li class="sidebar-list-item"><a href="#" class="sidebar-link text-muted pl-lg-5">Page two</a></li>
-                <li class="sidebar-list-item"><a href="#" class="sidebar-link text-muted pl-lg-5">Page three</a></li>
-                <li class="sidebar-list-item"><a href="#" class="sidebar-link text-muted pl-lg-5">Page four</a></li>
-              </ul>
-            </div>
-          </li>
-              <li class="sidebar-list-item"><a href="/v1/admin/login" class="sidebar-link text-muted"><i class="o-exit-1 mr-3 text-gray"></i><span>Login</span></a></li>
+            <li class="sidebar-list-item"><a href="/v1/admin/index" class="sidebar-link text-muted"><i class="o-home-1 mr-3 text-gray"></i><span>Home</span></a></li>
+            <li class="sidebar-list-item"><a href="1" class="sidebar-link text-muted active"><i class="o-sales-up-1 mr-3 text-gray"></i><span>成员管理</span></a></li>
+            <li class="sidebar-list-item"><a href="#" data-toggle="collapse" data-target="#bookPages" aria-expanded="false" aria-controls="bookPages" class="sidebar-link text-muted"><i class="o-table-content-1 mr-3 text-gray"></i><span>图书管理</span></a>
+                <div id="bookPages" class="collapse">
+                    <ul class="sidebar-menu list-unstyled border-left border-primary border-thick">
+                        <li class="sidebar-list-item"><a href="/v1/admin/books/1" class="sidebar-link text-muted pl-lg-5">书籍信息</a></li>
+                        <li class="sidebar-list-item"><a href="/v1/admin/bookLogs/1" class="sidebar-link text-muted pl-lg-5">借还信息</a></li>
+                    </ul>
+                </div>
+            </li>
+            <li class="sidebar-list-item"><a href="/v1/admin/meetings/1" class="sidebar-link text-muted"><i class="o-survey-1 mr-3 text-gray"></i><span>会议管理</span></a></li>
+            <li class="sidebar-list-item"><a href="/v1/admin/adminLogs/1" class="sidebar-link text-muted"><i class="o-paperwork-1 mr-3 text-gray"></i><span>日志信息</span></a></li>
+            <li class="sidebar-list-item"><a href="#" data-toggle="collapse" data-target="#dutyPages" aria-expanded="false" aria-controls="dutyPages" class="sidebar-link text-muted"><i class="o-wireframe-1 mr-3 text-gray"></i><span>值班管理</span></a>
+	            <div id="dutyPages" class="collapse">
+	                <ul class="sidebar-menu list-unstyled border-left border-primary border-thick">
+	                    <li class="sidebar-list-item"><a href="/v1/admin/attendances/1" class="sidebar-link text-muted pl-lg-5">签到信息</a></li>
+	                    <li class="sidebar-list-item"><a href="#" class="sidebar-link text-muted pl-lg-5">Page two</a></li>
+	                    <li class="sidebar-list-item"><a href="#" class="sidebar-link text-muted pl-lg-5">Page three</a></li>
+	                    <li class="sidebar-list-item"><a href="#" class="sidebar-link text-muted pl-lg-5">Page four</a></li>
+	                </ul>
+	            </div>
+	        </li>
+            <li class="sidebar-list-item"><a href="/v1/admin/login" class="sidebar-link text-muted"><i class="o-exit-1 mr-3 text-gray"></i><span>Login</span></a></li>
         </ul>
         <div class="text-gray-400 text-uppercase px-3 px-lg-4 py-4 font-weight-bold small headings-font-family">EXTRAS</div>
         <ul class="sidebar-menu list-unstyled">
@@ -110,35 +117,35 @@
       <div class="page-holder w-100 d-flex flex-wrap">
         <div class="container-fluid px-xl-5">
         	<section class="func-bar-wrapper">
-	        		<div class="func-bar clearfix">
-	        			<div style="padding: 0 20px;">
-	        				<form method="get">
-	       						<input name="jobNumber" type="text" placeholder="输入工号">
-	       						<input type="submit" value="查询">
-	       					</form>
-	        				<form id="condition-form" action="1" method="get">
-	        				    <input id="sort" type="hidden" name="sort" value="false">
-	        				    <span id="sort-btn" onselectstart="return false;" th:class="${sort}? 'sort-btn-active':''">按积分降序</span>
-                                <span>选择部门</span>
-		       					<select name="department">
-		       						<option value="">所有</option>
-		       						<option value="ALL" th:selected="${#strings.equals(department, 'ALL')}">公司</option>
-		       						<option value="UNKNOWN" th:selected="${#strings.equals(department, 'UNKNOWN')}">未知</option>
-		       						<option value="ZZB" th:selected="${#strings.equals(department, 'ZZB')}">制造部</option>
-		       						<option value="XSB" th:selected="${#strings.equals(department, 'XSB')}">销售部</option>
-		       						<option value="RSB" th:selected="${#strings.equals(department, 'RSB')}">人事部</option>
-		       						<option value="YFB" th:selected="${#strings.equals(department, 'YFB')}">研发部</option>
-		       						<option value="CWB" th:selected="${#strings.equals(department, 'CWB')}">财务部</option>
-		       						<option value="CGB" th:selected="${#strings.equals(department, 'CGB')}">采购部</option>
-		       						<option value="PZB" th:selected="${#strings.equals(department, 'PZB')}">品质部</option>
-		       						<option value="GZB" th:selected="${#strings.equals(department, 'GZB')}">管制部</option>
-		       						<option value="KFB" th:selected="${#strings.equals(department, 'KFB')}">客服部</option>
-		       					</select>
-		       					<input type="submit" value="查询">
-	       					</form>
-	       				</div>
-	        		</div>
-	        	</section>
+        		<div class="func-bar clearfix">
+        			<div style="padding: 0 20px;">
+        				<form method="get">
+       						<input name="jobNumber" type="text" placeholder="输入工号">
+       						<input type="submit" value="查询">
+       					</form>
+        				<form id="condition-form" action="1" method="get">
+        				    <input id="sort" type="hidden" name="sort" value="false">
+        				    <span id="sort-btn" onselectstart="return false;" th:class="${sort}? 'sort-btn-active':''">按积分降序</span>
+                               <span>选择部门</span>
+	       					<select name="department">
+	       						<option value="">所有</option>
+	       						<option value="ALL" th:selected="${#strings.equals(department, 'ALL')}">公司</option>
+	       						<option value="UNKNOWN" th:selected="${#strings.equals(department, 'UNKNOWN')}">未知</option>
+	       						<option value="ZZB" th:selected="${#strings.equals(department, 'ZZB')}">制造部</option>
+	       						<option value="XSB" th:selected="${#strings.equals(department, 'XSB')}">销售部</option>
+	       						<option value="RSB" th:selected="${#strings.equals(department, 'RSB')}">人事部</option>
+	       						<option value="YFB" th:selected="${#strings.equals(department, 'YFB')}">研发部</option>
+	       						<option value="CWB" th:selected="${#strings.equals(department, 'CWB')}">财务部</option>
+	       						<option value="CGB" th:selected="${#strings.equals(department, 'CGB')}">采购部</option>
+	       						<option value="PZB" th:selected="${#strings.equals(department, 'PZB')}">品质部</option>
+	       						<option value="GZB" th:selected="${#strings.equals(department, 'GZB')}">管制部</option>
+	       						<option value="KFB" th:selected="${#strings.equals(department, 'KFB')}">客服部</option>
+	       					</select>
+	       					<input type="submit" value="查询">
+       					</form>
+       				</div>
+        		</div>
+        	</section>
         
           <!-- 主体表格 -->
           <section class="py-5">

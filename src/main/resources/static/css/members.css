@@ -1,18 +1,4 @@
 /* func-bar*/
-.func-bar-wrapper{
-	width: 100%;
-	margin-top: 30px;
-}
-
-.func-bar{
-	flex: 0 0 100%;
-	max-width: 100%;
-	margin: 0 15px;
-	padding: 10px 0;
-	background-color: #fff;
-	box-shadow: 0 2px 12px 0 rgba(0,0,0,0.1);
-}
-
 .func-bar form{
 	display: inline;
 	float: right;
