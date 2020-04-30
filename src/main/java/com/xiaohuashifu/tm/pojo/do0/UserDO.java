@@ -7,6 +7,7 @@ import com.xiaohuashifu.tm.pojo.group.GroupPost;
 import com.xiaohuashifu.tm.validator.annotation.*;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Date;
 
@@ -48,7 +49,7 @@ public class UserDO {
             groups = {Group.class})
     private String fullName;
 
-    @NotBlank(message = "INVALID_PARAMETER_IS_BLANK: The gender must be not blank.",
+    @NotNull(message = "INVALID_PARAMETER_IS_NULL: The gender must be not null.",
             groups = {GroupPost.class})
     private Gender gender;
 
@@ -60,7 +61,7 @@ public class UserDO {
     @Email(groups = {Group.class})
     private String email;
 
-    @NotBlank(message = "INVALID_PARAMETER_IS_BLANK: The department must be not blank.",
+    @NotNull(message = "INVALID_PARAMETER_IS_NULL: The department must be not null.",
             groups = {GroupPost.class})
     private Department department;
 
