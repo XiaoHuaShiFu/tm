@@ -62,18 +62,11 @@ public class BookController {
 	 */
 	@RequestMapping(method = RequestMethod.PUT)
 	@ResponseStatus(HttpStatus.OK)
-	@TokenAuth(tokenType = {TokenType.USER, TokenType.ADMIN})
-	@ErrorHandler
-	public Object put(BookDO book) {
-		Result<Map<String, BookDO>> result = bookService.updateBook(book);
-		return result.isSuccess() ? mapper.map(result.getData().get("newValue"), BookVO.class) : result;
-	}
-	
-	@ResponseStatus(HttpStatus.OK)
-	@RequestMapping(value = "cover", method = RequestMethod.PUT)
-	public Boolean updateCover(@RequestParam("id") Integer id, @RequestParam("cover") MultipartFile cover) {
-		Result<?> result = bookService.updateCover(id, cover);
-		return result.isSuccess();
+//	@TokenAuth(tokenType = {TokenType.ADMIN})
+	public Object put(@RequestPart("bookInfo") BookDO book,
+			@RequestPart(value = "cover", required = false) MultipartFile cover) {
+		Result<BookDO> result = bookService.updateBook(book, cover);
+		return result.isSuccess() ? mapper.map(result.getData(), BookVO.class) : result;
 	}
 
 	/**

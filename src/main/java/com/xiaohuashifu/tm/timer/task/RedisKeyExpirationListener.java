@@ -1,7 +1,5 @@
 package com.xiaohuashifu.tm.timer.task;
 
-import java.awt.print.Book;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.listener.KeyExpirationEventMessageListener;
@@ -38,11 +36,12 @@ public class RedisKeyExpirationListener extends KeyExpirationEventMessageListene
 	public void onMessage(Message message, byte[] pattern) {
 		super.onMessage(message, pattern);
 		String expiredKey = message.toString();
-		if (expiredKey.startsWith("bookId")) {  //处理book的预定信息。key格式为: bookId:1 ; value为userId
+		// 处理book的预定信息。key格式为: bookId:1 ; value为userId
+		if (expiredKey.startsWith("bookId")) {
 			BookDO book = new BookDO();
 			book.setId(Integer.parseInt(expiredKey.substring(7)));
 			book.setState(BookState.IDLE);
-			bookService.updateBook(book);
+			bookService.updateBook(book, null);
 		}
 	}
 	

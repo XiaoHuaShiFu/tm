@@ -1,7 +1,5 @@
 package com.xiaohuashifu.tm.service;
 
-import java.util.Map;
-
 import org.springframework.web.multipart.MultipartFile;
 
 import com.github.pagehelper.PageInfo;
@@ -13,7 +11,7 @@ import com.xiaohuashifu.tm.result.Result;
 public interface BookService {
 	Result<BookDO> saveBook(BookDO book, MultipartFile cover);
 	Result<Integer> deleteBook(Integer id);
-	Result<Map<String, BookDO>> updateBook(BookDO book);
+	Result<BookDO> updateBook(BookDO book, MultipartFile cover);
 	Result<Integer> updateCover(Integer id, MultipartFile cover);
 	Result<BookDO> getBookById(Integer id);
 	Result<PageInfo<BookDO>> listBooks(BookQuery bookQuery);

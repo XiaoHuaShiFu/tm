@@ -324,9 +324,19 @@
 				data:formData,
 				method:"PUT",
 				success:function(data){
-					if (data == true){
+					if (data.success != false){
 						alert("修改成功");
 						$("#upd-mask").attr("style", "display:none");
+						$("#updating").children()[1].innerText = data.numbering;
+						$("#updating").children()[2].innerText = data.name;
+						$("#updating").children()[3].setAttribute("src", data.coverUrl);
+						$("#updating").children()[4].innerText = data.state;
+						if (data.available == 1){
+						    $("#updating").children()[5].innerText = "yes";
+						}else{
+							$("#updating").children()[5].innerText = "no";
+						}
+						$("#updating").removeAttr("id");  //取消选中状态
 					}else {
 						alert("修改失败");
 					}
@@ -337,6 +347,7 @@
 		function updateBooks(ele){  //弹出更新书籍的窗口
 			var updId = $(ele).attr("upd");
 			var parent = $(ele).parent().parent();
+			$(parent).attr("id", "updating");  //设置为选中状态
 			$("#upd-id").text(updId);
 			$("#upd-numbering").attr("value", parent.children()[1].innerText);
 			$("#upd-name").attr("value", parent.children()[2].innerText);

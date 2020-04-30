@@ -92,10 +92,9 @@ public class AdminController {
 		if(result.isSuccess()) {
 			request.getSession().setAttribute("token", result.getData().getToken());
 			try {
-				String indexPath = new StringBuilder().append(request.getScheme())
-						.append("://").append(request.getServerName()).append(":")
-						.append(request.getServerPort()).toString();
-				response.sendRedirect(indexPath + "/v1/admin/index");
+				response.sendRedirect(request.getScheme() + "://" +
+						request.getServerName() + ":"+
+						request.getServerPort() + "/v1/admin/index");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

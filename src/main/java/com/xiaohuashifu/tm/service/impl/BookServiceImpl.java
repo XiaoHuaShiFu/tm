@@ -24,8 +24,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 @Service("bookService")
 public class BookServiceImpl implements BookService {
@@ -70,40 +68,24 @@ public class BookServiceImpl implements BookService {
 	}
 	
 	@Override
+	@Transactional
 	@AdminLog(value = "'更新书籍'", type = AdminLogType.UPDATE)
-	public Result<Map<String, BookDO>> updateBook(BookDO book) {
-		Result<BookDO> result = getBookById(book.getId());
-		if (!result.isSuccess()) {
-			return Result.fail(ErrorCode.INTERNAL_ERROR, "Error happened when getting the book data");
-		}
-		BookDO oldBook = result.getData();
-		if (book.getNumbering() == null || "".equals(book.getNumbering())) {
-			book.setNumbering(oldBook.getNumbering());
-		}
-		if (book.getName() == null || "".equals(book.getName())) {
-			book.setName(oldBook.getName());
-		}
-		if (book.getCoverUrl() == null || "".equals(book.getCoverUrl())) {
-			book.setCoverUrl(oldBook.getCoverUrl());
-		}
-		if (book.getState() == null) {
-			book.setState(oldBook.getState());
-		}
-		if (book.getAvailable() == null) {
-			book.setAvailable(oldBook.getAvailable());
-		}
+	public Result<BookDO> updateBook(BookDO book, MultipartFile cover) {
 		int count = bookMapper.updateBook(book);
 		if (count < 1) {
 			return Result.fail(ErrorCode.INTERNAL_ERROR, "update book failed.");
 		}
-		Map<String, BookDO> map = new HashMap<>();
-		map.put("oldValue", oldBook);
-		map.put("newValue", getBookById(book.getId()).getData());
-		return Result.success(map);
+		if (cover != null) {
+			Result result = updateCover(book.getId(), cover);
+			if (!result.isSuccess()) {
+				return result;
+			}
+		}
+		return Result.success(book);
 	}
 
 	@Override
-	public Result<Integer> updateCover(Integer id, MultipartFile cover) {
+	public Result updateCover(Integer id, MultipartFile cover) {
 		String coverUrl = bookMapper.getCoverUrlById(id);
 		if (coverUrl != null && !"".equals(coverUrl)) {
 			fileService.delete(coverUrl);
@@ -155,6 +137,8 @@ public class BookServiceImpl implements BookService {
 			bookLog.setExpirationTime(new Date());
 			book.setState(BookState.IDLE);
 			cacheService.del("bookId:" + bookLog.getBookId());
+		}else if (BookLogState.RETURNED.equals(bookLog.getState())) {
+			
 		}
 		int count = bookMapper.insertBookLog(bookLog);
 		if (count < 1) {
