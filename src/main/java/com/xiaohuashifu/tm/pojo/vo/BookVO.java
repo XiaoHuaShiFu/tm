@@ -1,10 +1,10 @@
-package com.xiaohuashifu.tm.pojo.do0;
-
-import java.util.Date;
+package com.xiaohuashifu.tm.pojo.vo;
 
 import com.xiaohuashifu.tm.constant.BookState;
 
-public class BookDO {
+import java.util.Date;
+
+public class BookVO {
 	private Integer id;
 	private String numbering;
 	private String name;
@@ -80,15 +80,15 @@ public class BookDO {
 
 	@Override
 	public String toString() {
-		return "BookDO{" +
-                "id=" + id +
-                ", numbering=" + numbering +
-                ", name='" + name + '\'' +
-                ", state=" + state +
-                ", available=" + available +
-                ", createTime=" + createTime +
-                ", updateTime=" + updateTime +
-                '}';
+		return "BookVO{" +
+				"id=" + id +
+				", numbering='" + numbering + '\'' +
+				", name='" + name + '\'' +
+				", coverUrl='" + coverUrl + '\'' +
+				", state=" + state +
+				", available=" + available +
+				", createTime=" + createTime +
+				", updateTime=" + updateTime +
+				'}';
 	}
-	
 }

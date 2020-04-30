@@ -113,17 +113,20 @@ public class BookServiceImpl implements BookService {
 	public Result<BookDO> getBookById(Integer id){
 		return Result.success(bookMapper.getBookById(id));
 	}
-	
+
+	/**
+	 * 查询书籍列表
+	 * @param bookQuery 查询参数
+	 * @return PageInfo<BookDO>
+	 */
 	@Override
 	public Result<PageInfo<BookDO>> listBooks(BookQuery bookQuery) {
-		//设置分页规则
 		PageHelper.startPage(bookQuery);
-		List<BookDO> books = bookMapper.listBooks(bookQuery);
-		if (books == null) {
-			return Result.fail(ErrorCode.INTERNAL_ERROR, "Get books failed.");
+		PageInfo<BookDO> pageInfo = new PageInfo<>(bookMapper.listBooks(bookQuery));
+		if (pageInfo.getList().size() == 0) {
+			return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "Not found.");
 		}
-		PageInfo<BookDO> booksInfo = new PageInfo<>((Page<BookDO>) books);
-		return Result.success(booksInfo);
+		return Result.success(pageInfo);
 	}
 
 	@Override

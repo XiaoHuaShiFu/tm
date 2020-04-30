@@ -50,16 +50,37 @@
 		<include refid="bookColumn"/>
 		from book where id = #{id};
 	</select>
-	
-	<select id="listBooks" parameterType="com.xiaohuashifu.tm.pojo.query.BookQuery" resultType="com.xiaohuashifu.tm.pojo.do0.BookDO">
-		select 
+
+	<select id="listBooks" parameterType="com.xiaohuashifu.tm.pojo.query.BookQuery"
+			resultType="com.xiaohuashifu.tm.pojo.do0.BookDO">
+		select
 		<include refid="bookColumn"/>
 		from book
 		<where>
-		    <if test="name != null">
-		        name like CONCAT('%', #{name}, '%')
-		    </if>
+			<if test="id != null">
+				and id = #{id}
+			</if>
+			<if test="idList != null">
+				id in (
+				<foreach collection="idList"  item="item" index="index" separator=",">
+					#{item}
+				</foreach>
+				)
+			</if>
+			<if test="numbering != null">
+				and numbering = #{numbering}
+			</if>
+			<if test="name != null">
+				and name like "%"#{name}"%"
+			</if>
+			<if test="state != null">
+				and state = #{state}
+			</if>
+			<if test="available != null">
+				and available = #{available}
+			</if>
 		</where>
+		order by update_time desc
 	</select>
   
 	<!--  借书相关  -->

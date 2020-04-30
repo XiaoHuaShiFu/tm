@@ -1,17 +1,7 @@
 package com.xiaohuashifu.tm.controller.v1.api;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.github.pagehelper.PageInfo;
+import com.xiaohuashifu.tm.aspect.annotation.ErrorHandler;
 import com.xiaohuashifu.tm.auth.TokenAuth;
 import com.xiaohuashifu.tm.constant.BookLogState;
 import com.xiaohuashifu.tm.constant.BookState;
@@ -20,10 +10,20 @@ import com.xiaohuashifu.tm.pojo.ao.TokenAO;
 import com.xiaohuashifu.tm.pojo.do0.BookDO;
 import com.xiaohuashifu.tm.pojo.do0.BookLogDO;
 import com.xiaohuashifu.tm.pojo.query.BookQuery;
+import com.xiaohuashifu.tm.pojo.vo.BookVO;
 import com.xiaohuashifu.tm.result.ErrorCode;
 import com.xiaohuashifu.tm.result.Result;
 import com.xiaohuashifu.tm.service.BookService;
-import com.xiaohuashifu.tm.service.TokenService;
+import org.dozer.Mapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("v1/books")
@@ -31,12 +31,12 @@ import com.xiaohuashifu.tm.service.TokenService;
 public class BookController {
 
 	private final BookService bookService;
-	private final TokenService tokenService;
+	private final Mapper mapper;
 	
 	@Autowired
-	public BookController(BookService bookService, TokenService tokenService) {
+	public BookController(BookService bookService, Mapper mapper) {
 		this.bookService = bookService;
-		this.tokenService = tokenService;
+		this.mapper = mapper;
 	}
 	
 	@ResponseStatus(HttpStatus.CREATED)
@@ -67,18 +67,30 @@ public class BookController {
 		Result<?> result = bookService.updateCover(id, cover);
 		return result.isSuccess();
 	}
-	
+
+	/**
+	 * 查询书籍通过query
+	 * @param query 查询参数
+	 * @return PageInfo<BookVO>
+	 */
+	@RequestMapping(method = RequestMethod.GET)
 	@ResponseStatus(HttpStatus.OK)
-	@RequestMapping(value = "{pageNum}", method = RequestMethod.GET)
-	public Object getBooks(@PathVariable("pageNum") Integer pageNum) {
-		BookQuery bookQuery = new BookQuery(pageNum);
-		Result<PageInfo<BookDO>> result = bookService.listBooks(bookQuery);
+	@TokenAuth(tokenType = {TokenType.USER, TokenType.ADMIN})
+	@ErrorHandler
+	public Object getBooks(BookQuery query) {
+		Result<PageInfo<BookDO>> result = bookService.listBooks(query);
 		if (!result.isSuccess()) {
 			return result;
 		}
-		PageInfo<BookDO> booksInfo = result.getData();
-		List<BookDO> books = booksInfo.getList();
-		return books;
+
+		PageInfo<BookDO> pageInfo = result.getData();
+		List<BookDO> bookDOList = pageInfo.getList();
+		List<BookVO> bookVOList = bookDOList.stream()
+				.map(bookDO -> mapper.map(bookDO, BookVO.class))
+				.collect(Collectors.toList());
+		PageInfo<BookVO> pageInfo1 = mapper.map(pageInfo, PageInfo.class);
+		pageInfo1.setList(bookVOList);
+		return pageInfo;
 	}
 	
 	@ResponseStatus(HttpStatus.OK)
