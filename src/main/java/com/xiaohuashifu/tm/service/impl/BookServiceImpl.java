@@ -1,18 +1,5 @@
 package com.xiaohuashifu.tm.service.impl;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-
-import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.tm.aspect.annotation.AdminLog;
@@ -23,12 +10,22 @@ import com.xiaohuashifu.tm.dao.BookMapper;
 import com.xiaohuashifu.tm.pojo.do0.BookDO;
 import com.xiaohuashifu.tm.pojo.do0.BookLogDO;
 import com.xiaohuashifu.tm.pojo.query.BookQuery;
+import com.xiaohuashifu.tm.result.ErrorCode;
+import com.xiaohuashifu.tm.result.Result;
 import com.xiaohuashifu.tm.service.BookService;
 import com.xiaohuashifu.tm.service.CacheService;
 import com.xiaohuashifu.tm.service.FileService;
 import com.xiaohuashifu.tm.service.constant.BookConstant;
-import com.xiaohuashifu.tm.result.ErrorCode;
-import com.xiaohuashifu.tm.result.Result;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service("bookService")
 public class BookServiceImpl implements BookService {
@@ -80,25 +77,35 @@ public class BookServiceImpl implements BookService {
 			return Result.fail(ErrorCode.INTERNAL_ERROR, "Error happened when getting the book data");
 		}
 		BookDO oldBook = result.getData();
-		if (book.getNumbering() == null || "".equals(book.getNumbering())) book.setNumbering(oldBook.getNumbering());
-		if (book.getName() == null || "".equals(book.getName())) book.setName(oldBook.getName());
-		if (book.getCoverUrl() == null || "".equals(book.getCoverUrl())) book.setCoverUrl(oldBook.getCoverUrl());
-		if (book.getState() == null) book.setState(oldBook.getState());
-		if (book.getAvailable() == null) book.setAvailable(oldBook.getAvailable());
+		if (book.getNumbering() == null || "".equals(book.getNumbering())) {
+			book.setNumbering(oldBook.getNumbering());
+		}
+		if (book.getName() == null || "".equals(book.getName())) {
+			book.setName(oldBook.getName());
+		}
+		if (book.getCoverUrl() == null || "".equals(book.getCoverUrl())) {
+			book.setCoverUrl(oldBook.getCoverUrl());
+		}
+		if (book.getState() == null) {
+			book.setState(oldBook.getState());
+		}
+		if (book.getAvailable() == null) {
+			book.setAvailable(oldBook.getAvailable());
+		}
 		int count = bookMapper.updateBook(book);
 		if (count < 1) {
 			return Result.fail(ErrorCode.INTERNAL_ERROR, "update book failed.");
 		}
-		Map<String, BookDO> map = new HashMap<String, BookDO>();
+		Map<String, BookDO> map = new HashMap<>();
 		map.put("oldValue", oldBook);
-		map.put("newValue", book);
+		map.put("newValue", getBookById(book.getId()).getData());
 		return Result.success(map);
 	}
 
 	@Override
 	public Result<Integer> updateCover(Integer id, MultipartFile cover) {
 		String coverUrl = bookMapper.getCoverUrlById(id);
-		if (coverUrl != null || !"".equals(coverUrl)) {
+		if (coverUrl != null && !"".equals(coverUrl)) {
 			fileService.delete(coverUrl);
 		}
 		coverUrl = fileService.saveAndGetUrl(cover, BookConstant.PREFIX_COVER_FILE_DIRECTORY);
@@ -137,17 +144,17 @@ public class BookServiceImpl implements BookService {
 		if (BookLogState.BOOKED.equals(bookLog.getState())) {
 			bookLog.setExpirationTime(Date.from(LocalDateTime.now().plusDays(1).atZone(ZoneId.systemDefault()).toInstant()));
 			book.setState(BookState.BOOKED);
-			String key = new StringBuilder("bookId:").append(bookLog.getBookId()).toString();
+			String key = "bookId:" + bookLog.getBookId();
 			cacheService.set(key, bookLog.getUserId().toString());
 			cacheService.expire(key, 86400);
 		}else if (BookLogState.BORROWED.equals(bookLog.getState())) {
 			bookLog.setExpirationTime(Date.from(LocalDateTime.now().plusDays(30).atZone(ZoneId.systemDefault()).toInstant()));
 			book.setState(BookState.BORROWED);
-			cacheService.del(new StringBuilder("bookId:").append(bookLog.getBookId()).toString());
+			cacheService.del("bookId:" + bookLog.getBookId());
 		}else if (BookLogState.GIVE_UP.equals(bookLog.getState())) {
 			bookLog.setExpirationTime(new Date());
 			book.setState(BookState.IDLE);
-			cacheService.del(new StringBuilder("bookId:").append(bookLog.getBookId()).toString());
+			cacheService.del("bookId:" + bookLog.getBookId());
 		}
 		int count = bookMapper.insertBookLog(bookLog);
 		if (count < 1) {

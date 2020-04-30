@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -53,12 +54,19 @@ public class BookController {
 		Result<?> result = bookService.deleteBook(id);
 		return result.isSuccess();
 	}
-	
-	@ResponseStatus(HttpStatus.OK)
+
+	/**
+	 * 更新书籍
+	 * @param book 要更新的信息
+	 * @return 更新后的信息
+	 */
 	@RequestMapping(method = RequestMethod.PUT)
-	public Boolean updateBook(@RequestPart("bookInfo") BookDO book) {
-		Result<?> result = bookService.updateBook(book);
-		return result.isSuccess();
+	@ResponseStatus(HttpStatus.OK)
+	@TokenAuth(tokenType = {TokenType.USER, TokenType.ADMIN})
+	@ErrorHandler
+	public Object put(BookDO book) {
+		Result<Map<String, BookDO>> result = bookService.updateBook(book);
+		return result.isSuccess() ? mapper.map(result.getData().get("newValue"), BookVO.class) : result;
 	}
 	
 	@ResponseStatus(HttpStatus.OK)
@@ -77,7 +85,7 @@ public class BookController {
 	@ResponseStatus(HttpStatus.OK)
 	@TokenAuth(tokenType = {TokenType.USER, TokenType.ADMIN})
 	@ErrorHandler
-	public Object getBooks(BookQuery query) {
+	public Object list(BookQuery query) {
 		Result<PageInfo<BookDO>> result = bookService.listBooks(query);
 		if (!result.isSuccess()) {
 			return result;
@@ -92,6 +100,21 @@ public class BookController {
 		pageInfo1.setList(bookVOList);
 		return pageInfo;
 	}
+
+	/**
+	 * 获取书通过id
+	 * @param id 书的编号
+	 * @return BookVO
+	 */
+	@RequestMapping(value ="{id}" ,method = RequestMethod.GET)
+	@ResponseStatus(HttpStatus.OK)
+	@TokenAuth(tokenType = {TokenType.USER, TokenType.ADMIN})
+	@ErrorHandler
+	public Object list(@PathVariable Integer id) {
+		Result<BookDO> result = bookService.getBookById(id);
+		return result.isSuccess() ? mapper.map(result.getData(), BookVO.class) : result;
+	}
+
 	
 	@ResponseStatus(HttpStatus.OK)
 	@RequestMapping(value = "{bookId}", method = RequestMethod.POST)
