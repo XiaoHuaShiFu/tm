@@ -20,24 +20,31 @@ import com.xiaohuashifu.tm.service.TokenService;
 @RequestMapping("v1/login")
 public class LoginController {
 
-	private final TokenService tokenService;
-	
-	@Autowired
-	public LoginController(TokenService tokenService) {
-		this.tokenService = tokenService;
-	}
-	
-	@ResponseStatus(HttpStatus.CREATED)
-	@RequestMapping(value = "admin", method = RequestMethod.POST)
-	public String adminLogin(HttpServletRequest request, HttpServletResponse response, 
-					@RequestParam("jobNumber") String jobNumber, @RequestParam("password") String password) throws Exception {
-		Result<TokenAO> result = tokenService.createAndSaveToken(TokenType.ADMIN, jobNumber, password);
-		if(result.isSuccess()) {
-			request.getSession().setAttribute("token", result.getData().getToken());
-			response.sendRedirect(request.getContextPath() + "/v1/admin/index");
-			return "ok";
-		}
-		return "error";
-	}
+//	private final TokenService tokenService;
+//	
+//	@Autowired
+//	public LoginController(TokenService tokenService) {
+//		this.tokenService = tokenService;
+//	}
+//	
+//	@ResponseStatus(HttpStatus.CREATED)
+//	@RequestMapping(value = "admin", method = RequestMethod.POST)
+//	public String adminLogin(HttpServletRequest request, HttpServletResponse response, 
+//					@RequestParam("jobNumber") String jobNumber, @RequestParam("password") String password) {
+//		Result<TokenAO> result = tokenService.createAndSaveToken(TokenType.ADMIN, jobNumber, password);
+//		if(result.isSuccess()) {
+//			request.getSession().setAttribute("token", result.getData().getToken());
+//			try {
+//				String indexPath = new StringBuilder().append(request.getScheme())
+//						.append("://").append(request.getServerName()).append(":")
+//						.append(request.getServerPort()).toString();
+//				response.sendRedirect(indexPath + "/v1/admin/index");
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//			}
+//			return "ok";
+//		}
+//		return "error";
+//	}
 	
 }

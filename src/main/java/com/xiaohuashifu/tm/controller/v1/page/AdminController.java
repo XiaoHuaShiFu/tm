@@ -4,14 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.github.pagehelper.PageInfo;
@@ -24,6 +27,7 @@ import com.xiaohuashifu.tm.manager.AdminLogManager;
 import com.xiaohuashifu.tm.manager.AttendanceManager;
 import com.xiaohuashifu.tm.manager.MeetingManager;
 import com.xiaohuashifu.tm.manager.MeetingParticipantManager;
+import com.xiaohuashifu.tm.pojo.ao.TokenAO;
 import com.xiaohuashifu.tm.pojo.do0.BookDO;
 import com.xiaohuashifu.tm.pojo.do0.MeetingDO;
 import com.xiaohuashifu.tm.pojo.do0.UserDO;
@@ -41,6 +45,7 @@ import com.xiaohuashifu.tm.result.Result;
 import com.xiaohuashifu.tm.service.AdminService;
 import com.xiaohuashifu.tm.service.BookService;
 import com.xiaohuashifu.tm.service.MeetingService;
+import com.xiaohuashifu.tm.service.TokenService;
 import com.xiaohuashifu.tm.service.UserService;
 
 @Controller
@@ -55,12 +60,14 @@ public class AdminController {
 	private final MeetingParticipantManager meetingParticipantManager;
 	private final AttendanceManager attendanceManager;
 	private final AdminLogManager adminLogManager;
+	private final TokenService tokenService;
 	
 	@Autowired
 	public AdminController(AdminService adminService, UserService userService,
 			BookService bookService, MeetingService meetingService,
 			MeetingManager meetingManager,MeetingParticipantManager meetingParticipantManager,
-			AttendanceManager attendanceManager, AdminLogManager adminLogManager) {
+			AttendanceManager attendanceManager, AdminLogManager adminLogManager,
+			TokenService tokenService) {
 		this.adminService = adminService;
 		this.userService = userService;
 		this.bookService = bookService;
@@ -69,6 +76,7 @@ public class AdminController {
 		this.meetingParticipantManager = meetingParticipantManager;
 		this.attendanceManager = attendanceManager;
 		this.adminLogManager = adminLogManager;
+		this.tokenService = tokenService;
 	}
 
 	@RequestMapping(value = "login", method = RequestMethod.GET)
@@ -76,6 +84,24 @@ public class AdminController {
 		return "admin/login";
 	}
 
+	@ResponseStatus(HttpStatus.CREATED)
+	@RequestMapping(value = "validate", method = RequestMethod.POST)
+	public void adminLogin(HttpServletRequest request, HttpServletResponse response, 
+					@RequestParam("jobNumber") String jobNumber, @RequestParam("password") String password) {
+		Result<TokenAO> result = tokenService.createAndSaveToken(TokenType.ADMIN, jobNumber, password);
+		if(result.isSuccess()) {
+			request.getSession().setAttribute("token", result.getData().getToken());
+			try {
+				String indexPath = new StringBuilder().append(request.getScheme())
+						.append("://").append(request.getServerName()).append(":")
+						.append(request.getServerPort()).toString();
+				response.sendRedirect(indexPath + "/v1/admin/index");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
 	@RequestMapping(value = "index", method = RequestMethod.GET)
 //	@TokenAuth(tokenType = {TokenType.ADMIN})
 //	@AdminLog(value = "登录", type = AdminLogType.LOGIN)
