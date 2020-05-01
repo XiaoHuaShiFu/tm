@@ -120,8 +120,16 @@
         		<div class="func-bar clearfix">
         			<div style="padding: 0 20px;">
        					<form action="1" method="get">
-       						<input name="name" type="text" placeholder="输入用户id">
-       						<input type="submit" value="查询">
+                            <span>选择部门</span>
+                            <select name="state">
+                                <option value="">所有</option>
+                                <option value="BOOKED" th:selected="${#strings.equals(state, 'BOOKED')}">预定</option>
+                                <option value="GIVE_UP" th:selected="${#strings.equals(state, 'GIVE_UP')}">放弃</option>
+                                <option value="BORROWED" th:selected="${#strings.equals(state, 'BORROWED')}">借出</option>
+                                <option value="RETURNED" th:selected="${#strings.equals(state, 'RETURNED')}">返还</option>
+                            </select>
+                            <input name="userId" type="text" placeholder="输入用户id" title="不输入参数默认查询所有">
+                            <input type="submit" value="查询" title="不输入参数默认查询所有">
        					</form>
        				</div>
         		</div>
@@ -136,10 +144,11 @@
                     <h6 class="text-uppercase mb-0">书籍信息</h6>
                   </div>
                   <div class="card-body">                           
-                    <table class="table table-striped card-text">
+                    <table class="table table-striped card-text center-align">
                       <thead>
                         <tr>
                           <th>id</th>
+                          <th>借取者id</th>
                           <th>借取者</th>
                           <th>书名</th>
                           <th>借出时间</th>
@@ -151,6 +160,7 @@
                       <tbody>
                         <tr th:each="bookLog : ${bookLogs}">
 					        <td th:text="${bookLog.id}">空</td>
+					        <td th:text="${bookLog.user.id}">空</td>
 					        <td th:text="${bookLog.user.fullName}">空</td>
 					        <td th:text="${bookLog.book.name}">空</td>
 					        <td th:text="${#dates.format(bookLog.borrowTime, 'yyyy-MM-dd HH:mm:ss')}">空</td>

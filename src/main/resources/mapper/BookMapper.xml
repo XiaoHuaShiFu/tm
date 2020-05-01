@@ -102,5 +102,18 @@
 	    select
 	    <include refid="bookLogColumn"/>
 	    from book_log
+	    <where>
+	        <if test="userId != null">
+	            user_id = #{userId}
+	        </if>
+	        <if test="book != null">
+	            <if test="book.id != null">
+	                book_id = #{book.id}
+	            </if>
+	        </if>
+	        <if test="state != null">
+	            state = #{state}
+	        </if>
+	    </where>
 	</select>
 </mapper>

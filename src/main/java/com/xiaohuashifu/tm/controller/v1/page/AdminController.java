@@ -21,6 +21,7 @@ import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.tm.aspect.annotation.AdminLog;
 import com.xiaohuashifu.tm.aspect.annotation.TokenAuth;
 import com.xiaohuashifu.tm.constant.AdminLogType;
+import com.xiaohuashifu.tm.constant.BookLogState;
 import com.xiaohuashifu.tm.constant.Department;
 import com.xiaohuashifu.tm.constant.TokenType;
 import com.xiaohuashifu.tm.manager.AdminLogManager;
@@ -91,9 +92,10 @@ public class AdminController {
 		return "admin/login";
 	}
 
+	@ResponseBody
 	@ResponseStatus(HttpStatus.CREATED)
 	@RequestMapping(value = "validate", method = RequestMethod.POST)
-	public void adminLogin(HttpServletRequest request, HttpServletResponse response, 
+	public String adminLogin(HttpServletRequest request, HttpServletResponse response, 
 					@RequestParam("jobNumber") String jobNumber, @RequestParam("password") String password) {
 		Result<TokenAO> result = tokenService.createAndSaveToken(TokenType.ADMIN, jobNumber, password);
 		if(result.isSuccess()) {
@@ -106,6 +108,7 @@ public class AdminController {
 				e.printStackTrace();
 			}
 		}
+		return "error";
 	}
 	
 	@RequestMapping(value = "index", method = RequestMethod.GET)
@@ -159,9 +162,17 @@ public class AdminController {
 	
 	@RequestMapping(value = "bookLogs/{pageNum}", method = RequestMethod.GET)
 	public ModelAndView getBookLogs(@PathVariable("pageNum") Integer pageNum,
-			@RequestParam(value = "username", required = false) String username) {
+			@RequestParam(value = "userId", required = false) Integer userId,
+			@RequestParam(value = "state", required = false) BookLogState state) {
 		ModelAndView model = new ModelAndView("admin/bookLogs");
 		BookLogQuery bookLogQuery = new BookLogQuery(pageNum);
+		if (userId != null) {
+			bookLogQuery.setUserId(userId);
+		}
+		if (state != null) {
+			bookLogQuery.setState(state);
+			model.addObject("state", state);
+		}
 		Result<PageInfo<BookLogVO>> result = bookLogManager.listBookLogs(bookLogQuery);
 		if (result.isSuccess()) {
 			PageInfo<BookLogVO> bookLogsInfo = result.getData();
@@ -189,9 +200,11 @@ public class AdminController {
 		} else {
 			if (department != null) {
 				userQuery.setDepartment(department);
+				model.addObject("department", department);
 			}
 			if (sort == true) {
 				userQuery.setOrderByPoint(true);
+				model.addObject("sort", sort);
 			}
 			result = userService.listUsers(userQuery);
 		}
@@ -207,8 +220,6 @@ public class AdminController {
 				model.addObject("total", usersInfo.getTotal());
 				model.addObject("pageSize", userQuery.getPageSize());
 				model.addObject("pageIndex", pageNum);
-				model.addObject("department", department);
-				model.addObject("sort", sort);
 			}
 			model.addObject("users", users);
 		} else {
@@ -247,8 +258,8 @@ public class AdminController {
 	}
 	
 	@RequestMapping(value = "meetings/{meetingId}/participants/{pageNum}", method = RequestMethod.GET)
-	public ModelAndView meetingParticipants(@PathVariable("meetingId") Integer meetingId, @PathVariable("pageNum") Integer pageNum,
-			@RequestParam("prevPageNum") Integer prevPageNum) {
+	public ModelAndView meetingParticipants(@PathVariable("meetingId") Integer meetingId,
+			@PathVariable("pageNum") Integer pageNum, @RequestParam("prevPageNum") Integer prevPageNum) {
 		ModelAndView model = new ModelAndView("admin/meetingParticipants");
 		MeetingParticipantQuery query = new MeetingParticipantQuery(pageNum, meetingId);
 		Result<PageInfo<MeetingParticipantVO>> participantResult = meetingParticipantManager.listMeetingParticipants(query);
@@ -276,9 +287,11 @@ public class AdminController {
 		AttendanceQuery attendanceQuery = new AttendanceQuery(pageNum);
 		if (department != null) {
 			attendanceQuery.setDepartment(department);
+			model.addObject("department", department);
 		}
 		if (month != null) {
 			attendanceQuery.setMonth(month);
+			model.addObject("month", month);
 		}
 		Result<PageInfo<AttendanceVO>> result = attendanceManager.listAttendances(attendanceQuery);
 		if (result.isSuccess()) {
@@ -288,8 +301,6 @@ public class AdminController {
 			model.addObject("total", attendancesInfo.getTotal());
 			model.addObject("pageSize", attendanceQuery.getPageSize());
 			model.addObject("pageIndex", pageNum);
-			model.addObject("department", department);
-			model.addObject("month", month);
 		}else {
 			model.addObject("error", "error");
 		}

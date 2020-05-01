@@ -2,12 +2,11 @@ package com.xiaohuashifu.tm.pojo.query;
 
 import com.xiaohuashifu.tm.constant.BookLogState;
 import com.xiaohuashifu.tm.pojo.do0.BookDO;
-import com.xiaohuashifu.tm.pojo.do0.UserDO;
 
 public class BookLogQuery {
 	private Integer pageNum = 1;
 	private Integer pageSize = 10;
-	private UserDO user;
+	private Integer userId;
 	private BookDO book;
 	private BookLogState state;
 	
@@ -33,12 +32,12 @@ public class BookLogQuery {
 		this.pageSize = pageSize;
 	}
 
-	public UserDO getUser() {
-		return user;
+	public Integer getUserId() {
+		return userId;
 	}
 
-	public void setUser(UserDO user) {
-		this.user = user;
+	public void setUserId(Integer userId) {
+		this.userId = userId;
 	}
 
 	public BookDO getBook() {

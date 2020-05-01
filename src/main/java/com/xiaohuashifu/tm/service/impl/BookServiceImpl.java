@@ -143,7 +143,8 @@ public class BookServiceImpl implements BookService {
 			book.setState(BookState.IDLE);
 			cacheService.del("bookId:" + bookLog.getBookId());
 		}else if (BookLogState.RETURNED.equals(bookLog.getState())) {
-			
+			bookLog.setReturnTime(new Date());
+			book.setState(BookState.IDLE);
 		}
 		int count = bookMapper.insertBookLog(bookLog);
 		if (count < 1) {

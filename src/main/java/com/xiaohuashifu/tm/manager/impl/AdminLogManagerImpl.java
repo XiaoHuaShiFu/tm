@@ -32,6 +32,9 @@ public class AdminLogManagerImpl implements AdminLogManager {
 	@Override
 	public Result<PageInfo<AdminLogVO>> listAdminLogs(AdminLogQuery adminLogQuery) {
 		Result<PageInfo<AdminLogDO>> result = adminService.listAdminLogs(adminLogQuery);
+		if (!result.isSuccess()) {
+			return Result.fail(result.getErrorCode(), result.getMessage());
+		}
         PageInfo<AdminLogDO> pageInfo = result.getData();
         List<AdminLogDO> adminLogDOList = pageInfo.getList();
         List<AdminLogVO> adminLogVOList = adminLogDOList.stream()

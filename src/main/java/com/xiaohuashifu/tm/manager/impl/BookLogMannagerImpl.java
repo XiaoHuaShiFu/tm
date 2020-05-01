@@ -38,6 +38,9 @@ public class BookLogMannagerImpl implements BookLogManager {
 	@Override
 	public Result<PageInfo<BookLogVO>> listBookLogs(BookLogQuery bookLogQuery) {
 		Result<PageInfo<BookLogDO>> result = bookService.listBookLogs(bookLogQuery);
+		if (!result.isSuccess()) {
+			return Result.fail(result.getErrorCode(), result.getMessage());
+		}
         PageInfo<BookLogDO> pageInfo = result.getData();
         List<BookLogDO> bookLogDOList = pageInfo.getList();
         List<BookLogVO> bookLogVOList = bookLogDOList.stream()
