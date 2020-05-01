@@ -108,11 +108,11 @@
 	        </if>
 	        <if test="book != null">
 	            <if test="book.id != null">
-	                book_id = #{book.id}
+	                and book_id = #{book.id}
 	            </if>
 	        </if>
 	        <if test="state != null">
-	            state = #{state}
+	            and state = #{state}
 	        </if>
 	    </where>
 	</select>
