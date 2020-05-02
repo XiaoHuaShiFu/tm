@@ -14,6 +14,4 @@ public interface AdminMapper {
 	AdminDO getAdminByJobNumber(String jobNumber);
 	int insertAdminLog(@Param("adminLog") AdminLogDO adminLogDO);
 	List<AdminLogDO> listAdminLogs();
-	String getAnnouncement();
-	int updateAnnouncement(@Param("announcement") String announcement);
 }

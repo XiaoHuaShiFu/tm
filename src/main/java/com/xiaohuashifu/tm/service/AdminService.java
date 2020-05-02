@@ -13,6 +13,4 @@ public interface AdminService {
 	Result<AdminDO> getAdminByJobNumber(String jobNumber);
 	Result saveAdminLog(AdminLogDO adminLogDO);
 	Result<PageInfo<AdminLogDO>> listAdminLogs(AdminLogQuery adminLogQuery);
-	Result<String> getAnnouncement();
-	Result<Map<String, String>> updateAnnouncement(String announcement);
 }

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiaohuashifu.tm.dao.AnnouncementMapper">
+    <sql id="announcementColumn">
+        id, title, content, publish_time, create_time, update_time
+    </sql>
+
+	
+	<insert id="updateAnnouncement" parameterType="com.xiaohuashifu.tm.pojo.do0.AnnouncementDO">
+		update announcement
+		<set>
+		    <if test="title != null">
+		        title = #{title},
+		    </if>
+		    <if test="content != null">
+		        content = #{content}
+		    </if>
+		</set>
+	</insert>
+	
+	<select id="getAnnouncement" resultType="com.xiaohuashifu.tm.pojo.do0.AnnouncementDO">
+        select
+        <include refid="announcementColumn"/>
+        from announcement
+        order by publish_time desc
+        limit 1
+    </select>
+    
+    <select id="listAnnouncements" resultType="com.xiaohuashifu.tm.pojo.do0.AnnouncementDO">
+        select
+        <include refid="announcementColumn"/>
+        from announcement
+    </select>
+    
+</mapper>

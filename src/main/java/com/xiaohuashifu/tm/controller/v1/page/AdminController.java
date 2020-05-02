@@ -30,6 +30,7 @@ import com.xiaohuashifu.tm.manager.BookLogManager;
 import com.xiaohuashifu.tm.manager.MeetingManager;
 import com.xiaohuashifu.tm.manager.MeetingParticipantManager;
 import com.xiaohuashifu.tm.pojo.ao.TokenAO;
+import com.xiaohuashifu.tm.pojo.do0.AnnouncementDO;
 import com.xiaohuashifu.tm.pojo.do0.BookDO;
 import com.xiaohuashifu.tm.pojo.do0.BookLogDO;
 import com.xiaohuashifu.tm.pojo.do0.MeetingDO;
@@ -48,6 +49,7 @@ import com.xiaohuashifu.tm.pojo.vo.MeetingParticipantVO;
 import com.xiaohuashifu.tm.pojo.vo.MeetingVO;
 import com.xiaohuashifu.tm.result.Result;
 import com.xiaohuashifu.tm.service.AdminService;
+import com.xiaohuashifu.tm.service.AnnouncementService;
 import com.xiaohuashifu.tm.service.BookService;
 import com.xiaohuashifu.tm.service.MeetingService;
 import com.xiaohuashifu.tm.service.TokenService;
@@ -58,6 +60,7 @@ import com.xiaohuashifu.tm.service.UserService;
 public class AdminController {
 
 	private final AdminService adminService;
+	private final AnnouncementService announcementService;
 	private final UserService userService;
 	private final BookService bookService;
 	private final BookLogManager bookLogManager;
@@ -69,13 +72,14 @@ public class AdminController {
 	private final TokenService tokenService;
 	
 	@Autowired
-	public AdminController(AdminService adminService, UserService userService,
-			BookService bookService, BookLogManager bookLogManager,
-			MeetingService meetingService, MeetingManager meetingManager,
-			MeetingParticipantManager meetingParticipantManager,
+	public AdminController(AdminService adminService, AnnouncementService announcementService,
+			UserService userService, BookService bookService,
+			BookLogManager bookLogManager, MeetingService meetingService,
+			MeetingManager meetingManager, MeetingParticipantManager meetingParticipantManager,
 			AttendanceManager attendanceManager, AdminLogManager adminLogManager,
 			TokenService tokenService) {
 		this.adminService = adminService;
+		this.announcementService = announcementService;
 		this.userService = userService;
 		this.bookService = bookService;
 		this.bookLogManager = bookLogManager;
@@ -118,7 +122,7 @@ public class AdminController {
 		ModelAndView model = new ModelAndView("admin/index");
 		model.addObject("token", request.getSession().getAttribute("token"));
 		request.getSession().removeAttribute("token");
-		Result<String> result = adminService.getAnnouncement();
+		Result<AnnouncementDO> result = announcementService.getAnnouncement();
 		if (result.isSuccess()) {
 			model.addObject("announcement", result.getData());
 		} else {
@@ -130,8 +134,10 @@ public class AdminController {
 
 	@ResponseBody
 	@RequestMapping(value = "announcement", method = RequestMethod.PUT)
-	public String updateAnnouncement(@RequestParam("announcement") String announcement) {
-		Result<?> result = adminService.updateAnnouncement(announcement);
+	public String updateAnnouncement(@RequestParam("announcement") String content) {
+		AnnouncementDO announcement = new AnnouncementDO();
+		announcement.setContent(content);
+		Result<?> result = announcementService.updateAnnouncement(announcement);
 		if (result.isSuccess()) {
 			return "ok";
 		}

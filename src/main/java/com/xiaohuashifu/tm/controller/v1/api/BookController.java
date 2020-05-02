@@ -6,13 +6,10 @@ import com.xiaohuashifu.tm.auth.TokenAuth;
 import com.xiaohuashifu.tm.constant.BookLogState;
 import com.xiaohuashifu.tm.constant.BookState;
 import com.xiaohuashifu.tm.constant.TokenType;
-import com.xiaohuashifu.tm.manager.BookLogManager;
 import com.xiaohuashifu.tm.pojo.ao.TokenAO;
 import com.xiaohuashifu.tm.pojo.do0.BookDO;
 import com.xiaohuashifu.tm.pojo.do0.BookLogDO;
-import com.xiaohuashifu.tm.pojo.query.BookLogQuery;
 import com.xiaohuashifu.tm.pojo.query.BookQuery;
-import com.xiaohuashifu.tm.pojo.vo.BookLogVO;
 import com.xiaohuashifu.tm.pojo.vo.BookVO;
 import com.xiaohuashifu.tm.result.ErrorCode;
 import com.xiaohuashifu.tm.result.Result;
@@ -34,13 +31,11 @@ import java.util.stream.Collectors;
 public class BookController {
 
 	private final BookService bookService;
-	private final BookLogManager bookLogManager;
 	private final Mapper mapper;
 	
 	@Autowired
-	public BookController(BookService bookService, Mapper mapper, BookLogManager bookLogManager) {
+	public BookController(BookService bookService, Mapper mapper) {
 		this.bookService = bookService;
-		this.bookLogManager = bookLogManager;
 		this.mapper = mapper;
 	}
 	

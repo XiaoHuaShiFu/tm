@@ -1,12 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.xiaohuashifu.tm.dao.AdminMapper">
+    <sql id="adminColumn">
+        id, full_name, job_number, password, department, phone, email, available, create_time, update_time
+    </sql>
+    
+    <sql id="adminLogColumn">
+        id, admin_id, content, operation_time, create_time, update_time
+    </sql>
+
+
     <select id="getAdminById" parameterType="integer" resultType="com.xiaohuashifu.tm.pojo.do0.AdminDO">
-        select * from admin where id = #{id};
+        select
+        <include refid="adminColumn"/>
+        from admin where id = #{id};
     </select>
 
 	<select id="getAdminByJobNumber" parameterType="string" resultType="com.xiaohuashifu.tm.pojo.do0.AdminDO">
-		select *
+		select
+		<include refid="adminColumn"/>
 		from admin
 		where job_number = #{jobNumber};
 	</select>
@@ -16,14 +28,9 @@
 	</insert>
 	
 	<select id="listAdminLogs" resultType="com.xiaohuashifu.tm.pojo.do0.AdminLogDO">
-		select * from admin_log
+		select
+		<include refid="adminLogColumn"/>
+		from admin_log
 	</select>
 	
-	<select id="getAnnouncement" resultType="string">
-		select content from announcement limit 1;
-	</select>
-	
-	<insert id="updateAnnouncement" parameterType="string">
-		update announcement set content = #{announcement};
-	</insert>
 </mapper>

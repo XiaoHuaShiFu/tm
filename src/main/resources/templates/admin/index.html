@@ -115,7 +115,7 @@
           	<form action="announcement" method="post">
           		<input type="hidden" name="_method" value="PUT">
 	          	发布公告
-	          	<input id="announcement" name="announcement" type="text" placeholder="请输入公告" th:value="${announcement}">
+	          	<input id="announcement" name="announcement" type="text" placeholder="请输入公告" th:value="${announcement.content}">
 	          	<button id="announ_btn" type="button">发 布</button>
           	</form>
           </section>
