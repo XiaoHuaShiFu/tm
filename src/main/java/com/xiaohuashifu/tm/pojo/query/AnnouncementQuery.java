@@ -6,6 +6,10 @@ public class AnnouncementQuery {
 	
 	public AnnouncementQuery() {}
 	
+	public AnnouncementQuery(Integer pageNum) {
+		this.pageNum = pageNum;
+	}
+	
 	public Integer getPageNum() {
 		return pageNum;
 	}

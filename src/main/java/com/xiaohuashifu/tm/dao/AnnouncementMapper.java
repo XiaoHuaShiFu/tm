@@ -8,7 +8,9 @@ import com.xiaohuashifu.tm.pojo.do0.AnnouncementDO;
 
 @Mapper
 public interface AnnouncementMapper {
+	int insertAnnouncement(AnnouncementDO announcement);
 	int updateAnnouncement(AnnouncementDO announcement);
+	int deleteAnnouncement(Integer id);
 	
 	/**
 	 * 获取最新发布的公告

@@ -6,17 +6,26 @@
     </sql>
 
 	
-	<insert id="updateAnnouncement" parameterType="com.xiaohuashifu.tm.pojo.do0.AnnouncementDO">
-		update announcement
-		<set>
-		    <if test="title != null">
-		        title = #{title},
-		    </if>
-		    <if test="content != null">
-		        content = #{content}
-		    </if>
-		</set>
+	<insert id="insertAnnouncement" parameterType="com.xiaohuashifu.tm.pojo.do0.AnnouncementDO">
+		insert into announcement(title, content, publish_time) values (#{title}, #{content}, now());
 	</insert>
+	
+	<update id="updateAnnouncement" parameterType="com.xiaohuashifu.tm.pojo.do0.AnnouncementDO">
+	    update announcement
+        <set>
+            <if test="title != null">
+                title = #{title},
+            </if>
+            <if test="content != null">
+                content = #{content}
+            </if>
+        </set>
+        where id = #{id}
+	</update>
+	
+	<delete id="deleteAnnouncement" parameterType="integer">
+	   delete from announcement where id = #{id};
+	</delete>
 	
 	<select id="getAnnouncement" resultType="com.xiaohuashifu.tm.pojo.do0.AnnouncementDO">
         select

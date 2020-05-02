@@ -8,7 +8,9 @@ import com.xiaohuashifu.tm.pojo.query.AnnouncementQuery;
 import com.xiaohuashifu.tm.result.Result;
 
 public interface AnnouncementService {
-	Result<Map<String, String>> updateAnnouncement(AnnouncementDO announcement);
+	Result<AnnouncementDO> insertAnnouncement(AnnouncementDO announcement);
+	Result<Map<Object, Object>> updateAnnouncement(AnnouncementDO announcement);
+	Result<Integer> deleteAnnouncement(Integer id);
 	Result<AnnouncementDO> getAnnouncement();
 	Result<PageInfo<AnnouncementDO>> listAnnouncements(AnnouncementQuery announcementQuery);
 }

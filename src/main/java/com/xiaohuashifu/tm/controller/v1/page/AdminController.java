@@ -36,6 +36,7 @@ import com.xiaohuashifu.tm.pojo.do0.BookLogDO;
 import com.xiaohuashifu.tm.pojo.do0.MeetingDO;
 import com.xiaohuashifu.tm.pojo.do0.UserDO;
 import com.xiaohuashifu.tm.pojo.query.AdminLogQuery;
+import com.xiaohuashifu.tm.pojo.query.AnnouncementQuery;
 import com.xiaohuashifu.tm.pojo.query.AttendanceQuery;
 import com.xiaohuashifu.tm.pojo.query.BookLogQuery;
 import com.xiaohuashifu.tm.pojo.query.BookQuery;
@@ -122,13 +123,6 @@ public class AdminController {
 		ModelAndView model = new ModelAndView("admin/index");
 		model.addObject("token", request.getSession().getAttribute("token"));
 		request.getSession().removeAttribute("token");
-		Result<AnnouncementDO> result = announcementService.getAnnouncement();
-		if (result.isSuccess()) {
-			model.addObject("announcement", result.getData());
-		} else {
-			model.setViewName("admin/error");
-			model.addObject("error_msg", "服务器获取公告时发生错误");
-		}
 		return model;
 	}
 
@@ -306,6 +300,24 @@ public class AdminController {
 			model.addObject("attendances", attendances);
 			model.addObject("total", attendancesInfo.getTotal());
 			model.addObject("pageSize", attendanceQuery.getPageSize());
+			model.addObject("pageIndex", pageNum);
+		}else {
+			model.addObject("error", "error");
+		}
+		return model;
+	}
+	
+	@RequestMapping(value = "announcements/{pageNum}", method = RequestMethod.GET)
+	public ModelAndView announcements(@PathVariable("pageNum") Integer pageNum) {
+		ModelAndView model = new ModelAndView("admin/announcements");
+		AnnouncementQuery announcementQuery = new AnnouncementQuery(pageNum);
+		Result<PageInfo<AnnouncementDO>> result = announcementService.listAnnouncements(announcementQuery);
+		if (result.isSuccess()) {
+			PageInfo<AnnouncementDO> announcementsInfo = result.getData();
+			List<AnnouncementDO> announcements = announcementsInfo.getList();
+			model.addObject("announcements", announcements);
+			model.addObject("total", announcementsInfo.getTotal());
+			model.addObject("pageSize", announcementsInfo.getPageSize());
 			model.addObject("pageIndex", pageNum);
 		}else {
 			model.addObject("error", "error");

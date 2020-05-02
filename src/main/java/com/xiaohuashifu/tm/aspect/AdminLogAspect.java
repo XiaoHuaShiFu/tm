@@ -90,8 +90,8 @@ public class AdminLogAspect {
 		}else if (adminLog.type().equals(AdminLogType.UPDATE)) {
 			if (data instanceof HashMap) {
 				Map<String, Object> dataMap = (HashMap<String, Object>) data;
-				adminLogDO.setContent(logValue + "。更新前的数据 : " + dataMap.get("oldValue") 
-					+ ";  更新后的数据 : " + dataMap.get("newValue"));
+				adminLogDO.setContent(logValue + "。更新前的数据 : " + dataMap.get("oldValue").toString()
+					+ ";  更新后的数据 : " + dataMap.get("newValue").toString());
 			}else {
 				adminLogDO.setContent(logValue + ", 更新的数据 : " + data.toString());
 			}

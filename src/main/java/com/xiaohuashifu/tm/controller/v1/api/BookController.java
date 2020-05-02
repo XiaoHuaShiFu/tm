@@ -127,7 +127,7 @@ public class BookController {
 		bookLog.setBorrowTime(new Date());
 		bookLog.setState(bookLogState);
 		Result<BookLogDO> result = bookService.saveBookLog(bookLog);
-		return result;
+		return result.isSuccess() ? mapper.map(result.getData(), BookLogDO.class) : result;
 	}
 	
 }

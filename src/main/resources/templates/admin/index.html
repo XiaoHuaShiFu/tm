@@ -91,7 +91,6 @@
                 </div>
             </li>
             <li class="sidebar-list-item"><a href="meetings/1" class="sidebar-link text-muted"><i class="o-survey-1 mr-3 text-gray"></i><span>会议管理</span></a></li>
-            <li class="sidebar-list-item"><a href="adminLogs/1" class="sidebar-link text-muted"><i class="o-paperwork-1 mr-3 text-gray"></i><span>日志信息</span></a></li>
             <li class="sidebar-list-item"><a href="#" data-toggle="collapse" data-target="#dutyPages" aria-expanded="false" aria-controls="dutyPages" class="sidebar-link text-muted"><i class="o-wireframe-1 mr-3 text-gray"></i><span>值班管理</span></a>
                 <div id="dutyPages" class="collapse">
                     <ul class="sidebar-menu list-unstyled border-left border-primary border-thick">
@@ -99,6 +98,8 @@
                     </ul>
                 </div>
             </li>
+            <li class="sidebar-list-item"><a href="announcements/1" class="sidebar-link text-muted"><i class="o-database-1 mr-3 text-gray"></i><span>公告管理</span></a></li>
+            <li class="sidebar-list-item"><a href="adminLogs/1" class="sidebar-link text-muted"><i class="o-paperwork-1 mr-3 text-gray"></i><span>日志信息</span></a></li>
             <li class="sidebar-list-item"><a href="login" class="sidebar-link text-muted"><i class="o-exit-1 mr-3 text-gray"></i><span>Login</span></a></li>
         </ul>
         <div class="text-gray-400 text-uppercase px-3 px-lg-4 py-4 font-weight-bold small headings-font-family">EXTRAS</div>
@@ -111,14 +112,6 @@
       </div><div class="tlinks">Collect from <a href="http://www.cssmoban.com/"  title="网站模板">网站模板</a></div>
       <div class="page-holder w-100 d-flex flex-wrap">
         <div class="container-fluid px-xl-5">
-          <section>
-          	<form action="announcement" method="post">
-          		<input type="hidden" name="_method" value="PUT">
-	          	发布公告
-	          	<input id="announcement" name="announcement" type="text" placeholder="请输入公告" th:value="${announcement.content}">
-	          	<button id="announ_btn" type="button">发 布</button>
-          	</form>
-          </section>
           <section class="py-5">
             <div class="row">
               <div class="col-xl-3 col-lg-6 mb-4 mb-xl-0">

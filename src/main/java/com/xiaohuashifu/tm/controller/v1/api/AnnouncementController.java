@@ -1,6 +1,7 @@
 package com.xiaohuashifu.tm.controller.v1.api;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,6 +30,38 @@ public class AnnouncementController {
 	@Autowired
 	public AnnouncementController(AnnouncementService announcementService) {
 		this.announcementService = announcementService;
+	}
+	
+	@ResponseStatus(HttpStatus.CREATED)
+	@RequestMapping(method = RequestMethod.POST)
+//	@TokenAuth(tokenType = TokenType.ADMIN)
+	public Object post(AnnouncementDO announcement) {
+		Result<AnnouncementDO> result = announcementService.insertAnnouncement(announcement);
+		if (!result.isSuccess()) {
+			return result;
+		}
+		return result.getData();
+	}
+	
+	@ResponseStatus(HttpStatus.OK)
+	@RequestMapping(method = RequestMethod.PUT)
+//	@TokenAuth(tokenType = TokenType.ADMIN)
+	public Object put(AnnouncementDO announcement) {
+		Result<Map<Object, Object>> result = announcementService.updateAnnouncement(announcement);
+		if (!result.isSuccess()) {
+			return result;
+		}
+		return result.getData().get("newValue");
+	}
+	
+	@RequestMapping(method = RequestMethod.DELETE)
+//	@TokenAuth(tokenType = TokenType.ADMIN)
+	public Object delete(@RequestParam("id") Integer id) {
+		Result<Integer> result = announcementService.deleteAnnouncement(id);
+		if (!result.isSuccess()) {
+			return result;
+		}
+		return result.getData();
 	}
 	
 	@ResponseStatus(HttpStatus.OK)

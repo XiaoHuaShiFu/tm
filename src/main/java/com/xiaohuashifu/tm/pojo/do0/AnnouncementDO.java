@@ -6,9 +6,9 @@ public class AnnouncementDO {
 	private Integer id;
 	private String title;
 	private String content;
-	private Date publish_time;
-	private Date create_time;
-	private Date update_time;
+	private Date publishTime;
+	private Date createTime;
+	private Date updateTime;
 	
 	public Integer getId() {
 		return id;
@@ -34,28 +34,28 @@ public class AnnouncementDO {
 		this.content = content;
 	}
 
-	public Date getPublish_time() {
-		return publish_time;
+	public Date getPublishTime() {
+		return publishTime;
 	}
 
-	public void setPublish_time(Date publish_time) {
-		this.publish_time = publish_time;
+	public void setPublishTime(Date publishTime) {
+		this.publishTime = publishTime;
 	}
 
-	public Date getCreate_time() {
-		return create_time;
+	public Date getCreateTime() {
+		return createTime;
 	}
 
-	public void setCreate_time(Date create_time) {
-		this.create_time = create_time;
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
 	}
 
-	public Date getUpdate_time() {
-		return update_time;
+	public Date getUpdateTime() {
+		return updateTime;
 	}
 
-	public void setUpdate_time(Date update_time) {
-		this.update_time = update_time;
+	public void setUpdateTime(Date updateTime) {
+		this.updateTime = updateTime;
 	}
 
 	@Override
@@ -63,9 +63,9 @@ public class AnnouncementDO {
 		return "AnnouncementDO [id=" + id +
 				", title=" + title +
 				", content=" + content +
-				", publish_time=" + publish_time +
-				", create_time=" + create_time +
-				", update_time=" + update_time + "]";
+				", publishTime=" + publishTime +
+				", createTime=" + createTime +
+				", updateTime=" + updateTime + "]";
 	}
 	
 }

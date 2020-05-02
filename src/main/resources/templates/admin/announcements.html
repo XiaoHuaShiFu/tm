@@ -85,11 +85,11 @@
         <ul class="sidebar-menu list-unstyled">
             <li class="sidebar-list-item"><a href="/v1/admin/index" class="sidebar-link text-muted"><i class="o-home-1 mr-3 text-gray"></i><span>Home</span></a></li>
             <li class="sidebar-list-item"><a href="/v1/admin/members/1" class="sidebar-link text-muted"><i class="o-sales-up-1 mr-3 text-gray"></i><span>成员管理</span></a></li>
-            <li class="sidebar-list-item"><a href="#" data-toggle="collapse" data-target="#bookPages" aria-expanded="true" aria-controls="bookPages" class="sidebar-link text-muted"><i class="o-table-content-1 mr-3 text-gray"></i><span>图书管理</span></a>
-                <div id="bookPages" class="collapse show">
+            <li class="sidebar-list-item"><a href="#" data-toggle="collapse" data-target="#bookPages" aria-expanded="false" aria-controls="bookPages" class="sidebar-link text-muted"><i class="o-table-content-1 mr-3 text-gray"></i><span>图书管理</span></a>
+                <div id="bookPages" class="collapse">
 		            <ul class="sidebar-menu list-unstyled border-left border-primary border-thick">
-		                <li class="sidebar-list-item"><a href="/v1/admin/books/1" class="sidebar-link text-muted pl-lg-5">书籍信息</a></li>
-		                <li class="sidebar-list-item"><a href="/v1/admin/bookLogs/1" class="sidebar-link text-muted pl-lg-5 active">借还信息</a></li>
+		                <li class="sidebar-list-item"><a href="/v1/admin/books/1" class="sidebar-link text-muted pl-lg-5 active">书籍信息</a></li>
+		                <li class="sidebar-list-item"><a href="/v1/admin/bookLogs/1" class="sidebar-link text-muted pl-lg-5">借还信息</a></li>
 		            </ul>
 		        </div>
             </li>
@@ -101,7 +101,7 @@
                     </ul>
                 </div>
             </li>
-            <li class="sidebar-list-item"><a href="/v1/admin/announcements/1" class="sidebar-link text-muted"><i class="o-database-1 mr-3 text-gray"></i><span>公告管理</span></a></li>
+            <li class="sidebar-list-item"><a href="1" class="sidebar-link text-muted active"><i class="o-survey-1 mr-3 text-gray"></i><span>公告管理</span></a></li>
             <li class="sidebar-list-item"><a href="/v1/admin/adminLogs/1" class="sidebar-link text-muted"><i class="o-paperwork-1 mr-3 text-gray"></i><span>日志信息</span></a></li>
             <li class="sidebar-list-item"><a href="/v1/admin/login" class="sidebar-link text-muted"><i class="o-exit-1 mr-3 text-gray"></i><span>Login</span></a></li>
         </ul>
@@ -118,20 +118,9 @@
       <div class="page-holder w-100 d-flex flex-wrap">
         <div class="container-fluid px-xl-5">
         	<section>
-        		<div class="func-bar clearfix">
+        		<div class="func-bar">
         			<div style="padding: 0 20px;">
-       					<form action="1" method="get">
-                            <span>选择部门</span>
-                            <select name="state">
-                                <option value="">所有</option>
-                                <option value="BOOKED" th:selected="${#strings.equals(state, 'BOOKED')}">预定</option>
-                                <option value="GIVE_UP" th:selected="${#strings.equals(state, 'GIVE_UP')}">放弃</option>
-                                <option value="BORROWED" th:selected="${#strings.equals(state, 'BORROWED')}">借出</option>
-                                <option value="RETURNED" th:selected="${#strings.equals(state, 'RETURNED')}">返还</option>
-                            </select>
-                            <input name="userId" type="text" placeholder="输入用户id" title="不输入参数默认查询所有">
-                            <input type="submit" value="查询" title="不输入参数默认查询所有">
-       					</form>
+       					<span id="add-btn" onselectstart="return false;">发布公告</span>
        				</div>
         		</div>
         	</section>
@@ -142,32 +131,29 @@
               <div class="col-lg-6 mb-4 table-wrapper">
                 <div class="card">
                   <div class="card-header">
-                    <h6 class="text-uppercase mb-0">书籍信息</h6>
+                    <h6 class="text-uppercase mb-0">公告信息</h6>
                   </div>
                   <div class="card-body">                           
                     <table class="table table-striped card-text center-align">
                       <thead>
                         <tr>
                           <th>id</th>
-                          <th>借取者id</th>
-                          <th>借取者</th>
-                          <th>书名</th>
-                          <th>借出时间</th>
-                          <th>到期时间</th>
-                          <th>借还时间</th>
-                          <th>操作状态</th>
+                          <th>标题</th>
+                          <th>内容</th>
+                          <th>发布时间</th>
+                          <th>操作</th>
                         </tr>
                       </thead>
                       <tbody>
-                        <tr th:each="bookLog : ${bookLogs}">
-					        <td th:text="${bookLog.id}">空</td>
-					        <td th:text="${bookLog.user.id}">空</td>
-					        <td th:text="${bookLog.user.fullName}">空</td>
-					        <td th:text="${bookLog.book.name}">空</td>
-					        <td th:text="${#dates.format(bookLog.borrowTime, 'yyyy-MM-dd HH:mm:ss')}">空</td>
-					        <td th:text="${#dates.format(bookLog.expirationTime, 'yyyy-MM-dd HH:mm:ss')}">空</td>
-					        <td th:text="${#dates.format(bookLog.returnTime, 'yyyy-MM-dd HH:mm:ss')}">空</td>
-					        <td th:text="${bookLog.state}">空</td>
+                        <tr th:each="announcement : ${announcements}">
+					        <td th:text="${announcement.id}">空</td>
+					        <td th:text="${announcement.title}">空</td>
+					        <td th:text="${announcement.content}">空</td>
+					        <td th:text="${#dates.format(announcement.publishTime, 'yyyy-MM-dd HH:mm:ss')}">空</td>
+					        <td>
+					        	<span class="upd-btn" th:upd="${announcement.id}" onclick="updateBooks(this);">修改</span>
+					        	<span class="del-btn" th:del="${announcement.id}" onclick="deleteBooks(this);">删除</span>
+					        </td>
 						</tr>
                       </tbody>
                     </table>
@@ -193,6 +179,44 @@
       </div>
     </div>
     
+    <!-- 添加书籍遮罩层 -->
+    <div id="add-mask" class="mask">
+    	<div>
+    		<form id="add-form" method="post">
+    			<div>
+    				标题 <input name="title" type="text">
+    			</div>
+    			<div>
+    				内容 <input name="content" type="text">
+    			</div>
+				<div>
+    				<input id="add-submit" type="button" value="提交">
+    			</div>
+    		</form>
+	    	<i class="iconfont icon-delete"></i>
+    	</div>
+    </div>
+    
+    <!-- 修改书籍遮罩层 -->
+    <div id="upd-mask" class="mask">
+    	<div>
+    		<form id="upd-form" method="post">
+    		    <div>
+    		        id <input id="upd-id" name="id" type="text">
+    		    </div>
+    			<div>
+                                     标题 <input id="upd-title" name="title" type="text">
+                </div>
+                <div>
+                                     内容 <input id="upd-content" name="content" type="text">
+                </div>
+				<div>
+    				<input id="upd-submit" type="button" value="提交">
+    			</div>
+    		</form>
+	    	<i class="iconfont icon-delete"></i>
+    	</div>
+    </div>
     <!-- JavaScript files-->
     <script th:src="@{/vendor/jquery/jquery.min.js}"></script>
     <script th:src="@{/vendor/popper.js/umd/popper.min.js}"> </script>
@@ -204,6 +228,87 @@
     <script th:src="@{/js/pagination.js}"></script>
     <script type="text/javascript" th:inline="javascript">
 		setPagination($(".pgn-container")[0], [[${total}]], [[${pageSize}]], [[${pageIndex}]]);
+		$("#add-btn").click(function(){  //点击添加书籍
+			$("#add-mask").attr("style", "display:block;");
+		});
+		
+		$(".icon-delete").click(function(){  //关闭窗口
+			$(".mask").attr("style", "display:none");
+			$("#updating").removeAttr("id");  //取消选中状态
+		});
+		
+		$("#add-submit").click(function(){  //点击提交
+			var formData = new FormData(document.getElementById("add-form"));
+			$.ajax({
+				url:"/v1/announcements",
+				data:formData,
+				type:"POST",
+				processData: false,
+				contentType: false,
+				success:function(data){
+					if (data.success != false){
+						alert("发布成功");
+						$("#add-mask").attr("style", "display:none");
+					}else {
+						alert("发布失败");
+					}
+				}
+			});	
+		})
+		
+		$("#upd-submit").click(function(){  //点击提交
+			var formData = new FormData(document.getElementById("upd-form"));
+			$.ajax({
+				url:"/v1/announcements",
+				data:formData,
+				method:"PUT",
+				processData: false,
+                contentType: false,
+				success:function(data){
+					if (data.success != false){
+						console.log(data);
+						alert("修改成功");
+						$("#upd-mask").attr("style", "display:none");
+						$("#updating").children()[1].innerText = data.title;
+						$("#updating").children()[2].innerText = data.content;
+						$("#updating").removeAttr("id");  //取消选中状态
+					}else {
+						alert("修改失败");
+					}
+				}
+			});	
+		})
+		
+		function updateBooks(ele){  //弹出更新书籍的窗口
+			var updId = $(ele).attr("upd");
+			var parent = $(ele).parent().parent();
+			$(parent).attr("id", "updating");  //设置为选中状态
+			$("#upd-id").attr("value", updId);
+			$("#upd-title").attr("value", parent.children()[1].innerText);
+			$("#upd-content").attr("value", parent.children()[2].innerText);
+			$("#upd-mask").attr("style", "display:block;");
+		}
+		
+		function deleteBooks(ele){
+			var delId = $(ele).attr("del");
+			if (confirm("是否删除id为" + delId + "的公告")){
+				$.ajax({
+					url:"/v1/announcements",
+					data:{
+						id : delId
+					},
+					method:"DELETE",
+					success:function(data){
+						if (data.success != false){
+							$(ele).parent().parent().remove();
+							alert("删除成功");
+						}else {
+							alert("删除失败");
+						}
+					}
+				});
+			}
+		}
  	</script>
   </body>
 </html>

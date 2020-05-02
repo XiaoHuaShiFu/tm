@@ -28,19 +28,39 @@ public class AnnouncementServiceImpl implements AnnouncementService {
 	}
 	
 	@Override
+	@AdminLog(value = "'发布公告'", type = AdminLogType.INSERT)
+	public Result<AnnouncementDO> insertAnnouncement(AnnouncementDO announcement) {
+		int count = announcementMapper.insertAnnouncement(announcement);
+		if (count < 1) {
+			return Result.fail(ErrorCode.INTERNAL_ERROR, "Insert announcement failed.");
+		}
+		return Result.success(announcement);
+	}
+	
+	@Override
 	@AdminLog(value = "'更新公告'", type = AdminLogType.UPDATE)
-	public Result<Map<String, String>> updateAnnouncement(AnnouncementDO announcement) {
-		Map<String, String> map = new HashMap<String, String>();
+	public Result<Map<Object, Object>> updateAnnouncement(AnnouncementDO announcement) {
+		Map<Object, Object> map = new HashMap<>();
 		AnnouncementDO oldAnnouncement = announcementMapper.getAnnouncement();
-		map.put("oldValue", oldAnnouncement.toString());
+		map.put("oldValue", oldAnnouncement);
 		int count = announcementMapper.updateAnnouncement(announcement);
 		if (count < 1) {
 			return Result.fail(ErrorCode.INTERNAL_ERROR, "Update announcement failed.");
 		}
-		map.put("newValue", announcement.toString());
+		map.put("newValue", announcement);
 		return Result.success(map);
 	}
-
+	
+	@Override
+	@AdminLog(value = "'删除公告'", type = AdminLogType.DELETE)
+	public Result<Integer> deleteAnnouncement(Integer id) {
+		int count = announcementMapper.deleteAnnouncement(id);
+		if (count < 1) {
+			return Result.fail(ErrorCode.INTERNAL_ERROR, "Delete announcement failed.");
+		}
+		return Result.success(id);
+	}
+	
 	@Override
 	public Result<AnnouncementDO> getAnnouncement() {
 		AnnouncementDO announcement = announcementMapper.getAnnouncement();
@@ -59,4 +79,5 @@ public class AnnouncementServiceImpl implements AnnouncementService {
 		}
 		return Result.success(pageInfo);
 	}
+
 }
