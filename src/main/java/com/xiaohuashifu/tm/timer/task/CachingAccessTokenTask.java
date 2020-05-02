@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
  *
  * @author xhsf
  * @email 827032783@qq.com
- * @create 2019-08-30 21:48
  */
 @Component
 public class CachingAccessTokenTask implements Runnable {
