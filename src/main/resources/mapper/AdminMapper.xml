@@ -6,7 +6,7 @@
     </sql>
     
     <sql id="adminLogColumn">
-        id, admin_id, content, operation_time, create_time, update_time
+        id, admin_id, content, operate_time, create_time, update_time
     </sql>
 
 

@@ -39,6 +39,7 @@
         select
         <include refid="announcementColumn"/>
         from announcement
+        order by publish_time desc
     </select>
     
 </mapper>

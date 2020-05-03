@@ -32,7 +32,6 @@ import com.xiaohuashifu.tm.manager.MeetingParticipantManager;
 import com.xiaohuashifu.tm.pojo.ao.TokenAO;
 import com.xiaohuashifu.tm.pojo.do0.AnnouncementDO;
 import com.xiaohuashifu.tm.pojo.do0.BookDO;
-import com.xiaohuashifu.tm.pojo.do0.BookLogDO;
 import com.xiaohuashifu.tm.pojo.do0.MeetingDO;
 import com.xiaohuashifu.tm.pojo.do0.UserDO;
 import com.xiaohuashifu.tm.pojo.query.AdminLogQuery;
@@ -49,7 +48,6 @@ import com.xiaohuashifu.tm.pojo.vo.BookLogVO;
 import com.xiaohuashifu.tm.pojo.vo.MeetingParticipantVO;
 import com.xiaohuashifu.tm.pojo.vo.MeetingVO;
 import com.xiaohuashifu.tm.result.Result;
-import com.xiaohuashifu.tm.service.AdminService;
 import com.xiaohuashifu.tm.service.AnnouncementService;
 import com.xiaohuashifu.tm.service.BookService;
 import com.xiaohuashifu.tm.service.MeetingService;
@@ -60,7 +58,6 @@ import com.xiaohuashifu.tm.service.UserService;
 @RequestMapping("v1/admin")
 public class AdminController {
 
-	private final AdminService adminService;
 	private final AnnouncementService announcementService;
 	private final UserService userService;
 	private final BookService bookService;
@@ -73,13 +70,12 @@ public class AdminController {
 	private final TokenService tokenService;
 	
 	@Autowired
-	public AdminController(AdminService adminService, AnnouncementService announcementService,
-			UserService userService, BookService bookService,
-			BookLogManager bookLogManager, MeetingService meetingService,
-			MeetingManager meetingManager, MeetingParticipantManager meetingParticipantManager,
+	public AdminController(AnnouncementService announcementService, UserService userService,
+			BookService bookService, BookLogManager bookLogManager,
+			MeetingService meetingService, MeetingManager meetingManager,
+			MeetingParticipantManager meetingParticipantManager,
 			AttendanceManager attendanceManager, AdminLogManager adminLogManager,
 			TokenService tokenService) {
-		this.adminService = adminService;
 		this.announcementService = announcementService;
 		this.userService = userService;
 		this.bookService = bookService;

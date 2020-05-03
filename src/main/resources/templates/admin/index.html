@@ -457,27 +457,9 @@
 		 	sessionStorage.setItem("token", [[${token}]]);
 		 	console.log("token: " + sessionStorage.getItem("token"));
 	  	[/]
-	  	var announcement = [[${announcement}]];
 	  	
-	  	$("#announ_btn").click(function(){
-	  		if (announcement == $("#announcement").val()){
-	  			alert("相同公告不要重复发布");
-	  		}else{
-		  		$.ajax({
-		  			url : "announcement",
-		  	  		data : {
-		  	  			"announcement" : $("#announcement").val()
-		  	  		},
-		  	  		method : "PUT",
-		  			success : function(data){
-		  				if (data == "ok") {
-		  					announcement = $("#announcement").val();
-		  					alert("发布成功");
-		  				}
-		  				else alert("发布失败");
-		  			}
-		  	  	});
-	  		}
+	  	$(".sidebar-list-item")[2].click(function(){
+	  		console.log('click');
 	  	});
   	</script>
   </body>

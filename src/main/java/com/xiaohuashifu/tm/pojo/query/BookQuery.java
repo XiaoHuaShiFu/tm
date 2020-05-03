@@ -26,15 +26,20 @@ public class BookQuery {
 	private Boolean available;
 
 	private BookState state;
+	
+	/**
+     * 用于用户查询未还的书籍，该值为true时生效
+     */
+    private Boolean unreturned;
     
     public BookQuery() {}
     
     public BookQuery(Integer pageNum) {
     	this.pageNum = pageNum;
     }
-
-	public BookQuery(Integer pageNum, Integer pageSize, Integer id, List<Integer> idList, String numbering, String name,
-					 Boolean available, BookState state) {
+    
+	public BookQuery(Integer pageNum, Integer pageSize, Integer id, List<Integer> idList, String numbering,
+			String name, Boolean available, BookState state, Boolean unreturned) {
 		this.pageNum = pageNum;
 		this.pageSize = pageSize;
 		this.id = id;
@@ -43,6 +48,7 @@ public class BookQuery {
 		this.name = name;
 		this.available = available;
 		this.state = state;
+		this.unreturned = unreturned;
 	}
 
 	public Integer getPageNum() {
@@ -109,6 +115,14 @@ public class BookQuery {
 		this.state = state;
 	}
 
+	public Boolean getUnreturned() {
+		return unreturned;
+	}
+	
+	public void setUnreturned(Boolean unreturned) {
+		this.unreturned = unreturned;
+	}
+	
 	@Override
 	public String toString() {
 		return "BookQuery{" +
@@ -120,6 +134,7 @@ public class BookQuery {
 				", name='" + name + '\'' +
 				", available=" + available +
 				", state=" + state +
+				", unreturn=" + unreturned +
 				'}';
 	}
 }

@@ -25,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.List;
 
 @Service("bookService")
 public class BookServiceImpl implements BookService {
@@ -108,6 +109,15 @@ public class BookServiceImpl implements BookService {
 		return Result.success(book);
 	}
 
+	@Override
+	public Result<List<BookDO>> listUnreturnedBooksByUserId(Integer id) {
+		List<BookDO> books = bookMapper.listUnreturnedBooksByUserId(id);
+		if (books.size() == 0) {
+			return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "Get unreturned books failed.");
+		}
+		return Result.success(books);
+	}
+	
 	/**
 	 * 查询书籍列表
 	 * @param bookQuery 查询参数
@@ -127,22 +137,50 @@ public class BookServiceImpl implements BookService {
 	@Transactional
 	public Result<BookLogDO> saveBookLog(BookLogDO bookLog) {
 		BookDO book = new BookDO();
+		BookDO prevBook = bookMapper.getBookById(bookLog.getBookId());
 		book.setId(bookLog.getBookId());
 		if (BookLogState.BOOKED.equals(bookLog.getState())) {
+			if (!BookState.IDLE.equals(prevBook.getState())) {
+				return Result.fail(ErrorCode.FORBIDDEN_SUB_USER, "The book is not idle");
+			}
 			bookLog.setExpirationTime(Date.from(LocalDateTime.now().plusDays(1).atZone(ZoneId.systemDefault()).toInstant()));
 			book.setState(BookState.BOOKED);
 			String key = "bookId:" + bookLog.getBookId();
 			cacheService.set(key, bookLog.getUserId().toString());
 			cacheService.expire(key, 86400);
 		}else if (BookLogState.BORROWED.equals(bookLog.getState())) {
+			if (!BookState.BOOKED.equals(prevBook.getState())) {
+				return Result.fail(ErrorCode.FORBIDDEN_SUB_USER, "The book has not been booked");
+			}
+			BookLogDO prevBookLog = bookMapper.getBookLog(bookLog.getBookId(), BookLogState.BOOKED);
+			// 防止其他没有book这本书的用户误操作
+			if (!bookLog.getUserId().equals(prevBookLog.getUserId())) {
+				return Result.fail(ErrorCode.FORBIDDEN_SUB_USER, "Current user has not book this book");
+			}
 			bookLog.setExpirationTime(Date.from(LocalDateTime.now().plusDays(30).atZone(ZoneId.systemDefault()).toInstant()));
 			book.setState(BookState.BORROWED);
 			cacheService.del("bookId:" + bookLog.getBookId());
 		}else if (BookLogState.GIVE_UP.equals(bookLog.getState())) {
+			if (!BookState.BOOKED.equals(prevBook.getState())) {
+				return Result.fail(ErrorCode.FORBIDDEN_SUB_USER, "The book has not been booked");
+			}
+			BookLogDO prevBookLog = bookMapper.getBookLog(bookLog.getBookId(), BookLogState.BOOKED);
+			// 防止其他没有book这本书的用户误操作
+			if (!bookLog.getUserId().equals(prevBookLog.getUserId())) {
+				return Result.fail(ErrorCode.FORBIDDEN_SUB_USER, "Current user has not book this book");
+			}
 			bookLog.setExpirationTime(new Date());
 			book.setState(BookState.IDLE);
 			cacheService.del("bookId:" + bookLog.getBookId());
 		}else if (BookLogState.RETURNED.equals(bookLog.getState())) {
+			if (!BookState.BORROWED.equals(prevBook.getState())) {
+				return Result.fail(ErrorCode.FORBIDDEN_SUB_USER, "The book has not lent out");
+			}
+			BookLogDO prevBookLog = bookMapper.getBookLog(bookLog.getBookId(), BookLogState.BORROWED);
+			// 防止其他没有borrow这本书的用户误操作
+			if (!bookLog.getUserId().equals(prevBookLog.getUserId())) {
+				return Result.fail(ErrorCode.FORBIDDEN_SUB_USER, "Current user has not borrow this book");
+			}
 			bookLog.setReturnTime(new Date());
 			book.setState(BookState.IDLE);
 		}
@@ -166,5 +204,5 @@ public class BookServiceImpl implements BookService {
 		}
 		return Result.success(pageInfo);
 	}
-	
+
 }

@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.xiaohuashifu.tm.dao.BookMapper">
     <sql id="bookColumn">
-        id, numbering, name, cover_url, state, available, create_time, update_time
+        book.id, numbering, name, cover_url, book.state, available, book.create_time, book.update_time
     </sql>
     
     <sql id="bookLogColumn">
@@ -51,6 +51,16 @@
 		from book where id = #{id}
 	</select>
 
+    <select id="listUnreturnedBooksByUserId" parameterType="integer" resultType="com.xiaohuashifu.tm.pojo.do0.BookDO">
+        select
+        <include refid="bookColumn"/>
+        from book inner join
+        (select <include refid="bookLogColumn"/> from book_log
+        where user_id = #{id} and state = 'BORROWED') as user_book_log
+        on book.id = user_book_log.book_id
+        where book.state = 'BORROWED'
+    </select>
+
 	<select id="listBooks" parameterType="com.xiaohuashifu.tm.pojo.query.BookQuery"
 			resultType="com.xiaohuashifu.tm.pojo.do0.BookDO">
 		select
@@ -96,6 +106,15 @@
 		return_time = #{bookLog.returnTime}, state = #{bookLog.state}
 		where user_id = #{bookLog.userId} and book_id = #{bookLog.bookId};	
 	</update>
+	
+	<select id="getBookLog" resultType="com.xiaohuashifu.tm.pojo.do0.BookLogDO">
+	    select
+	    <include refid="bookLogColumn"/>
+	    from book_log
+	    where book_id=#{bookId} and state=#{state}
+	    order by create_time desc
+	    limit 1;
+	</select>
 	
 	<select id="listBookLogs" parameterType="com.xiaohuashifu.tm.pojo.query.BookLogQuery"
 	    resultType="com.xiaohuashifu.tm.pojo.do0.BookLogDO">

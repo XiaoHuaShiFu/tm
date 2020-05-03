@@ -75,9 +75,18 @@ public class BookController {
 	 */
 	@RequestMapping(method = RequestMethod.GET)
 	@ResponseStatus(HttpStatus.OK)
-	@TokenAuth(tokenType = {TokenType.USER, TokenType.ADMIN})
+	@TokenAuth(tokenType = {TokenType.USER})
 	@ErrorHandler
-	public Object list(BookQuery query) {
+	public Object list(TokenAO tokenAO, BookQuery query) {
+		// 用户查询其未还的书籍判断
+		if (Boolean.TRUE.equals(query.getUnreturned())) {
+			Result<List<BookDO>> result = bookService.listUnreturnedBooksByUserId(tokenAO.getId());
+			if (!result.isSuccess()) {
+				return result;
+			}
+			return result.getData();
+		}
+		
 		Result<PageInfo<BookDO>> result = bookService.listBooks(query);
 		if (!result.isSuccess()) {
 			return result;
@@ -102,7 +111,7 @@ public class BookController {
 	@ResponseStatus(HttpStatus.OK)
 	@TokenAuth(tokenType = {TokenType.USER, TokenType.ADMIN})
 	@ErrorHandler
-	public Object list(@PathVariable Integer id) {
+	public Object get(@PathVariable Integer id) {
 		Result<BookDO> result = bookService.getBookById(id);
 		return result.isSuccess() ? mapper.map(result.getData(), BookVO.class) : result;
 	}
