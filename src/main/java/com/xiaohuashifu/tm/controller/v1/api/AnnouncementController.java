@@ -77,8 +77,7 @@ public class AnnouncementController {
 			return result;
 		}
 		PageInfo<AnnouncementDO> announcementsInfo = result.getData();
-		List<AnnouncementDO> announcements = announcementsInfo.getList();
-		return announcements;
+		return announcementsInfo;
 	}
 	
 }
