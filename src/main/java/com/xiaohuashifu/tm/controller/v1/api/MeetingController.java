@@ -1,7 +1,8 @@
 package com.xiaohuashifu.tm.controller.v1.api;
 
 import com.xiaohuashifu.tm.aspect.annotation.ErrorHandler;
-import com.xiaohuashifu.tm.aspect.annotation.TokenAuth;
+
+import com.xiaohuashifu.tm.auth.TokenAuth;
 import com.xiaohuashifu.tm.constant.TokenType;
 import com.xiaohuashifu.tm.manager.MeetingManager;
 import com.xiaohuashifu.tm.pojo.ao.MeetingQrcodeAO;
@@ -24,8 +25,6 @@ import com.xiaohuashifu.tm.pojo.query.MeetingQuery;
 import com.xiaohuashifu.tm.result.Result;
 import com.xiaohuashifu.tm.service.MeetingService;
 
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * 会议模块
