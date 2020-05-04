@@ -53,8 +53,7 @@ public class BookLogController {
 			return result;
 		}
 		PageInfo<BookLogVO> bookLogsInfo = result.getData();
-		List<BookLogVO> bookLogs = bookLogsInfo.getList();
-		return bookLogs;
+		return bookLogsInfo;
 	}
 	
 }
