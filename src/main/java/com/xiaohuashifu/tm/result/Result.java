@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.text.MessageFormat;
 
 /**
- * 描述:
+ * 描述: 请求结果封装
  *
  * @author xhsf
  * @email 827032783@qq.com
@@ -46,6 +46,11 @@ public class Result<T> implements Serializable {
         this.errorCode = errorCode;
     }
 
+    private Result(Boolean success, String message) {
+        this(success);
+        this.message = message;
+    }
+
     private Result(Boolean success, ErrorCode errorCode, String message) {
         this(success);
         this.errorCode = errorCode;
@@ -70,6 +75,18 @@ public class Result<T> implements Serializable {
     public static <T> Result<T> success(T data) {
         return new Result<>(true, data);
     }
+
+    /**
+     * 成功调用时的构造方法
+     *
+     * @param format 格式化字符串
+     * @param args 参数
+     * @return Result<T>
+     */
+    public static <T> Result<T> success(String format, Object... args) {
+        return new Result<>(true, MessageFormat.format(format, args));
+    }
+
 
     /**
      * 失败调用时的构造方法
@@ -102,6 +119,16 @@ public class Result<T> implements Serializable {
      */
     public static <T> Result<T> fail(ErrorCode errorCode) {
         return new Result<>(false, errorCode);
+    }
+
+    /**
+     * 失败调用时的构造方法
+     *
+     * @param result 结果
+     * @return Result<T1, T2>
+     */
+    public static <T1, T2> Result<T1> fail(Result<T2> result) {
+        return new Result<>(false, result.getErrorCode(), result.getMessage());
     }
 
     public Boolean isSuccess() {

@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.xiaohuashifu.tm.dao.BookMapper">
     <sql id="bookColumn">
-        id, numbering, name, cover_url, book.state, available, create_time, update_time
+        id, numbering, name, cover_url, state, available, create_time, update_time
     </sql>
     
     <sql id="bookLogColumn">
@@ -12,7 +12,7 @@
 
 	<insert id="insert" parameterType="com.xiaohuashifu.tm.pojo.do0.BookDO">
 	  insert into book (numbering, name, cover_url)
-	  values (#{book.numbering}, #{book.name}, #{book.coverUrl});
+	  values (#{numbering}, #{name}, #{coverUrl});
 	</insert>
   
 	<delete id="delete" parameterType="integer">
@@ -116,11 +116,9 @@
 	        <if test="userId != null">
 	            user_id = #{userId}
 	        </if>
-	        <if test="book != null">
-	            <if test="book.id != null">
-	                and book_id = #{book.id}
-	            </if>
-	        </if>
+			<if test="bookId != null">
+				and book_id = #{bookId}
+			</if>
 	        <if test="state != null">
 	            and state = #{state}
 	        </if>

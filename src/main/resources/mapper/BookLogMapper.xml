@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xiaohuashifu.tm.dao.BookLogMapper">
+    <sql id="Base_Column_List">
+        id, user_id, book_id, borrow_time, expiration_time, return_time, state, create_time, update_time
+    </sql>
+
+    <insert id="insertBookLog" parameterType="com.xiaohuashifu.tm.pojo.do0.BookLogDO" useGeneratedKeys="true"
+            keyProperty="id">
+        insert into book_log(user_id, book_id, borrow_time, expiration_time, state)
+        values(#{userId}, #{bookId}, #{borrowTime}, #{expirationTime}, #{state})
+    </insert>
+
+    <select id="getBookLog" parameterType="integer" resultType="com.xiaohuashifu.tm.pojo.do0.BookLogDO">
+        select
+        <include refid="Base_Column_List"/>
+        from book_log
+        where id = #{id}
+    </select>
+
+    <select id="listBookLogs" parameterType="com.xiaohuashifu.tm.pojo.query.BookLogQuery"
+            resultType="com.xiaohuashifu.tm.pojo.do0.BookLogDO">
+        select
+        <include refid="Base_Column_List"/>
+        from book_log
+        <where>
+            <if test="id != null">
+                and id = #{id, jdbcType=INTEGER}
+            </if>
+            <if test="idList != null">
+                id in (
+                    <foreach collection="idList"  item="item" index="index" separator=",">
+                        #{item}
+                    </foreach>
+                )
+            </if>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="bookId != null">
+                and book_id = #{bookId}
+            </if>
+            <if test="state != null">
+                and state = #{state}
+            </if>
+        </where>
+        order by update_time desc
+    </select>
+
+    <select id="count" parameterType="com.xiaohuashifu.tm.pojo.query.BookLogQuery" resultType="int">
+        select
+        count(*)
+        from book_log
+        <where>
+            <if test="id != null">
+                and id = #{id, jdbcType=INTEGER}
+            </if>
+            <if test="idList != null">
+                id in (
+                <foreach collection="idList"  item="item" index="index" separator=",">
+                    #{item}
+                </foreach>
+                )
+            </if>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="bookId != null">
+                and book_id = #{bookId}
+            </if>
+            <if test="state != null">
+                and state = #{state}
+            </if>
+        </where>
+    </select>
+
+    <update id="updateBookLog" parameterType="com.xiaohuashifu.tm.pojo.do0.BookLogDO">
+        update book_log
+        <set>
+            <if test="expirationTime != null">
+                expiration_time = #{expirationTime},
+            </if>
+            <if test="returnTime != null">
+                return_time = #{returnTime},
+            </if>
+            <if test="state != null">
+                state = #{state},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+</mapper>

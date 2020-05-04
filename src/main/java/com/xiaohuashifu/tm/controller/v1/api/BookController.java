@@ -112,7 +112,7 @@ public class BookController {
 	@TokenAuth(tokenType = {TokenType.USER, TokenType.ADMIN})
 	@ErrorHandler
 	public Object get(@PathVariable Integer id) {
-		Result<BookDO> result = bookService.getBookById(id);
+		Result<BookDO> result = bookService.getBook(id);
 		return result.isSuccess() ? mapper.map(result.getData(), BookVO.class) : result;
 	}
 
@@ -122,7 +122,7 @@ public class BookController {
 	@TokenAuth(tokenType = TokenType.USER)
 	public Object postBookLog(TokenAO tokenAO, @PathVariable("bookId") Integer bookId,
 			@RequestParam("state") BookLogState bookLogState) {
-		Result<BookDO> bookResult = bookService.getBookById(bookId);
+		Result<BookDO> bookResult = bookService.getBook(bookId);
 		if (!bookResult.isSuccess()) {
 			return bookResult;
 		}

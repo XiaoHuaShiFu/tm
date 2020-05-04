@@ -57,10 +57,14 @@ public class AttendanceServiceImpl implements AttendanceService {
     @Override
     public Result<AttendanceDO> saveAttendance(AttendanceDO attendanceDO, String qrcode) {
         // 经纬度不在签到点的范围内
-        if (!(attendanceDO.getLatitude().compareTo(AttendanceConstant.LATITUDE.subtract(BigDecimal.ONE)) >= 0
-                && attendanceDO.getLatitude().compareTo(AttendanceConstant.LATITUDE.add(BigDecimal.ONE)) <= 0
-                && attendanceDO.getLongitude().compareTo(AttendanceConstant.LONGITUDE.subtract(BigDecimal.ONE)) >= 0
-                && attendanceDO.getLongitude().compareTo(AttendanceConstant.LONGITUDE.add(BigDecimal.ONE)) <= 0)) {
+        if (!(attendanceDO.getLatitude()
+                .compareTo(AttendanceConstant.LATITUDE.subtract(AttendanceConstant.ERR_OF_LATITUDE_AND_LONGITUDE)) >= 0
+                && attendanceDO.getLatitude()
+                .compareTo(AttendanceConstant.LATITUDE.add(AttendanceConstant.ERR_OF_LATITUDE_AND_LONGITUDE)) <= 0
+                && attendanceDO.getLongitude()
+                .compareTo(AttendanceConstant.LONGITUDE.subtract(AttendanceConstant.ERR_OF_LATITUDE_AND_LONGITUDE)) >= 0
+                && attendanceDO.getLongitude()
+                .compareTo(AttendanceConstant.LONGITUDE.add(AttendanceConstant.ERR_OF_LATITUDE_AND_LONGITUDE)) <= 0)) {
             return Result.fail(ErrorCode.INVALID_PARAMETER,
                     "Latitude and longitude are not within the range of the check-in point.");
         }

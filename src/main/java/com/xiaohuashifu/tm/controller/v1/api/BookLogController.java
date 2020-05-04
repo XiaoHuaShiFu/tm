@@ -1,6 +1,5 @@
 package com.xiaohuashifu.tm.controller.v1.api;
 
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,7 +15,6 @@ import com.xiaohuashifu.tm.auth.TokenAuth;
 import com.xiaohuashifu.tm.constant.TokenType;
 import com.xiaohuashifu.tm.manager.BookLogManager;
 import com.xiaohuashifu.tm.pojo.ao.TokenAO;
-import com.xiaohuashifu.tm.pojo.do0.BookDO;
 import com.xiaohuashifu.tm.pojo.query.BookLogQuery;
 import com.xiaohuashifu.tm.pojo.vo.BookLogVO;
 import com.xiaohuashifu.tm.result.Result;
@@ -44,16 +42,10 @@ public class BookLogController {
 			query.setPageNum(pageNum);
 		}
 		if (bookId != null) {
-			BookDO book = new BookDO();
-			book.setId(bookId);
-			query.setBook(book);
+			query.setBookId(bookId);
 		}
 		Result<PageInfo<BookLogVO>> result = bookLogManager.listBookLogs(query);
-		if (!result.isSuccess()) {
-			return result;
-		}
-		PageInfo<BookLogVO> bookLogsInfo = result.getData();
-		return bookLogsInfo;
+		return result.isSuccess() ? result.getData() : result;
 	}
 	
 }

@@ -16,7 +16,7 @@ public interface BookService {
 	Result<Integer> deleteBook(Integer id);
 	Result<BookDO> updateBook(BookDO book, MultipartFile cover);
 	Result<Integer> updateCover(Integer id, MultipartFile cover);
-	Result<BookDO> getBookById(Integer id);
+	Result<BookDO> getBook(Integer id);
 	Result<List<BookDO>> listUnreturnedBooksByUserId(Integer id);
 	Result<PageInfo<BookDO>> listBooks(BookQuery bookQuery);
 	

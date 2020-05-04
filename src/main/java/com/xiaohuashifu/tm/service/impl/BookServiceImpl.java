@@ -83,6 +83,7 @@ public class BookServiceImpl implements BookService {
 			if (!result.isSuccess()) {
 				return result;
 			}
+			return getBook(book.getId());
 		}
 		return Result.success(book);
 	}
@@ -100,12 +101,17 @@ public class BookServiceImpl implements BookService {
 		}
 		return Result.success(id);
 	}
-	
+
+	/**
+	 * 通过Id获取书籍
+	 * @param id 编号
+	 * @return BookDO
+	 */
 	@Override
-	public Result<BookDO> getBookById(Integer id){
+	public Result<BookDO> getBook(Integer id){
 		BookDO book = bookMapper.getBookById(id);
 		if (book == null) {
-			return Result.fail(ErrorCode.INTERNAL_ERROR, "Get book failed.");
+			return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "Not found.");
 		}
 		return Result.success(book);
 	}

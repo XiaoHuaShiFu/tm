@@ -34,14 +34,19 @@ public class AttendanceConstant {
     public static final String PASSWORD_FOR_QRCODE_TOKEN = "qrcodePassword";
 
     /**
-     * 签到点的经度
-     */
-    // TODO: 2020/4/3 这里不应该这样写，签到点的经纬度应该是放在数据库里，专门有一张表存储签到点的信息
-    public static final BigDecimal LATITUDE = new BigDecimal("111.12345");
-
-    /**
      * 签到点的纬度
      */
     // TODO: 2020/4/3 这里不应该这样写，签到点的经纬度应该是放在数据库里，专门有一张表存储签到点的信息
-    public static final BigDecimal LONGITUDE = new BigDecimal("88.54321");
+    public static final BigDecimal LATITUDE = new BigDecimal("113.48067");
+
+    /**
+     * 签到点的经度
+     */
+    // TODO: 2020/4/3 这里不应该这样写，签到点的经纬度应该是放在数据库里，专门有一张表存储签到点的信息
+    public static final BigDecimal LONGITUDE = new BigDecimal("23.18139");
+
+    /**
+     * 签到点的经纬度误差
+     */
+    public static final BigDecimal ERR_OF_LATITUDE_AND_LONGITUDE = new BigDecimal("10");
 }

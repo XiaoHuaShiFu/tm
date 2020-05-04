@@ -6,13 +6,31 @@ import com.xiaohuashifu.tm.constant.BookLogState;
 
 public class BookLogVO {
 	private Integer id;
-	private UserVO user;
-	private BookVO book;
+	private Integer userId;
+	private Integer bookId;
 	private Date borrowTime;
 	private Date expirationTime;
 	private Date returnTime;
 	private BookLogState state;
-	
+	private UserVO user;
+	private BookVO book;
+
+	public BookLogVO() {
+	}
+
+	public BookLogVO(Integer id, Integer userId, Integer bookId, Date borrowTime, Date expirationTime, Date returnTime,
+					 BookLogState state, UserVO user, BookVO book) {
+		this.id = id;
+		this.userId = userId;
+		this.bookId = bookId;
+		this.borrowTime = borrowTime;
+		this.expirationTime = expirationTime;
+		this.returnTime = returnTime;
+		this.state = state;
+		this.user = user;
+		this.book = book;
+	}
+
 	public Integer getId() {
 		return id;
 	}
@@ -21,20 +39,20 @@ public class BookLogVO {
 		this.id = id;
 	}
 
-	public UserVO getUser() {
-		return user;
+	public Integer getUserId() {
+		return userId;
 	}
 
-	public void setUser(UserVO userVO) {
-		this.user = userVO;
+	public void setUserId(Integer userId) {
+		this.userId = userId;
 	}
 
-	public BookVO getBook() {
-		return book;
+	public Integer getBookId() {
+		return bookId;
 	}
 
-	public void setBook(BookVO book) {
-		this.book = book;
+	public void setBookId(Integer bookId) {
+		this.bookId = bookId;
 	}
 
 	public Date getBorrowTime() {
@@ -69,10 +87,34 @@ public class BookLogVO {
 		this.state = state;
 	}
 
-	@Override
-	public String toString() {
-		return "BookLogVO [id=" + id + ", user=" + user + ", book=" + book + ", borrowTime=" + borrowTime
-				+ ", expirationTime=" + expirationTime + ", returnTime=" + returnTime + ", state=" + state + "]";
+	public UserVO getUser() {
+		return user;
 	}
 
+	public void setUser(UserVO user) {
+		this.user = user;
+	}
+
+	public BookVO getBook() {
+		return book;
+	}
+
+	public void setBook(BookVO book) {
+		this.book = book;
+	}
+
+	@Override
+	public String toString() {
+		return "BookLogVO{" +
+				"id=" + id +
+				", userId=" + userId +
+				", bookId=" + bookId +
+				", borrowTime=" + borrowTime +
+				", expirationTime=" + expirationTime +
+				", returnTime=" + returnTime +
+				", state=" + state +
+				", user=" + user +
+				", book=" + book +
+				'}';
+	}
 }

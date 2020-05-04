@@ -1,21 +1,42 @@
 package com.xiaohuashifu.tm.pojo.query;
 
 import com.xiaohuashifu.tm.constant.BookLogState;
-import com.xiaohuashifu.tm.pojo.do0.BookDO;
+
+import java.util.List;
 
 public class BookLogQuery {
 	private Integer pageNum = 1;
+
 	private Integer pageSize = 10;
+
+	private Integer id;
+
+	private List<Integer> idList;
+
 	private Integer userId;
-	private BookDO book;
+
+	private Integer bookId;
+
 	private BookLogState state;
 	
-	public BookLogQuery() {}
+	public BookLogQuery() {
+	}
 	
 	public BookLogQuery(Integer pageNum) {
 		this.pageNum = pageNum;
 	}
-	
+
+	public BookLogQuery(Integer pageNum, Integer pageSize, Integer id, List<Integer> idList, Integer userId,
+						Integer bookId, BookLogState state) {
+		this.pageNum = pageNum;
+		this.pageSize = pageSize;
+		this.id = id;
+		this.idList = idList;
+		this.userId = userId;
+		this.bookId = bookId;
+		this.state = state;
+	}
+
 	public Integer getPageNum() {
 		return pageNum;
 	}
@@ -32,6 +53,22 @@ public class BookLogQuery {
 		this.pageSize = pageSize;
 	}
 
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public List<Integer> getIdList() {
+		return idList;
+	}
+
+	public void setIdList(List<Integer> idList) {
+		this.idList = idList;
+	}
+
 	public Integer getUserId() {
 		return userId;
 	}
@@ -40,12 +77,12 @@ public class BookLogQuery {
 		this.userId = userId;
 	}
 
-	public BookDO getBook() {
-		return book;
+	public Integer getBookId() {
+		return bookId;
 	}
 
-	public void setBook(BookDO book) {
-		this.book = book;
+	public void setBookId(Integer bookId) {
+		this.bookId = bookId;
 	}
 
 	public BookLogState getState() {
@@ -56,4 +93,16 @@ public class BookLogQuery {
 		this.state = state;
 	}
 
+	@Override
+	public String toString() {
+		return "BookLogQuery{" +
+				"pageNum=" + pageNum +
+				", pageSize=" + pageSize +
+				", id=" + id +
+				", idList=" + idList +
+				", userId=" + userId +
+				", bookId=" + bookId +
+				", state=" + state +
+				'}';
+	}
 }

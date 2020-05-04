@@ -1,5 +1,5 @@
 package com.xiaohuashifu.tm.constant;
 
 public enum BookLogState {
-	BOOKED, GIVE_UP, BORROWED, RETURNED
+	BOOKED, BORROWED, GIVE_UP, RETURNED
 }
