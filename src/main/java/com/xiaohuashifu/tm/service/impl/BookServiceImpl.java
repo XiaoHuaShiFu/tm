@@ -26,6 +26,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service("bookService")
 public class BookServiceImpl implements BookService {
@@ -111,7 +112,20 @@ public class BookServiceImpl implements BookService {
 
 	@Override
 	public Result<List<BookDO>> listUnreturnedBooksByUserId(Integer id) {
-		List<BookDO> books = bookMapper.listUnreturnedBooksByUserId(id);
+		List<Integer> bookIds = bookMapper.listBorrowedBookIdByUserId(id);
+		// 获取最近借取bookIds所对应的书籍的bookLog
+		List<BookLogDO> newestBookLogs = bookIds.stream().map((bookId)->{
+			return bookMapper.getBookLog(bookId, BookLogState.BORROWED);
+		}).collect(Collectors.toList());
+		// 求id和newestBookLogs交集后对应的状态为borrowed的书
+		List<BookDO> books = newestBookLogs.stream().filter((bookLog)->{
+			return id.equals(bookLog.getUserId());
+		}).map((bookLog)->{
+			return bookMapper.getBookById(bookLog.getBookId());
+		}).filter((book)->{
+			return BookState.BORROWED.equals(book.getState());
+		}).collect(Collectors.toList());
+		
 		if (books.size() == 0) {
 			return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "Get unreturned books failed.");
 		}

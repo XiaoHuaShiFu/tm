@@ -2,12 +2,13 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.xiaohuashifu.tm.dao.BookMapper">
     <sql id="bookColumn">
-        book.id, numbering, name, cover_url, book.state, available, book.create_time, book.update_time
+        id, numbering, name, cover_url, book.state, available, create_time, update_time
     </sql>
     
     <sql id="bookLogColumn">
         id, user_id, book_id, borrow_time, expiration_time, return_time, state, create_time, update_time
     </sql>
+
 
 	<insert id="insert" parameterType="com.xiaohuashifu.tm.pojo.do0.BookDO">
 	  insert into book (numbering, name, cover_url)
@@ -50,16 +51,6 @@
 		<include refid="bookColumn"/>
 		from book where id = #{id}
 	</select>
-
-    <select id="listUnreturnedBooksByUserId" parameterType="integer" resultType="com.xiaohuashifu.tm.pojo.do0.BookDO">
-        select
-        <include refid="bookColumn"/>
-        from book inner join
-        (select <include refid="bookLogColumn"/> from book_log
-        where user_id = #{id} and state = 'BORROWED') as user_book_log
-        on book.id = user_book_log.book_id
-        where book.state = 'BORROWED'
-    </select>
 
 	<select id="listBooks" parameterType="com.xiaohuashifu.tm.pojo.query.BookQuery"
 			resultType="com.xiaohuashifu.tm.pojo.do0.BookDO">
@@ -134,5 +125,11 @@
 	            and state = #{state}
 	        </if>
 	    </where>
+	</select>
+	
+	<select id="listBorrowedBookIdByUserId" parameterType="integer" resultType="integer">
+	    select distinct book_id
+	    from book_log
+	    where user_id = #{id} and state='BORROWED';
 	</select>
 </mapper>

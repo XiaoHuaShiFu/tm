@@ -19,13 +19,6 @@ public interface BookMapper {
 	int updateCover(@Param("id") Integer id, @Param("cover_url") String coverUrl);
 	String getCoverUrlById(Integer id);
 	BookDO getBookById(Integer id);
-
-	/**
-	 * 查询用户未还的书籍
-	 * @param id 用户id
-	 * @return 用户未还的book
-	 */
-	List<BookDO> listUnreturnedBooksByUserId(Integer id);
 	
 	/**
 	 * 查询书籍
@@ -39,11 +32,18 @@ public interface BookMapper {
 	
 	/**
 	 * 查询某个状态下的某本书的最新记录
-	 * @param bookId 书籍Id
+	 * @param bookId 书籍id
 	 * @param state 
 	 * @return BookLogDO
 	 */
 	BookLogDO getBookLog(@Param("bookId") Integer bookId, @Param("state") BookLogState state);
 	
 	List<BookLogDO> listBookLogs(BookLogQuery bookLogQuery);
+	
+	/**
+	 * 查询用户曾借过的书籍的id
+	 * @param id 用户id
+	 * @return 用户曾借过的书的id
+	 */
+	List<Integer> listBorrowedBookIdByUserId(Integer id);
 }
