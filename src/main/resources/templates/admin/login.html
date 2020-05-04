@@ -36,7 +36,7 @@
             <h1 class="text-base text-primary text-uppercase mb-4">后台管理系统</h1>
             <h2 class="mb-4">Welcome!</h2>
             <!-- <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore.</p> -->
-            <form id="loginForm" action="/v1/admin/validate" class="mt-4" method="post">
+            <form action="validate" class="mt-4" method="post">
               <div class="form-group mb-4">
                 <input id="job_num" type="text" name="jobNumber" placeholder="工号" class="form-control border-0 shadow form-control-lg">
               </div>
@@ -71,14 +71,14 @@
   		$("#login_btn").click(function(){
   			var login = true;
   			$.ajax({
-//   				url : "/v1/login/admin",
+  				url : "validate",
   				data : {
   					"jobNumber" : $("#job_num").val(),
   					"password" : $("#pwd").val()
   				},
   				async : false,
+  				type : "POST",
   				success : function(data){
-					console.log("data: " + data);
   					if (data == "error"){
   						login = false;
   						alert("账号或密码错误");

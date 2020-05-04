@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+</head>
+<body>
+    <form action="validate" method="post">
+        <input id="account" type="text" name="account">
+        <input id="password" type="password" name="password">
+        <input id="login-btn" type="submit" value="登录" >
+    </form>
+    
+    <script th:src="@{/vendor/jquery/jquery.min.js}"></script>
+    <script type="text/javascript" th:inline="javascript">
+        $("#login-btn").click(function(){
+        	var login = true;
+        	$.ajax({
+        		url: "validate",
+        		data : {
+                    "account" : $("#account").val(),
+                    "password" : $("#password").val()
+                },
+        		async : false,
+                type: "POST",
+        		success: function(data){
+        			console.log(data);
+        			if (data.success == false){
+                        login = false;
+                        alert("账号或密码错误");
+                    }
+        		}
+        	})
+        	return login;
+        });
+    </script>
+</body>
+</html>
