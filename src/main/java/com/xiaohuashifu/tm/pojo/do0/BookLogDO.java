@@ -28,12 +28,10 @@ public class BookLogDO {
 	@Id(groups = {Group.class})
 	private Integer bookId;
 
-	@NotNull(message = "INVALID_PARAMETER_IS_NULL: The borrowTime must be not null.", groups = {GroupPost.class})
-	@Past(message = "INVALID_PARAMETER: The borrowTime must be past.", groups = {GroupPost.class})
+	@Null(message = "INVALID_PARAMETER: The borrowTime must be null.", groups = {GroupPost.class})
 	private Date borrowTime;
 
-	@NotNull(message = "INVALID_PARAMETER_IS_NULL: The expirationTime must be not null.", groups = {GroupPost.class})
-	@Future(message = "INVALID_PARAMETER: The expirationTime must be future.", groups = {GroupPost.class})
+	@Null(message = "INVALID_PARAMETER: The expirationTime must be null.", groups = {GroupPost.class})
 	private Date expirationTime;
 
 	@Null(message = "INVALID_PARAMETER: The returnTime must be null.", groups = {GroupPost.class})

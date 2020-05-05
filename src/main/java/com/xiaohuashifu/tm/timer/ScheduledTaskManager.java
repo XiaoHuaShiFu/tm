@@ -1,5 +1,6 @@
 package com.xiaohuashifu.tm.timer;
 
+import com.xiaohuashifu.tm.timer.task.BookLogStateTask;
 import com.xiaohuashifu.tm.timer.task.MeetingStateTask;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -20,24 +21,37 @@ public class ScheduledTaskManager {
 
     private final MeetingStateTask meetingStateTask;
 
+    private final BookLogStateTask bookLogStateTask;
+
     /**
-     * 缓存access-token任务第一次执行的延迟时间
+     * 会议状态任务第一次执行的延迟时间
      */
     private static final long MEETING_STATE_TASK_DELAY = 10000;
 
     /**
-     * 缓存access-token任务后面每次执行的间隔时间
+     * 会议状态任务后面每次执行的间隔时间
      */
     private static final long MEETING_STATE_TASK_PERIOD = 30000;
 
     /**
+     * 借书记录状态任务第一次执行的延迟时间
+     */
+    private static final long BOOK_LOG_STATE_TASK_DELAY = 10000;
+
+    /**
+     * 借书记录状态任务后面每次执行的间隔时间
+     */
+    private static final long BOOK_LOG_STATE_TASK_PERIOD = 30000;
+
+    /**
      * 执行计划任务的执行器
      */
-    private static final ScheduledExecutorService schedule = Executors.newScheduledThreadPool(1);
+    private static final ScheduledExecutorService schedule = Executors.newScheduledThreadPool(2);
 
     @Autowired
-    public ScheduledTaskManager(MeetingStateTask meetingStateTask) {
+    public ScheduledTaskManager(MeetingStateTask meetingStateTask, BookLogStateTask bookLogStateTask) {
         this.meetingStateTask = meetingStateTask;
+        this.bookLogStateTask = bookLogStateTask;
     }
 
     /**
@@ -46,6 +60,8 @@ public class ScheduledTaskManager {
     @PostConstruct
     private void init() {
         schedule.scheduleAtFixedRate(meetingStateTask, MEETING_STATE_TASK_DELAY, MEETING_STATE_TASK_PERIOD,
+                TimeUnit.MILLISECONDS);
+        schedule.scheduleAtFixedRate(bookLogStateTask, BOOK_LOG_STATE_TASK_DELAY, BOOK_LOG_STATE_TASK_PERIOD,
                 TimeUnit.MILLISECONDS);
     }
 

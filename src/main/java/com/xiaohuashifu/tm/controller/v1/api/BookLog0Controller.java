@@ -19,6 +19,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import java.util.Date;
+
 /**
  * 描述: 借书信息模块
  *
@@ -49,11 +53,17 @@ public class BookLog0Controller {
 	@ResponseStatus(value = HttpStatus.CREATED)
 	@TokenAuth(tokenType = TokenType.USER)
 	@ErrorHandler
-	public Object post(TokenAO tokenAO, @Validated(GroupPost.class) BookLogDO bookLogDO) {
+	public Object post(TokenAO tokenAO, @Validated(GroupPost.class) BookLogDO bookLogDO,
+					   @Min(message = "INVALID_PARAMETER: The duration must be greater than 15.", value = 15)
+					   @Max(message = "INVALID_PARAMETER: The duration can't exceed 30 days.", value = 30)
+							   Integer duration) {
 		// 越权新增资源
 		if (!tokenAO.getId().equals(bookLogDO.getUserId())) {
 			return Result.fail(ErrorCode.FORBIDDEN_SUB_USER);
 		}
+		Date borrowTime = new Date();
+		bookLogDO.setBorrowTime(borrowTime);
+		bookLogDO.setExpirationTime(new Date(borrowTime.getTime() + duration * 24 * 60  * 60 * 1000));
 		Result<BookLogVO> result = bookLogManager.saveBookLog(bookLogDO);
 		return result.isSuccess() ? result.getData() : result;
 	}
