@@ -64,33 +64,22 @@
     <img th:src="@{/img/sign.png}" height="200px" width="500px" style="position:absolute;bottom:0px;"/>
 </div>
 <script>
-    var content;
-    setInterval(function () {
-        $.ajax({
-            type: "POST",
-//             url: "https://api.xiaohuashifu.top/v1/attendances/qrcodes",
-            url: "http://localhost:8080/v1/attendances/qrcodes",
-            dataType: "jsonp",
-            jsonp: "callback",
-            beforeSend: function(request) {
-                request.setRequestHeader("authorization", "[[${token}]]");
-            },
-            success: function (data) {
-                let content = data["data"];
-                if ($("#qrcode > canvas") == null) {
-                    $("#qrcode").qrcode(content);
-                } else {
-                    $("#qrcode > canvas").remove();
-                    $("#qrcode").qrcode(content)
-                }
-                console.log(content);
-            },
-            error: function (e) {
-                console.log(e);
-            }
-        });
-    }, 3000);
-    jQuery("#qrcode").qrcode("from scau aie nss");
+	setInterval(function () {
+	    var xhr = new XMLHttpRequest();
+	    xhr.open("post","http://localhost:8080/v1/attendances/qrcodes");
+	    xhr.setRequestHeader("Authorization", "[[${token}]]");
+	    xhr.send();
+	    xhr.onreadystatechange = function(){
+	        var content = JSON.parse(xhr.response).qrcode;
+	        if ($("#qrcode > canvas") == null) {
+	            $("#qrcode").qrcode(content);
+	        } else {
+	            $("#qrcode > canvas").remove();
+	            $("#qrcode").qrcode(content)
+	        }
+	    }
+	}, 3000);
+	jQuery("#qrcode").qrcode("From SCAU!!!");
 </script>
 </body>
 </html>

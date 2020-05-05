@@ -18,7 +18,7 @@
     <!-- theme stylesheet-->
     <link rel="stylesheet" th:href="@{/css/style.default.css}" id="theme-stylesheet">
     <!-- Custom stylesheet - for your changes-->
-    <link rel="stylesheet" th:href="@{/css/custom.css}">
+    <link rel="stylesheet" th:href="@{/css/common.css}">
     <!-- Favicon-->
     <link rel="shortcut icon" th:href="@{/img/favicon.png?3}">
     <!-- Tweaks for older IEs--><!--[if lt IE 9]>
@@ -36,7 +36,7 @@
             <h1 class="text-base text-primary text-uppercase mb-4">后台管理系统</h1>
             <h2 class="mb-4">Welcome!</h2>
             <!-- <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore.</p> -->
-            <form action="validate" class="mt-4" method="post">
+            <form class="mt-4" method="post">
               <div class="form-group mb-4">
                 <input id="job_num" type="text" name="jobNumber" placeholder="工号" class="form-control border-0 shadow form-control-lg">
               </div>
@@ -49,8 +49,11 @@
                   <label for="customCheck1" class="custom-control-label">记住我</label>
                 </div>
               </div>
-              <button id="login_btn" class="btn btn-primary shadow px-5">登 录</button>
+              <input id="login_btn" type="button" class="btn btn-primary shadow px-5" value="登 录">
             </form>
+            <form action="index" method="post" class="hidden-form">
+		        <input type="hidden" id="header" name="_header">
+		    </form>
           </div>
         </div>
         <p class="mt-5 mb-0 text-gray-400 text-center">Copyright &copy; 2020.Team management All rights reserved.
@@ -69,7 +72,6 @@
   
   	<script type="text/javascript" th:inline="javascript">
   		$("#login_btn").click(function(){
-  			var login = true;
   			$.ajax({
   				url : "validate",
   				data : {
@@ -79,13 +81,16 @@
   				async : false,
   				type : "POST",
   				success : function(data){
-  					if (data == "error"){
-  						login = false;
+  					if (data.success == false){
   						alert("账号或密码错误");
-  					}
+  					}else {
+  					    sessionStorage.setItem("token", data);
+  						console.log(sessionStorage.getItem("token"));
+                        $("#header").val("authorization:" + data);
+                        $(".hidden-form").submit();
+                    }
   				}
   			})
-  			return login;
   		});
   	</script>
 </html>

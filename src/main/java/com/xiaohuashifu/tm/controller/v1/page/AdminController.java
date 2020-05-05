@@ -94,31 +94,21 @@ public class AdminController {
 	}
 
 	@ResponseBody
-	@ResponseStatus(HttpStatus.CREATED)
 	@RequestMapping(value = "validate", method = RequestMethod.POST)
-	public String adminLogin(HttpServletRequest request, HttpServletResponse response, 
+	public Object adminLogin(HttpServletRequest request, HttpServletResponse response, 
 					@RequestParam("jobNumber") String jobNumber, @RequestParam("password") String password) {
 		Result<TokenAO> result = tokenService.createAndSaveToken(TokenType.ADMIN, jobNumber, password);
-		if(result.isSuccess()) {
-			request.getSession().setAttribute("token", result.getData().getToken());
-			try {
-				response.sendRedirect(request.getScheme() + "://" +
-						request.getServerName() + ":"+
-						request.getServerPort() + "/v1/admin/index");
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+		if(!result.isSuccess()) {
+			return result;
 		}
-		return "error";
+		return result.getData().getToken();
 	}
 	
-	@RequestMapping(value = "index", method = RequestMethod.GET)
+	@RequestMapping(value = "index", method = RequestMethod.POST)
 //	@TokenAuth(tokenType = {TokenType.ADMIN})
 //	@AdminLog(value = "登录", type = AdminLogType.LOGIN)
 	public ModelAndView index(HttpServletRequest request) {
 		ModelAndView model = new ModelAndView("admin/index");
-		model.addObject("token", request.getSession().getAttribute("token"));
-		request.getSession().removeAttribute("token");
 		return model;
 	}
 

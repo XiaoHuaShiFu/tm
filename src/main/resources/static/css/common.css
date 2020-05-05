@@ -8,6 +8,11 @@
 	text-align: center;
 }
 
+/*隐藏的form*/
+.hidden-from{
+	display: none;
+}
+
 /*顶部功能栏*/
 .func-bar-wrapper{
     width: 100%;
