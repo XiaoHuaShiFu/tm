@@ -205,7 +205,7 @@ public class UserController {
      * @bindErrors
      * INVALID_PARAMETER_IS_NULL
      */
-    @RequestMapping(value="/avatar", method = RequestMethod.PUT)
+    @RequestMapping(value="/avatars", method = RequestMethod.PUT)
     @ResponseStatus(value = HttpStatus.OK)
     @TokenAuth(tokenType = TokenType.USER)
     @ErrorHandler
@@ -219,6 +219,35 @@ public class UserController {
         Result<UserDO> result = userService.updateAvatar(tokenAO.getId(), avatar);
 
         return result.isSuccess() ? mapper.map(result.getData(), UserVO.class) : result;
+    }
+
+    /**
+     * 修改头像，为了适配微信小程序没有PUT方法
+     *
+     * @param tokenAO TokenAO
+     * @param avatar MultipartFile
+     * @return UserVO
+     *
+     * @success:
+     * HttpStatus.OK
+     *
+     * @errors:
+     * INTERNAL_ERROR: Upload file failed.
+     * INTERNAL_ERROR: Delete file failed.
+     * INTERNAL_ERROR: Update avatar exception.
+     *
+     * @bindErrors
+     * INVALID_PARAMETER_IS_NULL
+     */
+    @RequestMapping(value="/avatars/u", method = RequestMethod.POST)
+    @ResponseStatus(value = HttpStatus.OK)
+    @TokenAuth(tokenType = TokenType.USER)
+    @ErrorHandler
+    public Object putAvatarForWeChatMP(
+            TokenAO tokenAO,
+            @NotNull(message = "INVALID_PARAMETER_IS_BLANK: The id must be not blank.") @Id Integer id,
+            @NotNull(message = "INVALID_PARAMETER_IS_NULL: The required avatar must be not null.") MultipartFile avatar) {
+        return putAvatar(tokenAO, id, avatar);
     }
 
     /**
