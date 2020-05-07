@@ -55,6 +55,7 @@
     <script th:src="@{/vendor/jquery/jquery.min.js}"></script>
     <script th:src="@{/js/jquery.qrcode.min.js}"></script>
     <script th:src="@{/js/ajax.js}"></script>
+    <title>扫码签到</title>
 </head>
 <body>
 <div class="father">
@@ -66,7 +67,7 @@
 <script>
 	setInterval(function () {
 	    var xhr = new XMLHttpRequest();
-	    xhr.open("post","http://localhost:8080/v1/attendances/qrcodes");
+	    xhr.open("post","https://api.xiaohuashifu.top/v1/attendances/qrcodes");
 	    xhr.setRequestHeader("Authorization", "[[${token}]]");
 	    xhr.send();
 	    xhr.onreadystatechange = function(){
