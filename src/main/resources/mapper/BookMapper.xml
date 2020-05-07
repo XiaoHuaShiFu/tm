@@ -123,6 +123,7 @@
 	            and state = #{state}
 	        </if>
 	    </where>
+		order by update_time desc
 	</select>
 	
 	<select id="listBorrowedBookIdByUserId" parameterType="integer" resultType="integer">

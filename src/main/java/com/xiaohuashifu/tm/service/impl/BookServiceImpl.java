@@ -215,6 +215,11 @@ public class BookServiceImpl implements BookService {
 		return Result.success(bookLog);
 	}
 
+	/**
+	 * 通过查询参数查找图书日志
+	 * @param bookLogQuery 查询参数
+	 * @return PageInfo<BookLogDO>
+	 */
 	@Override
 	public Result<PageInfo<BookLogDO>> listBookLogs(BookLogQuery bookLogQuery) {
 		PageHelper.startPage(bookLogQuery);

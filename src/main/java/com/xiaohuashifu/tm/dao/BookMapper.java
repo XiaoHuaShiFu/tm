@@ -37,7 +37,12 @@ public interface BookMapper {
 	 * @return BookLogDO
 	 */
 	BookLogDO getBookLog(@Param("bookId") Integer bookId, @Param("state") BookLogState state);
-	
+
+	/**
+	 * 通过查询参数query查找
+	 * @param bookLogQuery 查询参数
+	 * @return 查找结果
+	 */
 	List<BookLogDO> listBookLogs(BookLogQuery bookLogQuery);
 	
 	/**
