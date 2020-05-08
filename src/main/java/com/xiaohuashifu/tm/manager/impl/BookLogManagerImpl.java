@@ -3,6 +3,8 @@ package com.xiaohuashifu.tm.manager.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.xiaohuashifu.tm.constant.TokenType;
+import com.xiaohuashifu.tm.pojo.ao.TokenAO;
 import com.xiaohuashifu.tm.service.BookLogService;
 import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -126,12 +128,13 @@ public class BookLogManagerImpl implements BookLogManager {
 
     /**
      * 更新借书信息
+     * @param  tokenType TokenType
      * @param bookLogDO 要更新的借书信息
      * @return 更新后的借书信息
      */
     @Override
-    public Result<BookLogVO> updateBookLog(BookLogDO bookLogDO) {
-        Result<BookLogDO> updateBookLogResult = bookLogService.updateBookLog(bookLogDO);
+    public Result<BookLogVO> updateBookLog(TokenType tokenType, BookLogDO bookLogDO) {
+        Result<BookLogDO> updateBookLogResult = bookLogService.updateBookLog(tokenType, bookLogDO);
         if (!updateBookLogResult.isSuccess()) {
             return Result.fail(updateBookLogResult);
         }

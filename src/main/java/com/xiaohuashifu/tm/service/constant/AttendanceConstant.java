@@ -37,13 +37,13 @@ public class AttendanceConstant {
      * 签到点的纬度
      */
     // TODO: 2020/4/3 这里不应该这样写，签到点的经纬度应该是放在数据库里，专门有一张表存储签到点的信息
-    public static final BigDecimal LATITUDE = new BigDecimal("113.48067");
+    public static final BigDecimal LATITUDE = new BigDecimal("23.18139");
 
     /**
      * 签到点的经度
      */
     // TODO: 2020/4/3 这里不应该这样写，签到点的经纬度应该是放在数据库里，专门有一张表存储签到点的信息
-    public static final BigDecimal LONGITUDE = new BigDecimal("23.18139");
+    public static final BigDecimal LONGITUDE = new BigDecimal("113.48067");
 
     /**
      * 签到点的经纬度误差

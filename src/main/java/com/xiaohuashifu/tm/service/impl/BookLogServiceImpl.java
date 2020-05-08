@@ -4,6 +4,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.tm.constant.BookLogState;
 import com.xiaohuashifu.tm.constant.BookState;
+import com.xiaohuashifu.tm.constant.TokenType;
 import com.xiaohuashifu.tm.dao.BookLogMapper;
 import com.xiaohuashifu.tm.pojo.do0.BookDO;
 import com.xiaohuashifu.tm.pojo.do0.BookLogDO;
@@ -128,12 +129,12 @@ public class BookLogServiceImpl implements BookLogService {
 
     /**
      * 更新借书信息
-     *
+     * @param tokenType TokenType
      * @param bookLogDO 要更新的信息
      * @return 更新后的借书信息
      */
     @Override
-    public Result<BookLogDO> updateBookLog(BookLogDO bookLogDO) {
+    public Result<BookLogDO> updateBookLog(TokenType tokenType, BookLogDO bookLogDO) {
         // 要更新的借书信息必须存在
         Result<BookLogDO> getBookLogResult = getBookLog(bookLogDO.getId());
         if (!getBookLogResult.isSuccess()) {
@@ -154,6 +155,14 @@ public class BookLogServiceImpl implements BookLogService {
         BookLogDO bookLogDO0 = new BookLogDO();
         // 如果要更新状态
         if (bookLogDO.getState() != null) {
+            // 用户只能放弃借书
+            if (tokenType == TokenType.USER) {
+                if (bookLogDO.getState() != BookLogState.GIVE_UP) {
+                    return Result.fail(ErrorCode.INVALID_PARAMETER,
+                            "You don't permission to update this state.");
+                }
+            }
+
             // 如果当前状态是BOOKED，下一个状态只能BORROWED或GIVE_UP
             if (bookLogDO1.getState() == BookLogState.BOOKED) {
                 if (bookLogDO.getState() != BookLogState.BORROWED && bookLogDO.getState() != BookLogState.GIVE_UP) {

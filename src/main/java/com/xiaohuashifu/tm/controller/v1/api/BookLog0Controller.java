@@ -63,7 +63,7 @@ public class BookLog0Controller {
 		}
 		Date borrowTime = new Date();
 		bookLogDO.setBorrowTime(borrowTime);
-		bookLogDO.setExpirationTime(new Date(borrowTime.getTime() + duration * 24 * 60  * 60 * 1000));
+		bookLogDO.setExpirationTime(new Date(borrowTime.getTime() + (long) duration * 24 * 60  * 60 * 1000));
 		Result<BookLogVO> result = bookLogManager.saveBookLog(bookLogDO);
 		return result.isSuccess() ? result.getData() : result;
 	}
@@ -105,6 +105,7 @@ public class BookLog0Controller {
 
 	/**
 	 * 更新借书信息
+	 * @param tokenAO tokenAO
 	 * @param bookLogDO 借书信息
 	 * @return BookLogVO
 	 *
@@ -113,10 +114,10 @@ public class BookLog0Controller {
 	 */
 	@RequestMapping(method = RequestMethod.PUT)
 	@ResponseStatus(value = HttpStatus.OK)
-	@TokenAuth(tokenType = {TokenType.QRCODE})
+	@TokenAuth(tokenType = {TokenType.QRCODE, TokenType.USER})
 	@ErrorHandler
-	public Object put(@Validated(GroupPut.class) BookLogDO bookLogDO) {
-		Result<BookLogVO> result = bookLogManager.updateBookLog(bookLogDO);
+	public Object put(TokenAO tokenAO, @Validated(GroupPut.class) BookLogDO bookLogDO) {
+		Result<BookLogVO> result = bookLogManager.updateBookLog(tokenAO.getType(), bookLogDO);
 		return result.isSuccess() ? result.getData() : result;
 	}
 

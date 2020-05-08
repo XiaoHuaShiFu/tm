@@ -1,6 +1,8 @@
 package com.xiaohuashifu.tm.manager;
 
 import com.github.pagehelper.PageInfo;
+import com.xiaohuashifu.tm.constant.TokenType;
+import com.xiaohuashifu.tm.pojo.ao.TokenAO;
 import com.xiaohuashifu.tm.pojo.do0.BookLogDO;
 import com.xiaohuashifu.tm.pojo.query.BookLogQuery;
 import com.xiaohuashifu.tm.pojo.vo.BookLogVO;
@@ -14,5 +16,5 @@ public interface BookLogManager {
 
 	Result<PageInfo<BookLogVO>> listBookLogs(BookLogQuery query);
 
-	Result<BookLogVO> updateBookLog(BookLogDO bookLogDO);
+	Result<BookLogVO> updateBookLog(TokenType tokenType, BookLogDO bookLogDO);
 }

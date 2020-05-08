@@ -4,6 +4,8 @@ import com.xiaohuashifu.tm.pojo.group.Group;
 import com.xiaohuashifu.tm.pojo.group.GroupPost;
 import com.xiaohuashifu.tm.pojo.group.GroupPut;
 import com.xiaohuashifu.tm.validator.annotation.Id;
+import com.xiaohuashifu.tm.validator.annotation.Latitude;
+import com.xiaohuashifu.tm.validator.annotation.Longitude;
 
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
@@ -29,11 +31,11 @@ public class AttendanceDO {
     private Integer userId;
 
     @NotNull(message = "INVALID_PARAMETER_IS_NULL: The latitude must be not null.", groups = {GroupPost.class})
-    // TODO: 2020/4/3 这里最好弄一个经纬度校验
+    @Latitude(groups = {GroupPost.class})
     private BigDecimal latitude;
 
     @NotNull(message = "INVALID_PARAMETER_IS_NULL: The longitude must be not null.", groups = {GroupPost.class})
-    // TODO: 2020/4/3 这里最好弄一个经纬度校验
+    @Longitude(groups = {GroupPost.class})
     private BigDecimal longitude;
 
     private Date signInTime;

@@ -1,6 +1,8 @@
 package com.xiaohuashifu.tm.service;
 
 import com.github.pagehelper.PageInfo;
+import com.xiaohuashifu.tm.constant.TokenType;
+import com.xiaohuashifu.tm.pojo.ao.TokenAO;
 import com.xiaohuashifu.tm.pojo.do0.BookLogDO;
 import com.xiaohuashifu.tm.pojo.query.BookLogQuery;
 import com.xiaohuashifu.tm.result.Result;
@@ -21,6 +23,6 @@ public interface BookLogService {
 
     Integer count(BookLogQuery query);
 
-    Result<BookLogDO> updateBookLog(BookLogDO bookLogDO);
+    Result<BookLogDO> updateBookLog(TokenType tokenType, BookLogDO bookLogDO);
 
 }

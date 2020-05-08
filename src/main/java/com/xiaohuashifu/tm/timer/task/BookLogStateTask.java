@@ -2,14 +2,11 @@ package com.xiaohuashifu.tm.timer.task;
 
 import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.tm.constant.BookLogState;
-import com.xiaohuashifu.tm.constant.MeetingState;
+import com.xiaohuashifu.tm.constant.TokenType;
 import com.xiaohuashifu.tm.pojo.do0.BookLogDO;
-import com.xiaohuashifu.tm.pojo.do0.MeetingDO;
 import com.xiaohuashifu.tm.pojo.query.BookLogQuery;
-import com.xiaohuashifu.tm.pojo.query.MeetingQuery;
 import com.xiaohuashifu.tm.result.Result;
 import com.xiaohuashifu.tm.service.BookLogService;
-import com.xiaohuashifu.tm.service.MeetingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -47,7 +44,7 @@ public class BookLogStateTask implements Runnable {
                 newBookLogDO.setId(bookLogDO.getId());
                 newBookLogDO.setUserId(bookLogDO.getUserId());
                 newBookLogDO.setState(BookLogState.GIVE_UP);
-                bookLogService.updateBookLog(newBookLogDO);
+                bookLogService.updateBookLog(TokenType.ADMIN, newBookLogDO);
             }
         }
     }
