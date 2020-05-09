@@ -92,6 +92,9 @@ public class MeetingParticipantServiceImpl implements MeetingParticipantService 
 		PageHelper.startPage(meetingParticipantQuery);
 		PageInfo<MeetingParticipantDO> pageInfo =
 				new PageInfo<>(meetingParticipantMapper.listMeetingParticipants(meetingParticipantQuery.getMeetingId()));
+		if (pageInfo.getList().isEmpty()) {
+			return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "Not found.");
+		}
 		return Result.success(pageInfo);
 	}
 

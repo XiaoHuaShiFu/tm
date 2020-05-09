@@ -6,7 +6,6 @@ import com.xiaohuashifu.tm.pojo.ao.TokenAO;
 import com.xiaohuashifu.tm.pojo.vo.TokenVO;
 import com.xiaohuashifu.tm.result.Result;
 import com.xiaohuashifu.tm.service.TokenService;
-import com.xiaohuashifu.tm.validator.annotation.JobNumber;
 import com.xiaohuashifu.tm.validator.annotation.Password;
 import com.xiaohuashifu.tm.validator.annotation.WeChatMpCode;
 import org.dozer.Mapper;
@@ -68,7 +67,7 @@ public class TokenController {
     @RequestMapping(value = "/code", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.CREATED)
     @ErrorHandler
-    public Object postToken(
+    public Object postByCode(
             @NotBlank(message = "INVALID_PARAMETER_IS_BLANK: The code must be not blank.") @WeChatMpCode String code,
             @NotNull(message = "INVALID_PARAMETER_IS_NULL: The tokenType must be not null.") TokenType tokenType) {
         Result<TokenAO> result = tokenService.createAndSaveTokenByCode(tokenType, code);
@@ -101,7 +100,7 @@ public class TokenController {
     @RequestMapping(method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.CREATED)
     @ErrorHandler
-    public Object postToken(
+    public Object post(
             @NotBlank(message = "INVALID_PARAMETER_IS_BLANK: The username must be not blank.") String username,
             @NotBlank(message = "INVALID_PARAMETER_IS_BLANK: The password must be not blank.")
             @Password String password,

@@ -59,6 +59,10 @@ public class MeetingParticipantManagerImpl implements MeetingParticipantManager 
     public Result<PageInfo<MeetingParticipantVO>> listMeetingParticipants(MeetingParticipantQuery meetingParticipantQuery) {
         Result<PageInfo<MeetingParticipantDO>> result =
                 meetingParticipantService.listMeetingParticipants(meetingParticipantQuery);
+        if (!result.isSuccess()) {
+            return Result.fail(result);
+        }
+        
         PageInfo<MeetingParticipantDO> pageInfo = result.getData();
         List<MeetingParticipantDO> meetingParticipantDOList = pageInfo.getList();
         List<MeetingParticipantVO> meetingParticipantVOList = meetingParticipantDOList.stream()

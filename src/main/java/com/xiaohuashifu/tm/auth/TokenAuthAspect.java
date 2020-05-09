@@ -13,8 +13,11 @@ import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Objects;
 
 
 /**
@@ -53,6 +56,8 @@ public class TokenAuthAspect {
     @Around(value = "@annotation(com.xiaohuashifu.tm.auth.TokenAuth) && @annotation(tokenAuth) && args(..)")
     public Object authToken(ProceedingJoinPoint joinPoint, TokenAuth tokenAuth) throws Throwable {
         Authable authable = (Authable) joinPoint.getThis();
+        // TODO: 2020/5/9 可以用这个做法获取HttpServletRequest
+//        HttpServletRequest request1 = ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest();
         HttpServletRequest request = authable.getRequest();
 
         String token = request.getHeader("authorization");

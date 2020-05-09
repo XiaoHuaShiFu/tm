@@ -7,7 +7,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 /**
- * 描述:
+ * 描述: 运行跨域配置
  *
  * @author xhsf
  * @email 827032783@qq.com
