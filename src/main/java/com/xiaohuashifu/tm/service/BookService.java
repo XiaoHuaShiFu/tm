@@ -19,6 +19,8 @@ public interface BookService {
 	Result<BookDO> getBook(Integer id);
 	Result<List<BookDO>> listUnreturnedBooksByUserId(Integer id);
 	Result<PageInfo<BookDO>> listBooks(BookQuery bookQuery);
+	Result<Integer> countBooks();
+	Result<Integer> countBorrowedBooks();
 	
 	Result<BookLogDO> saveBookLog(BookLogDO bookLog);
 	Result<PageInfo<BookLogDO>> listBookLogs(BookLogQuery bookLogQuery);

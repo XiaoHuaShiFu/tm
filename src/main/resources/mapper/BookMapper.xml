@@ -83,6 +83,16 @@
 		</where>
 		order by update_time desc
 	</select>
+	
+	<select id="countBooks" resultType="integer">
+	    select count(*) from book;
+	</select>
+	
+	<select id="countBorrowedBooks" resultType="integer">
+        select count(*) from book where state = 'BORROWED';
+    </select>
+	
+	
   
 	<!--  借书相关  -->
 	<insert id="insertBookLog" parameterType="com.xiaohuashifu.tm.pojo.do0.BookLogDO">

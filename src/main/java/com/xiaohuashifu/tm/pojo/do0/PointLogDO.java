@@ -57,4 +57,15 @@ public class PointLogDO {
 	public void setUpdateTime(Date updateTime) {
 		this.updateTime = updateTime;
 	}
+
+	@Override
+	public String toString() {
+		return "PointLogDO [id=" + id + 
+				", userId=" + userId +
+				", point=" + point +
+				", content=" + content
+				+ ", createTime=" + createTime +
+				", updateTime=" + updateTime + "]";
+	}
+	
 }

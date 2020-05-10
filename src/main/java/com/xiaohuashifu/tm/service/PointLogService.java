@@ -9,6 +9,5 @@ import com.xiaohuashifu.tm.result.Result;
 
 public interface PointLogService {
 	Result<PointLogDO> savePointLog(@Param("pointLog") PointLogDO pointLog);
-	Result<PageInfo<PointLogDO>> getPointLogs(PointLogQuery pointLogQuery);
-	Result<PageInfo<PointLogDO>> listPointLog(PointLogQuery pointLogQuery);
+	Result<PageInfo<PointLogDO>> listPointLogs(PointLogQuery pointLogQuery);
 }

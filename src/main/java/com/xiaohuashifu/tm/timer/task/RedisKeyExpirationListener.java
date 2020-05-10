@@ -14,9 +14,9 @@ import com.xiaohuashifu.tm.service.BookService;
  * 删除过期的key的任务回调
  * 
  * @author TAO
- * @date 2020年4月27日 下午10:22:12
+ * @date 2020/4/27
  */
-@Component
+//@Component
 public class RedisKeyExpirationListener extends KeyExpirationEventMessageListener {
 
 	private final BookService bookService;

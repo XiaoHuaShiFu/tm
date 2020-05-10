@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.tm.dao.PointLogMapper;
@@ -29,30 +28,19 @@ public class PointLogServiceImpl implements PointLogService {
 	public Result<PointLogDO> savePointLog(PointLogDO pointLog) {
 		int count = pointLogMapper.insertPointLog(pointLog);
 		if (count < 1) {
-			return Result.fail(ErrorCode.INTERNAL_ERROR, "Insert point log failed.");
+			return Result.fail(ErrorCode.INTERNAL_ERROR, "Insert point log failed");
 		}
 		return Result.success(pointLog);
 	}
 
 	@Override
-	public Result<PageInfo<PointLogDO>> getPointLogs(PointLogQuery pointLogQuery) {
+	public Result<PageInfo<PointLogDO>> listPointLogs(PointLogQuery pointLogQuery) {
 		PageHelper.startPage(pointLogQuery);
-		List<PointLogDO> pointLogs = pointLogMapper.getPointLogsByUserId(pointLogQuery.getUserId());
-		if (pointLogs == null) {
-			return Result.fail(ErrorCode.INTERNAL_ERROR, "Get point logs failed.");
+		List<PointLogDO> pointLogs = pointLogMapper.listPointLogs(pointLogQuery);
+		if (pointLogs.size() == 0) {
+			return Result.fail(ErrorCode.INVALID_OPERATION_NOT_FOUND, "Not found");
 		}
-		PageInfo<PointLogDO> pointLogsInfo = new PageInfo<>((Page<PointLogDO>) pointLogs);
-		return Result.success(pointLogsInfo);
-	}
-
-	@Override
-	public Result<PageInfo<PointLogDO>> listPointLog(PointLogQuery pointLogQuery) {
-		PageHelper.startPage(pointLogQuery);
-		List<PointLogDO> pointLogs = pointLogMapper.listPointLogs();
-		if (pointLogs == null) {
-			return Result.fail(ErrorCode.INTERNAL_ERROR, "List point logs failed.");
-		}
-		PageInfo<PointLogDO> pointLogsInfo = new PageInfo<>((Page<PointLogDO>) pointLogs);
+		PageInfo<PointLogDO> pointLogsInfo = new PageInfo<>(pointLogs);
 		return Result.success(pointLogsInfo);
 	}
 	

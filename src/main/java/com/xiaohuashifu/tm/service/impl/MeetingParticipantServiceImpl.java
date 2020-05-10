@@ -3,6 +3,7 @@ package com.xiaohuashifu.tm.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.gson.Gson;
+import com.xiaohuashifu.tm.aspect.annotation.PointLog;
 import com.xiaohuashifu.tm.dao.MeetingParticipantMapper;
 import com.xiaohuashifu.tm.pojo.ao.MeetingQrcodeAO;
 import com.xiaohuashifu.tm.pojo.do0.MeetingParticipantDO;
@@ -44,6 +45,7 @@ public class MeetingParticipantServiceImpl implements MeetingParticipantService 
 	 * @param qrcode 会议二维码
 	 * @return Result<MeetingParticipantDO> 会议参与人员DO
 	 */
+	@PointLog(point = 1, value = "会议签到")
 	@Override
 	public Result<MeetingParticipantDO> saveMeetingParticipant(Integer meetingId, Integer userId, String qrcode) {
 		String key = MeetingConstant.PREFIX_OF_QRCODE_FOR_REDIS_KEY + meetingId;

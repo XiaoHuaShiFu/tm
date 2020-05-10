@@ -154,6 +154,24 @@ public class BookServiceImpl implements BookService {
 	}
 
 	@Override
+	public Result<Integer> countBooks() {
+		Integer count = bookMapper.countBooks();
+		if (count < 1) {
+			return Result.fail(ErrorCode.INVALID_OPERATION_NOT_FOUND, "Not found.");
+		}
+		return Result.success(count);
+	}
+
+	@Override
+	public Result<Integer> countBorrowedBooks() {
+		Integer count = bookMapper.countBorrowedBooks();
+		if (count < 1) {
+			return Result.fail(ErrorCode.INVALID_OPERATION_NOT_FOUND, "Not found.");
+		}
+		return Result.success(count);
+	}
+	
+	@Override
 	@Transactional
 	public Result<BookLogDO> saveBookLog(BookLogDO bookLog) {
 		BookDO book = new BookDO();

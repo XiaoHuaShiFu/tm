@@ -2,8 +2,12 @@ package com.xiaohuashifu.tm.pojo.query;
 
 public class PointLogQuery {
 	private Integer pageNum = 1;
-    private Integer pageSize = 5;  //默认一页5条数据
+    private Integer pageSize = 10;
     private Integer userId;
+    
+    public PointLogQuery(Integer pageNum) {
+		this.pageNum = pageNum;
+	}
     
     public PointLogQuery(Integer pageNum, Integer userId) {
     	this.pageNum = pageNum;
