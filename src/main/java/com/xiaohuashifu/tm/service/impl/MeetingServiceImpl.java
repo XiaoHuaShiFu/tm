@@ -51,7 +51,10 @@ public class MeetingServiceImpl implements MeetingService {
 	@Override
 	public Result<PageInfo<MeetingDO>> listMeetings(MeetingQuery meetingQuery) {
 		PageHelper.startPage(meetingQuery);
-		PageInfo<MeetingDO> meetings = new PageInfo<>((Page<MeetingDO>) meetingMapper.listMeetings(meetingQuery));
+		PageInfo<MeetingDO> meetings = new PageInfo<>(meetingMapper.listMeetings(meetingQuery));
+		if (meetings.getList().isEmpty()) {
+			return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "Not found.");
+		}
 		return Result.success(meetings);
 	}
 

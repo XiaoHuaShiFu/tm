@@ -48,6 +48,9 @@ public class MeetingManagerImpl implements MeetingManager {
     @Override
     public Result<PageInfo<MeetingVO>> listMeetings(MeetingQuery meetingQuery) {
         Result<PageInfo<MeetingDO>> result = meetingService.listMeetings(meetingQuery);
+        if (!result.isSuccess()){
+            return Result.fail(result);
+        }
         PageInfo<MeetingDO> pageInfo = result.getData();
         List<MeetingDO> meetingDOList = pageInfo.getList();
         List<MeetingVO> meetingVOList = meetingDOList.stream()

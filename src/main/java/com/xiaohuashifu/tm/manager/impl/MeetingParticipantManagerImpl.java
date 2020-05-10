@@ -14,8 +14,6 @@ import com.xiaohuashifu.tm.service.MeetingParticipantService;
 import com.xiaohuashifu.tm.service.MeetingService;
 import com.xiaohuashifu.tm.service.UserService;
 import org.dozer.Mapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -31,7 +29,6 @@ import java.util.stream.Collectors;
  */
 @Component("meetingParticipantManager")
 public class MeetingParticipantManagerImpl implements MeetingParticipantManager {
-    private static final Logger logger = LoggerFactory.getLogger(MeetingParticipantManagerImpl.class);
 
     private final MeetingParticipantService meetingParticipantService;
 
@@ -62,7 +59,7 @@ public class MeetingParticipantManagerImpl implements MeetingParticipantManager 
         if (!result.isSuccess()) {
             return Result.fail(result);
         }
-        
+
         PageInfo<MeetingParticipantDO> pageInfo = result.getData();
         List<MeetingParticipantDO> meetingParticipantDOList = pageInfo.getList();
         List<MeetingParticipantVO> meetingParticipantVOList = meetingParticipantDOList.stream()
