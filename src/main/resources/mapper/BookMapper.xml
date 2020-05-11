@@ -10,12 +10,12 @@
     </sql>
 
 
-	<insert id="insert" parameterType="com.xiaohuashifu.tm.pojo.do0.BookDO">
+	<insert id="insertBook" parameterType="com.xiaohuashifu.tm.pojo.do0.BookDO">
 	  insert into book (numbering, name, cover_url)
 	  values (#{numbering}, #{name}, #{coverUrl});
 	</insert>
   
-	<delete id="delete" parameterType="integer">
+	<delete id="deleteBook" parameterType="integer">
 		delete from book where id = #{id};
 	</delete>
 	

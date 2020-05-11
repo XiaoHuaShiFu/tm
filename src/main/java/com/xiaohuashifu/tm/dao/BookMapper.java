@@ -13,8 +13,8 @@ import com.xiaohuashifu.tm.pojo.query.BookQuery;
 
 @Mapper
 public interface BookMapper {
-	int insert(@Param("book") BookDO book);
-	int delete(Integer id);
+	int insertBook(BookDO book);
+	int deleteBook(Integer id);
 	int updateBook(BookDO book);
 	int updateCover(@Param("id") Integer id, @Param("cover_url") String coverUrl);
 	String getCoverUrlById(Integer id);

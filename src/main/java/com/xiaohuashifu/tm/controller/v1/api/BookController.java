@@ -81,10 +81,7 @@ public class BookController {
 		// 用户查询其未还的书籍判断
 		if (Boolean.TRUE.equals(query.getUnreturned())) {
 			Result<List<BookDO>> result = bookService.listUnreturnedBooksByUserId(tokenAO.getId());
-			if (!result.isSuccess()) {
-				return result;
-			}
-			return result.getData();
+			return result.isSuccess() ? result.getData() : result;
 		}
 		
 		Result<PageInfo<BookDO>> result = bookService.listBooks(query);

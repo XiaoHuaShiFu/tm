@@ -3,6 +3,7 @@ package com.xiaohuashifu.tm.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.gson.Gson;
+import com.xiaohuashifu.tm.aspect.annotation.PointLog;
 import com.xiaohuashifu.tm.dao.AttendanceMapper;
 import com.xiaohuashifu.tm.pojo.ao.AttendanceQrcodeAO;
 import com.xiaohuashifu.tm.pojo.do0.AttendanceDO;
@@ -52,6 +53,7 @@ public class AttendanceServiceImpl implements AttendanceService {
      * @param attendanceDO AttendanceDO
      * @return Result<AttendanceDO>
      */
+    @PointLog(point = 1, value = "值班签到")
     @Override
     public Result<AttendanceDO> saveAttendance(AttendanceDO attendanceDO, String qrcode) {
         // 经纬度不在签到点的范围内

@@ -49,7 +49,7 @@ public class BookServiceImpl implements BookService {
 			String coverUrl = fileService.saveAndGetUrl(cover, BookConstant.PREFIX_COVER_FILE_DIRECTORY);
 			book.setCoverUrl(coverUrl);
 		}
-		int count = bookMapper.insert(book);
+		int count = bookMapper.insertBook(book);
 		if (count < 1) {
 			return Result.fail(ErrorCode.INTERNAL_ERROR, "Insert book failed.");
 		}
@@ -63,7 +63,7 @@ public class BookServiceImpl implements BookService {
 		if (coverUrl != null) {
 			fileService.delete(coverUrl);
 		}
-		int count = bookMapper.delete(id);
+		int count = bookMapper.deleteBook(id);
 		if (count < 1) {
 			return Result.fail(ErrorCode.INTERNAL_ERROR, "Delete book failed.");
 		}

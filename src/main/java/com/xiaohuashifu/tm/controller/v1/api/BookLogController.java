@@ -34,7 +34,7 @@ public class BookLogController {
 	@ResponseStatus(HttpStatus.OK)
 	@RequestMapping(method = RequestMethod.GET)
 	@TokenAuth(tokenType = TokenType.USER)
-	public Object listBookLog(TokenAO tokenAO, @RequestParam(value = "pageNum", required = false) Integer pageNum,
+	public Object list(TokenAO tokenAO, @RequestParam(value = "pageNum", required = false) Integer pageNum,
 			@RequestParam(value = "bookId", required = false) Integer bookId) {
 		BookLogQuery query = new BookLogQuery();
 		query.setUserId(tokenAO.getId());
