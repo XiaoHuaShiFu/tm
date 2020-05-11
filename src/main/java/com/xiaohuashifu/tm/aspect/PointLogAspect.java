@@ -36,7 +36,7 @@ public class PointLogAspect {
 	public void point(PointLog pointLog) {}
 	
 	@Transactional
-	@AfterReturning(value = "point(pointLog)", returning = "result")
+	@AfterReturning(value = "point(pointLog)", returning = "result", argNames = "pointLog,result")
 	public void serviceLog(PointLog pointLog, Result result) {  // 这里不能在Result加入泛型参数, 否则类型不对应而不能进入此切面
 		if (!result.isSuccess()) {
 			logger.error("操作失败");

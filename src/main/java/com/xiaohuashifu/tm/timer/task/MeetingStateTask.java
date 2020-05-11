@@ -39,27 +39,32 @@ public class MeetingStateTask implements Runnable {
         meetingQuery.setPageSize(99999);
         meetingQuery.setState(MeetingState.WAITING);
         Result<PageInfo<MeetingDO>> listMeetingsResult = meetingService.listMeetings(meetingQuery);
-        logger.warn("-------------MeetingList" + listMeetingsResult);
-        logger.warn("-------------Now" + new Date());
-        List<MeetingDO> meetingDOList = listMeetingsResult.getData().getList();
-        for (MeetingDO meetingDO : meetingDOList) {
-            if (meetingDO.getStartTime().before(new Date())) {
-                meetingDO.setState(MeetingState.PROCESSING);
-                meetingService.updateMeeting(meetingDO);
+        if (listMeetingsResult.isSuccess()) {
+            List<MeetingDO> meetingDOList = listMeetingsResult.getData().getList();
+            for (MeetingDO meetingDO : meetingDOList) {
+
+                if (meetingDO.getStartTime().before(new Date())) {
+                    meetingDO.setState(MeetingState.PROCESSING);
+                    meetingService.updateMeeting(meetingDO);
+                }
             }
         }
+
 
 
         // 查看PROCESSING状态的会议是否需要改变成FINISH
         meetingQuery.setState(MeetingState.PROCESSING);
         listMeetingsResult = meetingService.listMeetings(meetingQuery);
-        meetingDOList = listMeetingsResult.getData().getList();
-        for (MeetingDO meetingDO : meetingDOList) {
-            if (meetingDO.getEndTime().before(new Date())) {
-                meetingDO.setState(MeetingState.FINISH);
-                meetingService.updateMeeting(meetingDO);
+        if (listMeetingsResult.isSuccess()) {
+            List<MeetingDO> meetingDOList = listMeetingsResult.getData().getList();
+            for (MeetingDO meetingDO : meetingDOList) {
+                if (meetingDO.getEndTime().before(new Date())) {
+                    meetingDO.setState(MeetingState.FINISH);
+                    meetingService.updateMeeting(meetingDO);
+                }
             }
         }
+
     }
 
 }
