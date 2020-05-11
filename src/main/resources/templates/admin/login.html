@@ -72,24 +72,31 @@
   
   	<script type="text/javascript" th:inline="javascript">
   		$("#login_btn").click(function(){
-  			$.ajax({
-  				url : "validate",
-  				data : {
-  					"jobNumber" : $("#job_num").val(),
-  					"password" : $("#pwd").val()
-  				},
-  				async : false,
-  				type : "POST",
-  				success : function(data){
-  					if (data.success == false){
-  						alert("账号或密码错误");
-  					}else {
-  					    sessionStorage.setItem("token", data);
-                        $("#header").val("authorization:" + data);
-                        $(".hidden-form").submit();
-                    }
-  				}
-  			})
+  			var token = sessionStorage.getItem("token");
+  			console.log(token);
+  			if (token == null) {
+  				$.ajax({
+  	                url : "validate",
+  	                data : {
+  	                    "jobNumber" : $("#job_num").val(),
+  	                    "password" : $("#pwd").val()
+  	                },
+  	                async : false,
+  	                type : "POST",
+  	                success : function(data){
+  	                    if (data.success == false){
+  	                        alert("账号或密码错误");
+  	                    }else {
+  	                        sessionStorage.setItem("token", data);
+  	                        $("#header").val("authorization:" + data);
+  	                        $(".hidden-form").submit();
+  	                    }
+  	                }
+  	            })
+  			}else {
+  				$("#header").val("authorization:" + token);
+                $(".hidden-form").submit();
+  			}
   		});
   	</script>
 </html>

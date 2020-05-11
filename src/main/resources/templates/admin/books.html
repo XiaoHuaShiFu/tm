@@ -159,7 +159,7 @@
 					        <td th:text="${book.numbering}">空</td>
 					        <td th:text="${book.name}">空</td>
 					        <td>
-					        	<img th:src="${book.coverUrl}">
+					        	<img th:src="${book.coverUrl}" onclick="showImage(this.src);">
 					        </td>
 					        <td th:text="${book.state}">空</td>
 					        <td th:text="${book.available}? yes : no">yes</td>
@@ -266,6 +266,12 @@
 	    	<i class="iconfont icon-delete"></i>
     	</div>
     </div>
+    
+    <!-- 图片遮罩层 -->
+    <div id="img-mask" class="mask" onclick="this.style.display='none';">
+        <img id="big-img">
+    </div>
+    
     <!-- JavaScript files-->
     <script th:src="@{/vendor/jquery/jquery.min.js}"></script>
     <script th:src="@{/vendor/popper.js/umd/popper.min.js}"> </script>
@@ -393,6 +399,12 @@
 					}
 				});
 			}
+		}
+		
+		// 图片放大顶层展示
+		function showImage(imgUrl){
+			$("#img-mask").attr("style", "display:block;");
+			$("#big-img").attr("src", imgUrl);
 		}
  	</script>
   </body>

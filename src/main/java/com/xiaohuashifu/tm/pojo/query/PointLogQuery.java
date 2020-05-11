@@ -5,18 +5,14 @@ public class PointLogQuery {
     private Integer pageSize = 10;
     private Integer userId;
     
+    public PointLogQuery() {}
+    
     public PointLogQuery(Integer pageNum) {
 		this.pageNum = pageNum;
 	}
     
     public PointLogQuery(Integer pageNum, Integer userId) {
     	this.pageNum = pageNum;
-    	this.userId = userId;
-    }
-    
-    public PointLogQuery(Integer pageNum, Integer pageSize, Integer userId) {
-    	this.pageNum = pageNum;
-    	this.pageSize = pageSize;
     	this.userId = userId;
     }
     

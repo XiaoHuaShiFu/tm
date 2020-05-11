@@ -190,7 +190,7 @@
 					        <td th:text="${user.email}">空</td>
 					        <td th:text="${user.department}">空</td>
 					        <td>
-					        	<img th:src="${user.avatarUrl}">
+					        	<img th:src="${user.avatarUrl}" onclick="showImage(this.src);">
 					        </td>
 					        <td th:text="${user.point}">空</td>
 					        <td th:text="${user.available}? 正常 : 封停">正常</td>
@@ -221,6 +221,12 @@
         </footer>
       </div>
     </div>
+    
+    <!-- 图片遮罩层 -->
+    <div id="img-mask" class="mask" onclick="this.style.display='none';">
+        <img id="big-img">
+    </div>
+    
     <!-- JavaScript files-->
     <script th:src="@{/vendor/jquery/jquery.min.js}"></script>
     <script th:src="@{/vendor/popper.js/umd/popper.min.js}"> </script>
@@ -274,6 +280,12 @@
    				}
    			});
    		}
+   		
+   	    // 图片放大顶层展示
+        function showImage(imgUrl){
+            $("#img-mask").attr("style", "display:block;");
+            $("#big-img").attr("src", imgUrl);
+        }
     </script>
   </body>
 </html>
