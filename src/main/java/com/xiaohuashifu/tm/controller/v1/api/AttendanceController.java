@@ -117,21 +117,14 @@ public class AttendanceController {
      */
     @RequestMapping(method = RequestMethod.PUT)
     @ResponseStatus(value = HttpStatus.OK)
-    @TokenAuth(tokenType = {TokenType.USER, TokenType.ADMIN, TokenType.QRCODE})
+    @TokenAuth(tokenType = {TokenType.USER})
     @ErrorHandler
-    public Object put(TokenAO tokenAO,  @Validated(GroupPut.class) AttendanceDO attendanceDO) {
-        // TODO: 2020/4/3 这里用户部分有一些细节没有处理->应该只能更新签退时间，且在签退记录不存在时才能更新
-        // TODO: 2020/4/3 这里应该只有USET-TOKEN才需要带上userid，ADMIN-TOKEN应该可以更新所有的出勤记录
-        // 如果Token类型是USER，用户只能更新自己的签到信息，且只能更新签退时间（且必须是第一次更新时才有效）
-        Result<AttendanceDO> result = null;
-        if (tokenAO.getType() == TokenType.USER) {
-            if (!attendanceDO.getUserId().equals(tokenAO.getId())) {
-                return Result.fail(ErrorCode.FORBIDDEN_SUB_USER);
-            }
-            result = attendanceService.updateAttendance(attendanceDO);
-        } else if (tokenAO.getType() == TokenType.ADMIN || tokenAO.getType() == TokenType.QRCODE){
-            result = attendanceService.updateAttendance(attendanceDO);
+    public Object put(TokenAO tokenAO,  @Validated(GroupPut.class) AttendanceDO attendanceDO,
+                      @NotBlank(message = "INVALID_PARAMETER_IS_BLANK: The qrcode must be not blank.") String qrcode) {
+        if (!attendanceDO.getUserId().equals(tokenAO.getId())) {
+            return Result.fail(ErrorCode.FORBIDDEN_SUB_USER);
         }
+        Result<AttendanceDO> result = attendanceService.updateAttendanceForSignOut(attendanceDO, qrcode);
 
         return !result.isSuccess() ? result : mapper.map(result.getData(), AttendanceVO.class);
     }

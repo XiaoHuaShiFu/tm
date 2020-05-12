@@ -56,33 +56,10 @@ public class AttendanceServiceImpl implements AttendanceService {
     @PointLog(point = 1, value = "值班签到")
     @Override
     public Result<AttendanceDO> saveAttendance(AttendanceDO attendanceDO, String qrcode) {
-        // 经纬度不在签到点的范围内
-        if (!(attendanceDO.getLatitude()
-                .compareTo(AttendanceConstant.LATITUDE.subtract(AttendanceConstant.ERR_OF_LATITUDE_AND_LONGITUDE)) >= 0
-                && attendanceDO.getLatitude()
-                .compareTo(AttendanceConstant.LATITUDE.add(AttendanceConstant.ERR_OF_LATITUDE_AND_LONGITUDE)) <= 0
-                && attendanceDO.getLongitude()
-                .compareTo(AttendanceConstant.LONGITUDE.subtract(AttendanceConstant.ERR_OF_LATITUDE_AND_LONGITUDE)) >= 0
-                && attendanceDO.getLongitude()
-                .compareTo(AttendanceConstant.LONGITUDE.add(AttendanceConstant.ERR_OF_LATITUDE_AND_LONGITUDE)) <= 0)) {
-            return Result.fail(ErrorCode.INVALID_PARAMETER,
-                    "Latitude and longitude are not within the range of the check-in point.");
-        }
-
-        String key = AttendanceConstant.PREFIX_OF_QRCODE_FOR_REDIS_KEY;
-        String value = cacheService.get(key);
-
-        // 出勤二维码不存在
-        if (value == null) {
-            logger.error("The qrcode not exists.");
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "The qrcode not exists.");
-        }
-        AttendanceQrcodeAO attendanceQrcodeAO = gson.fromJson(value, AttendanceQrcodeAO.class);
-
-        // qrcode不正确或者已经过时
-        if (!attendanceQrcodeAO.getQrcode().equals(qrcode)) {
-            logger.error("The qrcode is invalid.");
-            return Result.fail(ErrorCode.INVALID_PARAMETER, "The qrcode is invalid.");
+        // 检查二维码和经纬度是否正确
+        Result<AttendanceDO> checkQrcodeAndLongitudeAndLatitudeResult = checkQrcodeAndLongitudeAndLatitude(attendanceDO, qrcode);
+        if (!checkQrcodeAndLongitudeAndLatitudeResult.isSuccess()) {
+            return Result.fail(checkQrcodeAndLongitudeAndLatitudeResult);
         }
 
         AttendanceDO attendanceDO0 = new AttendanceDO();
@@ -161,6 +138,68 @@ public class AttendanceServiceImpl implements AttendanceService {
         }
 
         return getAttendance(attendanceDO0.getId());
+    }
+
+    /**
+     * 更新出勤记录，该接口用于签退服务
+     *
+     * @param qrcode 签退的二维码
+     * @param attendanceDO 要更新的信息
+     * @return AttendanceDO
+     */
+    @Override
+    public Result<AttendanceDO> updateAttendanceForSignOut(AttendanceDO attendanceDO, String qrcode) {
+        // 检查二维码和经纬度是否正确
+        Result<AttendanceDO> checkQrcodeAndLongitudeAndLatitudeResult = checkQrcodeAndLongitudeAndLatitude(attendanceDO, qrcode);
+        if (!checkQrcodeAndLongitudeAndLatitudeResult.isSuccess()) {
+            return Result.fail(checkQrcodeAndLongitudeAndLatitudeResult);
+        }
+
+        //只给更新某些属性
+        AttendanceDO attendanceDO0 = new AttendanceDO();
+        attendanceDO0.setId(attendanceDO.getId());
+        attendanceDO0.setSignOutTime(attendanceDO.getSignOutTime());
+
+        return updateAttendance(attendanceDO0);
+    }
+
+    /**
+     * 检查二维码和经纬度是否正确
+     * @param attendanceDO 签到信息
+     * @param qrcode 二维码
+     * @return 检查结果
+     */
+    private Result<AttendanceDO> checkQrcodeAndLongitudeAndLatitude(AttendanceDO attendanceDO, String qrcode) {
+        // 经纬度不在签到点的范围内
+        if (!(attendanceDO.getLatitude()
+                .compareTo(AttendanceConstant.LATITUDE.subtract(AttendanceConstant.ERR_OF_LATITUDE_AND_LONGITUDE)) >= 0
+                && attendanceDO.getLatitude()
+                .compareTo(AttendanceConstant.LATITUDE.add(AttendanceConstant.ERR_OF_LATITUDE_AND_LONGITUDE)) <= 0
+                && attendanceDO.getLongitude()
+                .compareTo(AttendanceConstant.LONGITUDE.subtract(AttendanceConstant.ERR_OF_LATITUDE_AND_LONGITUDE)) >= 0
+                && attendanceDO.getLongitude()
+                .compareTo(AttendanceConstant.LONGITUDE.add(AttendanceConstant.ERR_OF_LATITUDE_AND_LONGITUDE)) <= 0)) {
+            return Result.fail(ErrorCode.INVALID_PARAMETER,
+                    "Latitude and longitude are not within the range of the check-in point.");
+        }
+
+        String key = AttendanceConstant.PREFIX_OF_QRCODE_FOR_REDIS_KEY;
+        String value = cacheService.get(key);
+
+        // 出勤二维码不存在
+        if (value == null) {
+            logger.error("The qrcode not exists.");
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "The qrcode not exists.");
+        }
+        AttendanceQrcodeAO attendanceQrcodeAO = gson.fromJson(value, AttendanceQrcodeAO.class);
+
+        // qrcode不正确或者已经过时
+        if (!attendanceQrcodeAO.getQrcode().equals(qrcode)) {
+            logger.error("The qrcode is invalid.");
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "The qrcode is invalid.");
+        }
+
+        return Result.success();
     }
 
     /**

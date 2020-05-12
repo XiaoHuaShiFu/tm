@@ -23,4 +23,6 @@ public interface AttendanceService {
     Result<PageInfo<AttendanceDO>> listAttendances(AttendanceQuery attendanceQuery);
 
     Result<AttendanceDO> updateAttendance(AttendanceDO attendanceDO);
+
+    Result<AttendanceDO> updateAttendanceForSignOut(AttendanceDO attendanceDO, String qrcode);
 }

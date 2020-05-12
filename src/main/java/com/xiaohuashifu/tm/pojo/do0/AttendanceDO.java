@@ -30,16 +30,16 @@ public class AttendanceDO {
     @Id(groups = {Group.class})
     private Integer userId;
 
-    @NotNull(message = "INVALID_PARAMETER_IS_NULL: The latitude must be not null.", groups = {GroupPost.class})
+    @NotNull(message = "INVALID_PARAMETER_IS_NULL: The latitude must be not null.", groups = {GroupPost.class, GroupPut.class})
     @Latitude(groups = {GroupPost.class})
     private BigDecimal latitude;
 
-    @NotNull(message = "INVALID_PARAMETER_IS_NULL: The longitude must be not null.", groups = {GroupPost.class})
     @Longitude(groups = {GroupPost.class})
     private BigDecimal longitude;
 
     private Date signInTime;
 
+    @NotNull(message = "INVALID_PARAMETER_IS_NULL: The signOutTime must be not null.", groups = {GroupPut.class})
     private Date signOutTime;
 
     private Boolean available;

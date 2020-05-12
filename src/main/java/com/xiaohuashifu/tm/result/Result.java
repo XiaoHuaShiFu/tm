@@ -62,7 +62,7 @@ public class Result<T> implements Serializable {
      *
      * @return Result
      */
-    public static Result success() {
+    public static <T> Result<T> success() {
         return new Result<>(true, "OK");
     }
 
