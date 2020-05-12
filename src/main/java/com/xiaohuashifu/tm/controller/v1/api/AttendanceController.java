@@ -90,7 +90,7 @@ public class AttendanceController {
      */
     @RequestMapping(method = RequestMethod.GET)
     @ResponseStatus(value = HttpStatus.OK)
-    @TokenAuth(tokenType = {TokenType.ADMIN})
+    @TokenAuth(tokenType = {TokenType.USER, TokenType.ADMIN})
     @ErrorHandler
     public Object get(AttendanceQuery query) {
         Result<PageInfo<AttendanceVO>> result = attendanceManager.listAttendances(query);
