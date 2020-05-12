@@ -155,6 +155,17 @@ public class AttendanceServiceImpl implements AttendanceService {
             return Result.fail(checkQrcodeAndLongitudeAndLatitudeResult);
         }
 
+        // 判断该签到记录是否存在
+        Result<AttendanceDO> getAttendanceResult = getAttendance(attendanceDO.getId());
+        if (!getAttendanceResult.isSuccess()) {
+            return Result.fail(getAttendanceResult);
+        }
+
+        // 判断该签到是否已经签退
+        if (getAttendanceResult.getData().getSignOutTime() != null) {
+            return Result.fail(ErrorCode.FORBIDDEN, "This attendance record has been sign out.");
+        }
+
         //只给更新某些属性
         AttendanceDO attendanceDO0 = new AttendanceDO();
         attendanceDO0.setId(attendanceDO.getId());
