@@ -117,7 +117,7 @@ public class AttendanceController {
      */
     @RequestMapping(method = RequestMethod.PUT)
     @ResponseStatus(value = HttpStatus.OK)
-    @TokenAuth(tokenType = {TokenType.USER, TokenType.ADMIN})
+    @TokenAuth(tokenType = {TokenType.USER, TokenType.ADMIN, TokenType.QRCODE})
     @ErrorHandler
     public Object put(TokenAO tokenAO,  @Validated(GroupPut.class) AttendanceDO attendanceDO) {
         // TODO: 2020/4/3 这里用户部分有一些细节没有处理->应该只能更新签退时间，且在签退记录不存在时才能更新
@@ -129,7 +129,7 @@ public class AttendanceController {
                 return Result.fail(ErrorCode.FORBIDDEN_SUB_USER);
             }
             result = attendanceService.updateAttendance(attendanceDO);
-        } else if (tokenAO.getType() == TokenType.ADMIN){
+        } else if (tokenAO.getType() == TokenType.ADMIN || tokenAO.getType() == TokenType.QRCODE){
             result = attendanceService.updateAttendance(attendanceDO);
         }
 
