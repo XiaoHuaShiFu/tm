@@ -34,6 +34,7 @@ public class AttendanceDO {
     @Latitude(groups = {GroupPost.class})
     private BigDecimal latitude;
 
+    @NotNull(message = "INVALID_PARAMETER_IS_NULL: The longitude must be not null.", groups = {GroupPost.class, GroupPut.class})
     @Longitude(groups = {GroupPost.class})
     private BigDecimal longitude;
 
