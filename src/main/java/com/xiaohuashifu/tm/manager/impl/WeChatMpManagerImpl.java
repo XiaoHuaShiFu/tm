@@ -173,7 +173,7 @@ public class WeChatMpManagerImpl implements WeChatMpManager {
 
     /**
      * 获取访问趋势
-     * @param paramMap 存放请求参数的map
+     * @param dateList 存放要查询的日期的List，日期格式 yyyyMMdd
      */
 	@Override
 	public Result<List<DailyVisitTrendDTO>> getDailyVisitTrend(List<String> dateList) {

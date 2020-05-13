@@ -3,7 +3,6 @@ package com.xiaohuashifu.tm.service.impl;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.xiaohuashifu.tm.constant.Department;
 import com.xiaohuashifu.tm.dao.UserMapper;
 import com.xiaohuashifu.tm.manager.WeChatMpManager;
 import com.xiaohuashifu.tm.manager.constant.WeChatMp;
@@ -21,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
 
 /**
  * 描述:用户服务层

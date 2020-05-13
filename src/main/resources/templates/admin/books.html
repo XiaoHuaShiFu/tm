@@ -309,8 +309,11 @@
 				processData:false,
 				data:formData,
 				type:"POST",
+				headers:{
+					"authorization" : sessionStorage.getItem("token")
+				},
 				success:function(data){
-					if (data == true){
+					if (data.success != false){
 						alert("添加成功");
 						$("#add-mask").attr("style", "display:none");
 					}else {
@@ -338,6 +341,9 @@
 				processData:false,
 				data:formData,
 				method:"PUT",
+				headers:{
+                    "authorization" : sessionStorage.getItem("token")
+                },
 				success:function(data){
 					if (data.success != false){
 						alert("修改成功");
@@ -389,8 +395,11 @@
 						id : delId
 					},
 					method:"DELETE",
+					headers:{
+	                    "authorization" : sessionStorage.getItem("token")
+	                },
 					success:function(data){
-						if (data == true){
+						if (data.success != false){
 							$(ele).parent().parent().remove();
 							alert("删除成功");
 						}else {

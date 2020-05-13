@@ -101,6 +101,7 @@ public class AdminController {
 
 	@ResponseBody
 	@RequestMapping(value = "validate", method = RequestMethod.POST)
+	@AdminLog(value = "登录", type = AdminLogType.LOGIN)
 	public Object adminLogin(@RequestParam("jobNumber") String jobNumber, @RequestParam("password") String password) {
 		Result<TokenAO> result = tokenService.createAndSaveToken(TokenType.ADMIN, jobNumber, password);
 		if(!result.isSuccess()) {
@@ -111,7 +112,6 @@ public class AdminController {
 	
 	@RequestMapping(value = "index")
 //	@TokenAuth(tokenType = {TokenType.ADMIN})
-//	@AdminLog(value = "登录", type = AdminLogType.LOGIN)
 	public ModelAndView index() {
 		ModelAndView model = new ModelAndView("admin/index");
 		Result<Integer> borrowCountResult = bookService.countBorrowedBooks();
@@ -119,7 +119,6 @@ public class AdminController {
 		Result<Integer> bookCountResult = bookService.countBooks();
 		model.addObject("bookCount", bookCountResult.isSuccess() ? bookCountResult.getData() : Integer.valueOf(0));
 		
-		// dateList放入的日期格式必须是 yyyymmdd
 		List<String> dateList = new ArrayList<>();
 		int year = LocalDateTime.now().getYear();
     	int month = LocalDateTime.now().getMonthValue();

@@ -1,8 +1,10 @@
 package com.xiaohuashifu.tm.controller.v1.api;
 
 import com.github.pagehelper.PageInfo;
+import com.xiaohuashifu.tm.aspect.annotation.AdminLog;
 import com.xiaohuashifu.tm.aspect.annotation.ErrorHandler;
 import com.xiaohuashifu.tm.auth.TokenAuth;
+import com.xiaohuashifu.tm.constant.AdminLogType;
 import com.xiaohuashifu.tm.constant.BookLogState;
 import com.xiaohuashifu.tm.constant.BookState;
 import com.xiaohuashifu.tm.constant.TokenType;
@@ -25,6 +27,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpServletRequest;
+
 @RestController
 @RequestMapping("v1/books")
 @Validated
@@ -41,17 +45,21 @@ public class BookController {
 	
 	@ResponseStatus(HttpStatus.CREATED)
 	@RequestMapping(method = RequestMethod.POST)
-	public Boolean insertBook(@RequestPart("bookInfo") BookDO book,
-							  @RequestPart(value = "cover", required = false) MultipartFile cover) {
-		Result<?> result = bookService.saveBook(book, cover);
-		return result.isSuccess();
+//	@TokenAuth(tokenType = {TokenType.ADMIN})
+//	@AdminLog(value = "'添加书籍'", type = AdminLogType.INSERT)
+	public Object insertBook(HttpServletRequest request, @RequestPart("bookInfo") BookDO book, 
+			@RequestPart(value = "cover", required = false) MultipartFile cover) {
+		Result<BookDO> result = bookService.saveBook(book, cover);
+		return result.isSuccess() ? mapper.map(result.getData(), BookVO.class) : result;
 	}
 	
 //	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@RequestMapping(method = RequestMethod.DELETE)
-	public Boolean deleteBook(@RequestParam("id") Integer id) {
+//	@TokenAuth(tokenType = {TokenType.ADMIN})
+//	@AdminLog(value = "'删除书籍'", type = AdminLogType.DELETE)
+	public Object deleteBook(HttpServletRequest request, @RequestParam("id") Integer id) {
 		Result<?> result = bookService.deleteBook(id);
-		return result.isSuccess();
+		return result;
 	}
 
 	/**
@@ -62,7 +70,8 @@ public class BookController {
 	@RequestMapping(method = RequestMethod.PUT)
 	@ResponseStatus(HttpStatus.OK)
 //	@TokenAuth(tokenType = {TokenType.ADMIN})
-	public Object put(@RequestPart("bookInfo") BookDO book,
+//	@AdminLog(value = "'更新书籍'", type = AdminLogType.UPDATE)
+	public Object put(HttpServletRequest request, @RequestPart("bookInfo") BookDO book,
 			@RequestPart(value = "cover", required = false) MultipartFile cover) {
 		Result<BookDO> result = bookService.updateBook(book, cover);
 		return result.isSuccess() ? mapper.map(result.getData(), BookVO.class) : result;

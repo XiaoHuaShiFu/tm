@@ -26,6 +26,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -255,7 +256,8 @@ public class UserController {
     @ResponseStatus(value = HttpStatus.OK)
 //    @TokenAuth(tokenType = TokenType.ADMIN)
     @AdminLog(value = "#available ? '解封' : '封号'", type = AdminLogType.UPDATE)
-    public Object putAvailable(@RequestParam("id") Integer id, @RequestParam("available") Boolean available) {
+    public Object putAvailable(HttpServletRequest request,
+    		@RequestParam("id") Integer id, @RequestParam("available") Boolean available) {
     	Result<UserDO> result = userService.getUser(id);
     	if (!result.isSuccess()) {
     		return Result.fail(ErrorCode.INTERNAL_ERROR, "Get user failed");

@@ -2,8 +2,6 @@ package com.xiaohuashifu.tm.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.xiaohuashifu.tm.aspect.annotation.AdminLog;
-import com.xiaohuashifu.tm.constant.AdminLogType;
 import com.xiaohuashifu.tm.constant.BookLogState;
 import com.xiaohuashifu.tm.constant.BookState;
 import com.xiaohuashifu.tm.dao.BookMapper;
@@ -43,7 +41,6 @@ public class BookServiceImpl implements BookService {
 	}
 
 	@Override
-	@AdminLog(value = "'添加书籍'", type = AdminLogType.INSERT)
 	public Result<BookDO> saveBook(BookDO book, MultipartFile cover) {
 		if (cover != null) {
 			String coverUrl = fileService.saveAndGetUrl(cover, BookConstant.PREFIX_COVER_FILE_DIRECTORY);
@@ -57,7 +54,6 @@ public class BookServiceImpl implements BookService {
 	}
 	
 	@Override
-	@AdminLog(value = "'删除书籍'", type = AdminLogType.DELETE)
 	public Result<Integer> deleteBook(Integer id) {
 		String coverUrl = bookMapper.getCoverUrlById(id);
 		if (coverUrl != null) {
@@ -72,7 +68,6 @@ public class BookServiceImpl implements BookService {
 	
 	@Override
 	@Transactional
-	@AdminLog(value = "'更新书籍'", type = AdminLogType.UPDATE)
 	public Result<BookDO> updateBook(BookDO book, MultipartFile cover) {
 		int count = bookMapper.updateBook(book);
 		if (count < 1) {

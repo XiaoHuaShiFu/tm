@@ -3,6 +3,8 @@ package com.xiaohuashifu.tm.aspect;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
@@ -12,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.stereotype.Component;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.xiaohuashifu.tm.aspect.annotation.AdminLog;
 import com.xiaohuashifu.tm.constant.AdminLogType;
@@ -26,13 +27,12 @@ import com.xiaohuashifu.tm.service.TokenService;
  * 管理员日志切面
  * 
  * @author TAO
- * @date 2020年4月3日 上午10:28:32
+ * @date 2020/4/3
  */
 @Aspect
 @Component
 public class AdminLogAspect {
 	
-	private Integer currentAdminId;
 	private final AdminService adminService;
 	private final TokenService tokenService;
 	private final ExpressionParser expressionParser;
@@ -42,30 +42,33 @@ public class AdminLogAspect {
 	@Autowired
 	public AdminLogAspect(AdminService adminService, TokenService tokenService,
 			ExpressionParser expressionParser, EvaluationContext evaluationContext) {
-		this.currentAdminId = null;
 		this.adminService = adminService;
 		this.tokenService = tokenService;
 		this.expressionParser = expressionParser;
 		this.evaluationContext = evaluationContext;
 	}
 	
-	@Pointcut("@annotation(com.xiaohuashifu.tm.aspect.annotation.AdminLog) && @annotation(adminLog)")
+	@Pointcut("@annotation(com.xiaohuashifu.tm.aspect.annotation.AdminLog) && @annotation(adminLog)"
+			+ "&& within(com.xiaohuashifu.tm.controller.v1.page.AdminController)")
 	public void loginPoint(AdminLog adminLog) {}
 	
 	@Pointcut("@annotation(com.xiaohuashifu.tm.aspect.annotation.AdminLog) && @annotation(adminLog)"
-			+ "&& (within(com.xiaohuashifu.tm.service.impl.*) || within(com.xiaohuashifu.tm.controller.v1.api.*))")
-	public void servicePoint(AdminLog adminLog) {}
+			+ "&& within(com.xiaohuashifu.tm.controller.v1.api.*) && args(request, ..)")
+	public void controllerPoint(AdminLog adminLog, HttpServletRequest request) {}
 	
-	@AfterReturning(value = "loginPoint(adminLog)", returning = "model")
-	public void loginLog(AdminLog adminLog, ModelAndView model) {
-		String token = (String) model.getModel().get("token");
+	@AfterReturning(value = "loginPoint(adminLog)", returning = "object")
+	public void loginLog(AdminLog adminLog, Object object) {
+		// 登录失败
+		if (object instanceof Result) {
+			return;
+		}
+		String token = (String) object;
         Result<TokenAO> result = tokenService.getToken(token);
         if (!result.isSuccess()) {
         	logger.error("token获取失败");
         	return;
         }
-        currentAdminId = result.getData().getId();
-        AdminLogDO adminLogDO = new AdminLogDO(currentAdminId, adminLog.value());
+        AdminLogDO adminLogDO = new AdminLogDO(result.getData().getId(), adminLog.value());
 		adminService.saveAdminLog(adminLogDO);
 	}
 	
@@ -74,16 +77,26 @@ public class AdminLogAspect {
 	 * 
 	 * @param adminLog 对应的注解信息
 	 */
-	@AfterReturning(value = "servicePoint(adminLog)", returning = "result")
-	public void serviceLog(AdminLog adminLog, Result result) {  //这里不能在Result加入泛型参数, 否则类型不对应而不能进入此切面
-		if (!result.isSuccess()) {
+	@AfterReturning(value = "controllerPoint(adminLog, request)", returning = "object")
+	public void controllerLog(AdminLog adminLog, HttpServletRequest request,
+			Object object) {  //这里不能在Result加入泛型参数, 否则类型不对应而不能进入此切面
+		if (object instanceof Result && !((Result) object).isSuccess()) {
 			logger.error("操作失败");
 			return;
 		}
-		Object data = result.getData();
+//		String token = request.getHeader("authorization");
+//        Result<TokenAO> tokenResult = tokenService.getToken(token);
+//        if (!tokenResult.isSuccess()) {
+//        	logger.error("token获取失败");
+//        	return;
+//        }
+		Object data = object;
+		if (object instanceof Result) {
+			data = ((Result) object).getData();
+		}
 		String logValue = expressionParser.parseExpression(adminLog.value()).getValue(evaluationContext, String.class);
 		AdminLogDO adminLogDO = new AdminLogDO();
-//		adminLogDO.setAdminId(currentAdminId);
+//		adminLogDO.setAdminId(tokenResult.getData().getId());
 		adminLogDO.setAdminId(1);
 		if (adminLog.type().equals(AdminLogType.INSERT)) {
 			adminLogDO.setContent(logValue + ", 添加的数据 : " + data.toString());
