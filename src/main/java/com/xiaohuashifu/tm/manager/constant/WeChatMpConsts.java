@@ -27,6 +27,11 @@ public final class WeChatMpConsts {
     public static final String TEMPLATE_MESSAGE_URL = "https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send";
 
     /**
+     * 获取DailyVisitTrend的url
+     */
+    public static final String DAILY_VISIT_TREND_URL = "https://api.weixin.qq.com/datacube/getweanalysisappiddailyvisittrend";
+    
+    /**
      * 面试结果通知模板id
      */
     public static final String INTERVIEW_RESULT_NOTIFACATION_TEMPLATE_ID = "ZiNM38LGvpZMWVlAR13WDJVNBzV2sZ6ry4-Sv9XxsCY";
@@ -35,4 +40,5 @@ public final class WeChatMpConsts {
      * 微信小程序首页路径
      */
     public static final String INDEX_PAGE_PATH = "pages/index/index";
+
 }

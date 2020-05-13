@@ -2,8 +2,11 @@ package com.xiaohuashifu.tm.manager;
 
 import com.xiaohuashifu.tm.manager.constant.WeChatMp;
 import com.xiaohuashifu.tm.pojo.dto.AccessTokenDTO;
+import com.xiaohuashifu.tm.pojo.dto.DailyVisitTrendDTO;
 import com.xiaohuashifu.tm.pojo.dto.MessageTemplateDTO;
+import com.xiaohuashifu.tm.result.Result;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -25,4 +28,7 @@ public interface WeChatMpManager {
     String getOpenid(String code, WeChatMp weChatMp);
 
     boolean sendTemplateMessage(MessageTemplateDTO messageTemplate);
+    
+    Result<List<DailyVisitTrendDTO>> getDailyVisitTrend(List<String> dateList);
+
 }

@@ -1,6 +1,7 @@
 package com.xiaohuashifu.tm.timer;
 
 import com.xiaohuashifu.tm.timer.task.BookLogStateTask;
+import com.xiaohuashifu.tm.timer.task.CachingAccessTokenTask;
 import com.xiaohuashifu.tm.timer.task.MeetingStateTask;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -22,6 +23,8 @@ public class ScheduledTaskManager {
     private final MeetingStateTask meetingStateTask;
 
     private final BookLogStateTask bookLogStateTask;
+    
+    private final CachingAccessTokenTask cachingAccessTokenTask;
 
     /**
      * 会议状态任务第一次执行的延迟时间
@@ -44,14 +47,26 @@ public class ScheduledTaskManager {
     private static final long BOOK_LOG_STATE_TASK_PERIOD = 30000;
 
     /**
+     * 缓存accesstoken任务的第一次执行的延迟时间
+     */
+    private static final long CACHING_ACCESS_TOKEN_TASK_DELAY = 0;
+    
+    /**
+     * 缓存accesstoken任务后面每次执行的时间间隔
+     */
+    private static final long CACHING_ACCESS_TOKEN_TASK_PERIOD = 7140;
+    
+    /**
      * 执行计划任务的执行器
      */
-    private static final ScheduledExecutorService schedule = Executors.newScheduledThreadPool(2);
+    private static final ScheduledExecutorService schedule = Executors.newScheduledThreadPool(3);
 
     @Autowired
-    public ScheduledTaskManager(MeetingStateTask meetingStateTask, BookLogStateTask bookLogStateTask) {
+    public ScheduledTaskManager(MeetingStateTask meetingStateTask, BookLogStateTask bookLogStateTask, 
+    		CachingAccessTokenTask cachingAccessTokenTask) {
         this.meetingStateTask = meetingStateTask;
         this.bookLogStateTask = bookLogStateTask;
+        this.cachingAccessTokenTask = cachingAccessTokenTask;
     }
 
     /**
@@ -63,6 +78,8 @@ public class ScheduledTaskManager {
                 TimeUnit.MILLISECONDS);
         schedule.scheduleAtFixedRate(bookLogStateTask, BOOK_LOG_STATE_TASK_DELAY, BOOK_LOG_STATE_TASK_PERIOD,
                 TimeUnit.MILLISECONDS);
+        schedule.scheduleAtFixedRate(cachingAccessTokenTask, CACHING_ACCESS_TOKEN_TASK_DELAY, 
+        		CACHING_ACCESS_TOKEN_TASK_PERIOD, TimeUnit.SECONDS);
     }
 
 }

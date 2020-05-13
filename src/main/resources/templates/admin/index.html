@@ -160,28 +160,45 @@
               </div>
             </div>
           </section>
+          
+          <!-- 用户访问量模块 -->
           <section>
-            <div class="row mb-4">
-              <div class="col-lg-7 mb-4 mb-lg-0">
+              <div class="col-lg-7 mb-4 mb-lg-0" style="flex: 0 0 78%; max-width: 78%;">
                 <div class="card">
                   <div class="card-header">
-                    <h2 class="h6 text-uppercase mb-0">Current server uptime</h2>
+                    <h2 class="h6 text-uppercase mb-0">用户访问量</h2>
                   </div>
                   <div class="card-body">
-                    <p class="text-gray">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
                     <div class="chart-holder">
-                      <canvas id="lineChart1" style="max-height: 14rem !important;" class="w-100"></canvas>
+                      <canvas id="barChart1" style="max-height: 20rem !important;" class="w-100"></canvas>
                     </div>
                   </div>
                 </div>
               </div>
+          </section>
+          
+          <section style="margin-top: 20px;">
+            <div class="row mb-4">
+<!--               <div class="col-lg-7 mb-4 mb-lg-0"> -->
+<!--                 <div class="card"> -->
+<!--                   <div class="card-header"> -->
+<!--                     <h2 class="h6 text-uppercase mb-0">Current server uptime</h2> -->
+<!--                   </div> -->
+<!--                   <div class="card-body"> -->
+<!--                     <p class="text-gray">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p> -->
+<!--                     <div class="chart-holder"> -->
+<!--                       <canvas id="lineChart1" style="max-height: 14rem !important;" class="w-100"></canvas> -->
+<!--                     </div> -->
+<!--                   </div> -->
+<!--                 </div> -->
+<!--               </div> -->
               <div class="col-lg-5 mb-4 mb-lg-0 pl-lg-0">
                 <div class="card mb-3">
                   <div class="card-body">
                     <div class="row align-items-center flex-row">
                       <div class="col-lg-5">
-                        <h2 class="mb-0 d-flex align-items-center"><span>86.4</span><span class="dot bg-green d-inline-block ml-3"></span></h2><span class="text-muted text-uppercase small">Work hours</span>
-                        <hr><small class="text-muted">Lorem ipsum dolor sit</small>
+                        <h2 class="mb-0 d-flex align-items-center"><span th:text="${bookCount}">0</span><span class="dot bg-green d-inline-block ml-3"></span></h2><span class="text-muted text-uppercase small">书籍总数</span>
+                        <hr><small class="text-muted" style="font-size: 16px;">书籍借出情况</small>
                       </div>
                       <div class="col-lg-7">
                         <canvas id="pieChartHome1"></canvas>
@@ -448,15 +465,93 @@
     <script th:src="@{/vendor/popper.js/umd/popper.min.js}"> </script>
     <script th:src="@{/vendor/bootstrap/js/bootstrap.min.js}"></script>
     <script th:src="@{/vendor/jquery.cookie/jquery.cookie.js}"> </script>
-    <script th:src="@{/vendor/chart.js/Chart.min.js}"></script>
+<!--     <script th:src="@{/vendor/chart.js/Chart.min.js}"></script> -->
+    <script th:src="@{/vendor/chart.js/Chart-2.9.3.min.js}"></script>
     <script th:src="@{/js/js.cookie.min.js}"></script>
     <script th:src="@{/js/charts-home.js}"></script>
     <script th:src="@{/js/front.js}"></script>
   	<script type="text/javascript" th:inline="javascript">
-	  	[# th:if="${token}"]
-		 	sessionStorage.setItem("token", [[${token}]]);
-		 	console.log("token: " + sessionStorage.getItem("token"));
-	  	[/]
+        var nowDate = new Date();
+        var year = nowDate.getFullYear();
+        var month = nowDate.getMonth() + 1 < 10 ? "0" + (nowDate.getMonth() + 1) : nowDate.getMonth() + 1;
+        var day = nowDate.getDate() - 1 < 10 ? "0" + (nowDate.getDate() - 1) : nowDate.getDate() - 1;
+        // dateStr最大值为昨日
+        var dateStr = year + month + day;
+        
+        var days = [];
+        for (var i = 0; i < 30;){
+        	days[i] = ++i;
+        }
+        var visitCount = [];
+        var i = 0;
+        [# th:each="visit : ${dailyVisitTrend}"]
+            [# th:if="${visit}"]
+                visitCount[i] = [[${visit.visit_uv}]];
+            [/]
+           	[# th:unless="${visit}"]
+                visitCount[i] = 0;
+           	[/]
+            i++;
+        [/]
+        
+        // 用户访问统计图
+        var myBarChart = new Chart($('#barChart1'), {
+		    type: 'bar',
+		    data: {
+		    	labels: days,
+	            datasets: [
+		            {
+			            label: "用户访问量",
+			            backgroundColor: "rgba(0, 132, 233, 0.2)",
+			            borderColor: "rgba(0, 88, 233, 0.4)",
+			            borderWidth: 0.5,
+			            hoverBackgroundColor: "rgba(0, 132, 255, 0.3)",
+			            hoverBorderColor: "rgba(0, 88, 233, 0.8)",
+			            data: visitCount
+		            },
+	            ]
+		    },
+		    options: {
+		        scales: {
+		            yAxes: [{
+		                ticks: {
+		                	beginAtZero: true,
+		                    stepSize: 1,
+		                    suggestedMax: 10
+		                }
+		           }]
+		        }
+		    }
+		});
+        
+  	    // 书籍统计图
+  	    var borrowCount = [[${borrowCount}]];
+        var unBorrowCount = [[${bookCount}]] - borrowCount;
+  	    var PIECHART = $('#pieChartHome1');
+  	    var myPieChart = new Chart(PIECHART, {
+  	        type: 'doughnut',
+  	        options: {
+  	            cutoutPercentage: 90,
+  	            legend: {
+  	                display: false
+  	            }
+  	        },
+  	        data: {
+  	            labels: ["借出数", "在库数"],
+  	            datasets: [{
+  	                data: [borrowCount, unBorrowCount],
+  	                borderWidth: [0, 0],
+  	                backgroundColor: [
+  	                	"#7CF29C",
+  	                    "#eee",
+  	                ],
+  	                hoverBackgroundColor: [
+  	                	"#7CF29C",
+  	                    "#eee",
+  	                ]
+  	            }]
+  	        }
+  	    });
   	</script>
   </body>
   

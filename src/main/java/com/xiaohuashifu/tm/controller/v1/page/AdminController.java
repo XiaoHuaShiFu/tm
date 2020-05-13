@@ -1,20 +1,17 @@
 package com.xiaohuashifu.tm.controller.v1.page;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.github.pagehelper.PageInfo;
@@ -29,11 +26,14 @@ import com.xiaohuashifu.tm.manager.AttendanceManager;
 import com.xiaohuashifu.tm.manager.BookLogManager;
 import com.xiaohuashifu.tm.manager.MeetingManager;
 import com.xiaohuashifu.tm.manager.MeetingParticipantManager;
+import com.xiaohuashifu.tm.manager.WeChatMpManager;
 import com.xiaohuashifu.tm.pojo.ao.TokenAO;
 import com.xiaohuashifu.tm.pojo.do0.AnnouncementDO;
 import com.xiaohuashifu.tm.pojo.do0.BookDO;
 import com.xiaohuashifu.tm.pojo.do0.MeetingDO;
+import com.xiaohuashifu.tm.pojo.do0.PointLogDO;
 import com.xiaohuashifu.tm.pojo.do0.UserDO;
+import com.xiaohuashifu.tm.pojo.dto.DailyVisitTrendDTO;
 import com.xiaohuashifu.tm.pojo.query.AdminLogQuery;
 import com.xiaohuashifu.tm.pojo.query.AnnouncementQuery;
 import com.xiaohuashifu.tm.pojo.query.AttendanceQuery;
@@ -41,6 +41,7 @@ import com.xiaohuashifu.tm.pojo.query.BookLogQuery;
 import com.xiaohuashifu.tm.pojo.query.BookQuery;
 import com.xiaohuashifu.tm.pojo.query.MeetingParticipantQuery;
 import com.xiaohuashifu.tm.pojo.query.MeetingQuery;
+import com.xiaohuashifu.tm.pojo.query.PointLogQuery;
 import com.xiaohuashifu.tm.pojo.query.UserQuery;
 import com.xiaohuashifu.tm.pojo.vo.AdminLogVO;
 import com.xiaohuashifu.tm.pojo.vo.AttendanceVO;
@@ -51,6 +52,7 @@ import com.xiaohuashifu.tm.result.Result;
 import com.xiaohuashifu.tm.service.AnnouncementService;
 import com.xiaohuashifu.tm.service.BookService;
 import com.xiaohuashifu.tm.service.MeetingService;
+import com.xiaohuashifu.tm.service.PointLogService;
 import com.xiaohuashifu.tm.service.TokenService;
 import com.xiaohuashifu.tm.service.UserService;
 
@@ -66,16 +68,18 @@ public class AdminController {
 	private final MeetingManager meetingManager;
 	private final MeetingParticipantManager meetingParticipantManager;
 	private final AttendanceManager attendanceManager;
+	private final PointLogService pointLogService;
 	private final AdminLogManager adminLogManager;
 	private final TokenService tokenService;
+	private final WeChatMpManager weChatMpManager;
 	
 	@Autowired
 	public AdminController(AnnouncementService announcementService, UserService userService,
 			BookService bookService, BookLogManager bookLogManager,
 			MeetingService meetingService, MeetingManager meetingManager,
 			MeetingParticipantManager meetingParticipantManager,
-			AttendanceManager attendanceManager, AdminLogManager adminLogManager,
-			TokenService tokenService) {
+			AttendanceManager attendanceManager, PointLogService pointLogService,
+			AdminLogManager adminLogManager, TokenService tokenService, WeChatMpManager weChatMpManager) {
 		this.announcementService = announcementService;
 		this.userService = userService;
 		this.bookService = bookService;
@@ -84,8 +88,10 @@ public class AdminController {
 		this.meetingManager = meetingManager;
 		this.meetingParticipantManager = meetingParticipantManager;
 		this.attendanceManager = attendanceManager;
+		this.pointLogService = pointLogService;
 		this.adminLogManager = adminLogManager;
 		this.tokenService = tokenService;
+		this.weChatMpManager = weChatMpManager;
 	}
 
 	@RequestMapping(value = "login", method = RequestMethod.GET)
@@ -95,8 +101,7 @@ public class AdminController {
 
 	@ResponseBody
 	@RequestMapping(value = "validate", method = RequestMethod.POST)
-	public Object adminLogin(HttpServletRequest request, HttpServletResponse response, 
-					@RequestParam("jobNumber") String jobNumber, @RequestParam("password") String password) {
+	public Object adminLogin(@RequestParam("jobNumber") String jobNumber, @RequestParam("password") String password) {
 		Result<TokenAO> result = tokenService.createAndSaveToken(TokenType.ADMIN, jobNumber, password);
 		if(!result.isSuccess()) {
 			return result;
@@ -104,11 +109,28 @@ public class AdminController {
 		return result.getData().getToken();
 	}
 	
-	@RequestMapping(value = "index", method = RequestMethod.POST)
+	@RequestMapping(value = "index")
 //	@TokenAuth(tokenType = {TokenType.ADMIN})
 //	@AdminLog(value = "登录", type = AdminLogType.LOGIN)
-	public ModelAndView index(HttpServletRequest request) {
+	public ModelAndView index() {
 		ModelAndView model = new ModelAndView("admin/index");
+		Result<Integer> borrowCountResult = bookService.countBorrowedBooks();
+		model.addObject("borrowCount", borrowCountResult.isSuccess() ? borrowCountResult.getData() : Integer.valueOf(0));
+		Result<Integer> bookCountResult = bookService.countBooks();
+		model.addObject("bookCount", bookCountResult.isSuccess() ? bookCountResult.getData() : Integer.valueOf(0));
+		
+		// dateList放入的日期格式必须是 yyyymmdd
+		List<String> dateList = new ArrayList<>();
+		int year = LocalDateTime.now().getYear();
+    	int month = LocalDateTime.now().getMonthValue();
+    	int day = LocalDateTime.now().getDayOfMonth();
+    	for (int i = 1; i < day; i++) {
+    		dateList.add(LocalDateTime.of(year, month, i, 0, 0).format(DateTimeFormatter.ofPattern("yyyyMMdd")));
+    	}
+		Result<List<DailyVisitTrendDTO>> result = weChatMpManager.getDailyVisitTrend(dateList);
+		if (result.isSuccess()) {
+			model.addObject("dailyVisitTrend", result.getData());
+		}
 		return model;
 	}
 
@@ -286,6 +308,24 @@ public class AdminController {
 			model.addObject("attendances", attendances);
 			model.addObject("total", attendancesInfo.getTotal());
 			model.addObject("pageSize", attendanceQuery.getPageSize());
+			model.addObject("pageIndex", pageNum);
+		}else {
+			model.addObject("error", "error");
+		}
+		return model;
+	}
+	
+	@RequestMapping("pointLogs/{pageNum}")
+	public ModelAndView pointLogs(@PathVariable("pageNum") Integer pageNum) {
+		ModelAndView model = new ModelAndView("admin/pointLogs");
+		PointLogQuery pointLogQuery = new PointLogQuery(pageNum);
+		Result<PageInfo<PointLogDO>> result = pointLogService.listPointLogs(pointLogQuery);
+		if (result.isSuccess()) {
+			PageInfo<PointLogDO> pointLogsInfo = result.getData();
+			List<PointLogDO> pointLogs = pointLogsInfo.getList();
+			model.addObject("pointLogs", pointLogs);
+			model.addObject("total", pointLogsInfo.getTotal());
+			model.addObject("pageSize", pointLogsInfo.getPageSize());
 			model.addObject("pageIndex", pageNum);
 		}else {
 			model.addObject("error", "error");

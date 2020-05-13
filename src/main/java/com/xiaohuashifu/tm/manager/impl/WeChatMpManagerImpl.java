@@ -1,25 +1,36 @@
 package com.xiaohuashifu.tm.manager.impl;
 
+import com.google.gson.Gson;
 import com.xiaohuashifu.tm.manager.WeChatMpManager;
 import com.xiaohuashifu.tm.manager.constant.WeChatGrantTypeEnum;
 import com.xiaohuashifu.tm.manager.constant.WeChatMp;
 import com.xiaohuashifu.tm.manager.constant.WeChatMpConsts;
 import com.xiaohuashifu.tm.pojo.dto.AccessTokenDTO;
 import com.xiaohuashifu.tm.pojo.dto.Code2SessionDTO;
+import com.xiaohuashifu.tm.pojo.dto.DailyVisitTrendDTO;
 import com.xiaohuashifu.tm.pojo.dto.MessageTemplateDTO;
 import com.xiaohuashifu.tm.pojo.dto.WeChatMpResponseDTO;
+import com.xiaohuashifu.tm.result.ErrorCode;
+import com.xiaohuashifu.tm.result.Result;
 import com.xiaohuashifu.tm.service.CacheService;
 import com.xiaohuashifu.tm.service.constant.RedisStatus;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+
 
 /**
  * 描述: 微信小程序通用接口
@@ -36,6 +47,8 @@ public class WeChatMpManagerImpl implements WeChatMpManager {
     private final CacheService cacheService;
 
     private final RestTemplate restTemplate;
+    
+    private final Gson gson;
 
     /**
      * 团队管理小程序access-token的redis key名
@@ -43,9 +56,10 @@ public class WeChatMpManagerImpl implements WeChatMpManager {
     private static final String REDIS_KEY = "tm:wechat:mp:access:token";
 
     @Autowired
-    public WeChatMpManagerImpl(CacheService cacheService, RestTemplate restTemplate) {
+    public WeChatMpManagerImpl(CacheService cacheService, RestTemplate restTemplate, Gson gson) {
         this.cacheService = cacheService;
         this.restTemplate = restTemplate;
+        this.gson = gson;
     }
 
     /**
@@ -156,5 +170,36 @@ public class WeChatMpManagerImpl implements WeChatMpManager {
         ResponseEntity<Code2SessionDTO> responseEntity = restTemplate.getForEntity(url, Code2SessionDTO.class);
         return responseEntity.getBody();
     }
+
+    /**
+     * 获取访问趋势
+     * @param paramMap 存放请求参数的map
+     */
+	@Override
+	public Result<List<DailyVisitTrendDTO>> getDailyVisitTrend(List<String> dateList) {
+		List<DailyVisitTrendDTO> list = new ArrayList<>(31);
+		String accessToken = cacheService.get(WeChatMpManagerImpl.REDIS_KEY);
+        String url = MessageFormat.format("{0}?access_token={1}", WeChatMpConsts.DAILY_VISIT_TREND_URL, accessToken);
+        Map<String, String> paramMap = new HashMap<>();
+        for (int i = 0; i < dateList.size(); i++) {
+        	paramMap.put("begin_date", dateList.get(i));
+        	paramMap.put("end_date", dateList.get(i));
+        	HttpEntity<String> requestEntity = new HttpEntity<>(gson.toJson(paramMap));
+        	String jsonData = restTemplate.postForObject(url, requestEntity, String.class);
+        	ArrayList listInData = (ArrayList) gson.fromJson(jsonData, Map.class).get("list");
+        	if (listInData.size() > 0) {
+        		DailyVisitTrendDTO dailyVisitTrend = gson.fromJson(listInData.get(0).toString(), DailyVisitTrendDTO.class);        	
+        		list.add(dailyVisitTrend);
+        	}else {
+        		list.add(null);
+        	}
+        }
+        
+        if (list.size() == 0) {
+            logger.warn("Get daily-visit trend fail.");
+            return Result.fail(ErrorCode.INVALID_OPERATION_NOT_FOUND, "Daily-visit trend not found");
+        }
+        return Result.success(list);
+	}
 
 }
