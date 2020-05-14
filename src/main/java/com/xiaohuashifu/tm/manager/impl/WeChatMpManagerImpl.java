@@ -187,7 +187,7 @@ public class WeChatMpManagerImpl implements WeChatMpManager {
         	HttpEntity<String> requestEntity = new HttpEntity<>(gson.toJson(paramMap));
         	String jsonData = restTemplate.postForObject(url, requestEntity, String.class);
         	ArrayList listInData = (ArrayList) gson.fromJson(jsonData, Map.class).get("list");
-        	if (listInData.size() > 0) {
+        	if (listInData != null && listInData.size() > 0) {
         		DailyVisitTrendDTO dailyVisitTrend = gson.fromJson(listInData.get(0).toString(), DailyVisitTrendDTO.class);        	
         		list.add(dailyVisitTrend);
         	}else {
