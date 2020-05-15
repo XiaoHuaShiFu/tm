@@ -236,24 +236,13 @@ public class AdminController {
 	}
 	
 	@RequestMapping(value = "meetings/{pageNum}", method = RequestMethod.GET)
-	public ModelAndView meetings(@PathVariable("pageNum") Integer pageNum, 
-			@RequestParam(value = "name", required = false) String name) {
+	public ModelAndView meetings(@PathVariable("pageNum") Integer pageNum) {
 		ModelAndView model = new ModelAndView("admin/meetings");
-		Result result = null;
 		MeetingQuery meetingQuery = new MeetingQuery(pageNum);
-		if (name != null) {
-//			result = meetingService.getMeeting(id);
-		}else {
-			result = meetingManager.listMeetings(meetingQuery);
-		}
+		Result<PageInfo<MeetingVO>> result = meetingManager.listMeetings(meetingQuery);
 		if (result.isSuccess()) {
 			PageInfo<MeetingVO> meetingsInfo = (PageInfo<MeetingVO>) result.getData();
 			List<MeetingVO> meetings = meetingsInfo.getList();
-			for (MeetingVO meeting : meetings) {
-				if (meeting.getContent().length() > 5) {
-					meeting.setContent(new StringBuilder(meeting.getContent().substring(0, 5)).append("...").toString());
-				}
-			}
 			model.addObject("meetings", meetings);
 			model.addObject("total", meetingsInfo.getTotal());
 			model.addObject("pageSize", meetingQuery.getPageSize());
