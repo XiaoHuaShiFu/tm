@@ -22,7 +22,7 @@ public interface UserService {
 
     Result<UserDO> getUserByJobNumber(String jobNumber);
     
-    Result<UserDO> saveUser(UserDO userDO, String code);
+    Result<UserDO> saveUser(UserDO userDO, String code, String authCode);
 
     Result<UserDO> getUser(Integer id);
 

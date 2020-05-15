@@ -1,5 +1,6 @@
 package com.xiaohuashifu.tm.controller.v1.api;
 
+import com.xiaohuashifu.tm.constant.TokenType;
 import com.xiaohuashifu.tm.helper.TokenTestHelper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,6 +29,6 @@ public class TokenControllerTest {
      */
     @Test
     public void postToken() throws Exception {
-        System.out.println(tokenTestHelper.getToken());
+        System.out.println(tokenTestHelper.getToken(TokenType.USER));
     }
 }

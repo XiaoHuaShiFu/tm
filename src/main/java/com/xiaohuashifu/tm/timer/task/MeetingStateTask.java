@@ -6,8 +6,6 @@ import com.xiaohuashifu.tm.pojo.do0.MeetingDO;
 import com.xiaohuashifu.tm.pojo.query.MeetingQuery;
 import com.xiaohuashifu.tm.result.Result;
 import com.xiaohuashifu.tm.service.MeetingService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -22,8 +20,6 @@ import java.util.List;
  */
 @Component
 public class MeetingStateTask implements Runnable {
-
-    private final Logger logger = LoggerFactory.getLogger(MeetingStateTask.class);
 
     private final MeetingService meetingService;
 
@@ -42,15 +38,12 @@ public class MeetingStateTask implements Runnable {
         if (listMeetingsResult.isSuccess()) {
             List<MeetingDO> meetingDOList = listMeetingsResult.getData().getList();
             for (MeetingDO meetingDO : meetingDOList) {
-
                 if (meetingDO.getStartTime().before(new Date())) {
                     meetingDO.setState(MeetingState.PROCESSING);
                     meetingService.updateMeeting(meetingDO);
                 }
             }
         }
-
-
 
         // 查看PROCESSING状态的会议是否需要改变成FINISH
         meetingQuery.setState(MeetingState.PROCESSING);
@@ -64,7 +57,6 @@ public class MeetingStateTask implements Runnable {
                 }
             }
         }
-
     }
 
 }

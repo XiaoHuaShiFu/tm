@@ -81,9 +81,10 @@ public class UserController {
     @ResponseStatus(value = HttpStatus.CREATED)
     @ErrorHandler
     public Object post(
+            @NotBlank(message = "INVALID_PARAMETER_IS_BLANK: The authCode must be not blank.") String authCode,
             @NotBlank(message = "INVALID_PARAMETER_IS_BLANK: The code must be not blank.") @WeChatMpCode String code,
             @Validated(GroupPost.class) UserDO userDO) {
-        Result<UserDO> result = userService.saveUser(userDO, code);
+        Result<UserDO> result = userService.saveUser(userDO, code, authCode);
         return !result.isSuccess() ? result : mapper.map(result.getData(), UserVO.class);
     }
 

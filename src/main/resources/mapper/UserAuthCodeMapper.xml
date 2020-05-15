@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xiaohuashifu.tm.dao.UserAuthCodeMapper">
+    <sql id="BaseColumnList">
+        id, auth_code, used, create_time, update_time
+    </sql>
+
+    <insert id="insertUserAuthCode" parameterType="com.xiaohuashifu.tm.pojo.do0.UserAuthCodeDO"
+            useGeneratedKeys="true" keyProperty="id">
+        insert into user_auth_code(auth_code)
+        values(#{authCode})
+    </insert>
+
+    <select id="getUserAuthCode" parameterType="integer" resultType="com.xiaohuashifu.tm.pojo.do0.UserAuthCodeDO">
+        select
+        <include refid="BaseColumnList"/>
+        from user_auth_code
+        where id = #{id}
+    </select>
+
+    <select id="getUserAuthCodeByAuthCode" parameterType="string" resultType="com.xiaohuashifu.tm.pojo.do0.UserAuthCodeDO">
+        select
+        <include refid="BaseColumnList"/>
+        from user_auth_code
+        where auth_code = #{authCode}
+    </select>
+
+    <select id="listUserAuthCodes" parameterType="com.xiaohuashifu.tm.pojo.query.UserAuthCodeQuery"
+            resultType="com.xiaohuashifu.tm.pojo.do0.UserAuthCodeDO">
+        select
+        <include refid="BaseColumnList"/>
+        from user_auth_code
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="idList != null">
+                id in (
+                    <foreach collection="idList"  item="item" index="index" separator=",">
+                        #{item}
+                    </foreach>
+                )
+            </if>
+            <if test="used != null">
+                and used = #{used}
+            </if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <update id="updateUserAuthCode" parameterType="com.xiaohuashifu.tm.pojo.do0.UserAuthCodeDO">
+        update user_auth_code
+        <set>
+            <if test="used != null">
+                used = #{used},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+</mapper>

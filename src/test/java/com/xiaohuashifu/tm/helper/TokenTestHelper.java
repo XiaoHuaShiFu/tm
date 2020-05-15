@@ -1,6 +1,7 @@
 package com.xiaohuashifu.tm.helper;
 
 import com.google.gson.Gson;
+import com.xiaohuashifu.tm.constant.TokenType;
 import com.xiaohuashifu.tm.pojo.ao.TokenAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -30,11 +31,11 @@ public class TokenTestHelper {
      * @return TokenAO
      * @throws Exception .
      */
-    public TokenAO getToken() throws Exception {
+    public TokenAO getToken(TokenType tokenType) throws Exception {
         String resultString = mockMvc.perform(MockMvcRequestBuilders.post("/v1/tokens")
                 .param("username", "201734020124")
                 .param("password", "123456")
-                .param("tokenType", "USER"))
+                .param("tokenType", tokenType.name()))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andReturn().getResponse().getContentAsString();
         return gson.fromJson(resultString, TokenAO.class);

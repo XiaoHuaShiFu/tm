@@ -55,11 +55,16 @@ public class ScheduledTaskManager {
      * 缓存accesstoken任务后面每次执行的时间间隔
      */
     private static final long CACHING_ACCESS_TOKEN_TASK_PERIOD = 7140;
-    
+
+    /**
+     * 计划任务的线程池大小
+     */
+    private static final int CORE_POOL_SIZE = 3;
+
     /**
      * 执行计划任务的执行器
      */
-    private static final ScheduledExecutorService schedule = Executors.newScheduledThreadPool(3);
+    private static final ScheduledExecutorService schedule = Executors.newScheduledThreadPool(CORE_POOL_SIZE);
 
     @Autowired
     public ScheduledTaskManager(MeetingStateTask meetingStateTask, BookLogStateTask bookLogStateTask, 

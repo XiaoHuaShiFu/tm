@@ -4,13 +4,16 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.tm.dao.UserMapper;
+import com.xiaohuashifu.tm.exception.ProcessingException;
 import com.xiaohuashifu.tm.manager.WeChatMpManager;
 import com.xiaohuashifu.tm.manager.constant.WeChatMp;
+import com.xiaohuashifu.tm.pojo.do0.UserAuthCodeDO;
 import com.xiaohuashifu.tm.pojo.do0.UserDO;
 import com.xiaohuashifu.tm.pojo.query.UserQuery;
 import com.xiaohuashifu.tm.result.ErrorCode;
 import com.xiaohuashifu.tm.result.Result;
 import com.xiaohuashifu.tm.service.FileService;
+import com.xiaohuashifu.tm.service.UserAuthCodeService;
 import com.xiaohuashifu.tm.service.UserService;
 import com.xiaohuashifu.tm.service.constant.UserConstant;
 import com.xiaohuashifu.tm.util.BeanUtils;
@@ -18,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 
@@ -39,11 +43,14 @@ public class UserServiceImpl implements UserService {
 
     private final FileService fileService;
 
+    private final UserAuthCodeService userAuthCodeService;
+
     @Autowired
-    public UserServiceImpl(UserMapper userMapper, WeChatMpManager weChatMpManager, FileService fileService) {
+    public UserServiceImpl(UserMapper userMapper, WeChatMpManager weChatMpManager, FileService fileService, UserAuthCodeService userAuthCodeService) {
         this.userMapper = userMapper;
         this.weChatMpManager = weChatMpManager;
         this.fileService = fileService;
+        this.userAuthCodeService = userAuthCodeService;
     }
 
     @Override
@@ -92,14 +99,26 @@ public class UserServiceImpl implements UserService {
      * @return Result<UserDO>
      */
     @Override
-    public Result<UserDO> saveUser(UserDO userDO, String code) {
+    @Transactional
+    public Result<UserDO> saveUser(UserDO userDO, String code, String authCode) {
+        Result<UserAuthCodeDO> getUserAuthCodeByAuthCodeResult = userAuthCodeService.getUserAuthCodeByAuthCode(authCode);
+        // 认证码不存在
+        if (!getUserAuthCodeByAuthCodeResult.isSuccess()) {
+            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "The authCode:{} not exists.", authCode);
+        }
+        UserAuthCodeDO userAuthCodeDO = getUserAuthCodeByAuthCodeResult.getData();
+        // 认证码已经被使用
+        if (userAuthCodeDO.getUsed()) {
+            return Result.fail(ErrorCode.INVALID_PARAMETER, "The authCode:{} has been used.", authCode);
+        }
+
         String openid = weChatMpManager.getOpenid(code, WeChatMp.TM);
-        //获取openid失败
+        // 获取openid失败
         if (openid == null) {
             return Result.fail(ErrorCode.INVALID_PARAMETER, "The code is not valid.");
         }
 
-        //openid已经在数据库里
+        // openid已经在数据库里
         int count = userMapper.getCountByOpenid(openid);
         if (count >= 1) {
             return Result.fail(ErrorCode.OPERATION_CONFLICT,
@@ -112,6 +131,18 @@ public class UserServiceImpl implements UserService {
         if (count < 1) {
             logger.error("Insert user fail.");
             return Result.fail(ErrorCode.INTERNAL_ERROR, "Insert user fail.");
+        }
+
+        // 把认证码设置为已经被使用
+        UserAuthCodeDO newUserAuthCodeDO = new UserAuthCodeDO();
+        newUserAuthCodeDO.setId(userAuthCodeDO.getId());
+        newUserAuthCodeDO.setUsed(true);
+        Result<UserAuthCodeDO> updateUserAuthCodeResult = userAuthCodeService.updateUserAuthCode(newUserAuthCodeDO);
+        // 更新认证码为已经被使用出错
+        if (!updateUserAuthCodeResult.isSuccess()) {
+            logger.warn("Update the userAuthCode fail. Class:{}, Method:{}, id={}, authCode={}.",
+                    "UserServiceImpl", "saveUser", userAuthCodeDO.getId(), userAuthCodeDO.getAuthCode());
+            throw new ProcessingException(ErrorCode.INTERNAL_ERROR, "Internal error.");
         }
 
         return getUser(userDO.getId());
@@ -144,7 +175,7 @@ public class UserServiceImpl implements UserService {
         Page<UserDO> userDOList = (Page<UserDO>) userMapper.listUsers(query);
         PageInfo<UserDO> pageInfo = new PageInfo<>(userDOList);
         if (userDOList.size() < 1) {
-            Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "Not found.");
+            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "Not found.");
         }
 
         return Result.success(pageInfo);
@@ -180,7 +211,7 @@ public class UserServiceImpl implements UserService {
         userDO0.setId(userDO.getId());
         int count = userMapper.updateUser(userDO0);
         if (count < 1) {
-            logger.error("Update avatar failed. userId: {}", userDO0.getId());
+            logger.error("Update user failed. userId: {}", userDO0.getId());
             return Result.fail(ErrorCode.INTERNAL_ERROR, "Update user failed.");
         }
 
