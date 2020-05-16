@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.tm.dao.MeetingMapper;
@@ -22,6 +21,7 @@ import com.xiaohuashifu.tm.pojo.query.MeetingQuery;
 import com.xiaohuashifu.tm.result.Result;
 import com.xiaohuashifu.tm.service.MeetingService;
 
+import java.text.MessageFormat;
 import java.util.UUID;
 
 @Service("meetingService")
@@ -140,7 +140,7 @@ public class MeetingServiceImpl implements MeetingService {
 		MeetingQrcodeAO meetingQrcodeAO = new MeetingQrcodeAO(meetingId, createQrcode());
 
 		// 保存会议二维码
-		return saveQrcode(meetingQrcodeAO, MeetingConstant.MEETING_QRCODE_EXPIRE_TIME);
+		return saveQrcode(meetingQrcodeAO);
 	}
 
 	/**
@@ -151,7 +151,7 @@ public class MeetingServiceImpl implements MeetingService {
 	@Override
 	public Result<MeetingDO> saveMeeting(MeetingDO meetingDO) {
 		int count = meetingMapper.insertMeeting(meetingDO);
-		//没有插入成功
+		// 没有插入成功
 		if (count < 1) {
 			logger.error("Insert meeting fail.");
 			return Result.fail(ErrorCode.INTERNAL_ERROR, "Insert meeting fail.");
@@ -164,22 +164,22 @@ public class MeetingServiceImpl implements MeetingService {
 	 * 在缓存里添加qrcode，并设置过期时间
 	 *
 	 * @param meetingQrcodeAO MeetingQrcodeAO
-	 * @param expireTime 过期时间
 	 * @return Result<MeetingQrcodeAO>
 	 */
-	private Result<MeetingQrcodeAO> saveQrcode(MeetingQrcodeAO meetingQrcodeAO, int expireTime) {
-		String key = MeetingConstant.PREFIX_OF_QRCODE_FOR_REDIS_KEY + meetingQrcodeAO.getId();
-		//保存token
+	private Result<MeetingQrcodeAO> saveQrcode(MeetingQrcodeAO meetingQrcodeAO) {
+		String key = MessageFormat.format(MeetingConstant.PREFIX_OF_QRCODE_FOR_REDIS_KEY,
+				meetingQrcodeAO.getId(), meetingQrcodeAO.getQrcode());
+		// 保存token
 		String code = cacheService.set(key, gson.toJson(meetingQrcodeAO));
 
-		//保存失败
+		// 保存失败
 		if (!code.equals(RedisStatus.OK.name())) {
 			logger.error("Failed to save qrcode, id: {}", meetingQrcodeAO.getId());
 			return Result.fail(ErrorCode.INTERNAL_ERROR, "Failed to save qrcode.");
 		}
 
-		//设置过期时间
-		Long result = cacheService.expire(key, expireTime);
+		// 设置过期时间
+		Long result = cacheService.expire(key, MeetingConstant.MEETING_QRCODE_EXPIRE_TIME);
 		if (result.equals(0L)) {
 			cacheService.del(key);
 			logger.error("Failed to set expire, id: {}", meetingQrcodeAO.getId());

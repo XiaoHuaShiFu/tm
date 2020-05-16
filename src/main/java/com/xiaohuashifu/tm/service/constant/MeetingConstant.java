@@ -15,8 +15,8 @@ public class MeetingConstant {
     public static final int MEETING_QRCODE_EXPIRE_TIME = 60;
 
     /**
-     * 会议二维码在redis里的key的前缀
+     * 会议二维码在redis里的key的前缀，meeting:qrcode:{meetingId}:{qrcode}
      */
-    public static final String PREFIX_OF_QRCODE_FOR_REDIS_KEY = "meeting:qrcode:";
+    public static final String PREFIX_OF_QRCODE_FOR_REDIS_KEY = "meeting:qrcode:{0}:{1}";
 
 }

@@ -2,10 +2,8 @@ package com.xiaohuashifu.tm.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.google.gson.Gson;
 import com.xiaohuashifu.tm.aspect.annotation.PointLog;
 import com.xiaohuashifu.tm.dao.MeetingParticipantMapper;
-import com.xiaohuashifu.tm.pojo.ao.MeetingQrcodeAO;
 import com.xiaohuashifu.tm.pojo.do0.MeetingParticipantDO;
 import com.xiaohuashifu.tm.pojo.query.MeetingParticipantQuery;
 import com.xiaohuashifu.tm.result.ErrorCode;
@@ -18,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.MessageFormat;
 import java.util.Date;
 
 @Service("meetingParticipantService")
@@ -29,13 +28,10 @@ public class MeetingParticipantServiceImpl implements MeetingParticipantService 
 
 	private final CacheService cacheService;
 
-	private final Gson gson;
-
 	@Autowired
-	public MeetingParticipantServiceImpl(MeetingParticipantMapper meetingParticipantMapper, CacheService cacheService, Gson gson) {
+	public MeetingParticipantServiceImpl(MeetingParticipantMapper meetingParticipantMapper, CacheService cacheService) {
 		this.meetingParticipantMapper = meetingParticipantMapper;
 		this.cacheService = cacheService;
-		this.gson = gson;
 	}
 
 	/**
@@ -48,25 +44,18 @@ public class MeetingParticipantServiceImpl implements MeetingParticipantService 
 	@PointLog(point = 1, value = "会议签到")
 	@Override
 	public Result<MeetingParticipantDO> saveMeetingParticipant(Integer meetingId, Integer userId, String qrcode) {
-		String key = MeetingConstant.PREFIX_OF_QRCODE_FOR_REDIS_KEY + meetingId;
+		String key = MessageFormat.format(MeetingConstant.PREFIX_OF_QRCODE_FOR_REDIS_KEY, meetingId, qrcode);
 		String value = cacheService.get(key);
 		// 会议的二维码不存在
 		if (value == null) {
-			logger.error("The qrcode not exists. meetingId: {}", meetingId);
+			logger.info("The qrcode not exists. meetingId: {}, qrcode: {}.", meetingId, qrcode);
 			return Result.fail(ErrorCode.INVALID_PARAMETER, "The qrcode not exists.");
-		}
-
-		MeetingQrcodeAO meetingQrcodeAO = gson.fromJson(value, MeetingQrcodeAO.class);
-		// qrcode不正确或者已经过时
-		if (!meetingQrcodeAO.getQrcode().equals(qrcode)) {
-			logger.error("The qrcode is invalid. meetingId: {}", meetingId);
-			return Result.fail(ErrorCode.INVALID_PARAMETER, "The qrcode is invalid.");
 		}
 
 		// 该用户已经参加此会议
 		int count = meetingParticipantMapper.countByMeetingIdAndUserId(meetingId, userId);
 		if (count >= 1) {
-			logger.error("The user has been participate meeting. meetingId: {}, userId: {}", meetingId, userId);
+			logger.info("The user has been participate meeting. meetingId: {}, userId: {}", meetingId, userId);
 			return Result.fail(ErrorCode.INVALID_PARAMETER, "The user has been participate meeting.");
 		}
 
