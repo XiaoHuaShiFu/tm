@@ -14,12 +14,14 @@ import com.xiaohuashifu.tm.service.TokenService;
 import com.xiaohuashifu.tm.service.UserService;
 import com.xiaohuashifu.tm.service.constant.AttendanceConstant;
 import com.xiaohuashifu.tm.service.constant.RedisStatus;
+import com.xiaohuashifu.tm.service.constant.TokenConstant;
 import com.xiaohuashifu.tm.util.SHA256;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.MessageFormat;
 import java.util.UUID;
 
 /**
@@ -70,20 +72,43 @@ public class TokenServiceImpl implements TokenService {
      */
     @Override
     public Result<TokenAO> saveToken(TokenAO tokenAO, int seconds) {
-        //保存token
-        String code = cacheService.set(tokenAO.getToken(), gson.toJson(tokenAO));
+        // 移除旧Token
+        findAndRemoveOldToken(tokenAO);
 
-        //保存失败
+        // 保存TokenAO，该token以id作为key
+        String keyOfId = MessageFormat.format(TokenConstant.PREFIX_OF_ID_TOKEN_FOR_REDIS_KEY,
+                tokenAO.getType(), tokenAO.getId());
+        String code = cacheService.set(keyOfId, gson.toJson(tokenAO));
+        // 保存失败
         if (!code.equals(RedisStatus.OK.name())) {
-            logger.error("Failed to create token, type: {} and id: {}", tokenAO.getToken(), tokenAO.getId());
+            logger.error("Failed to create token, key: {}, type: {} and id: {}",
+                    keyOfId, tokenAO.getToken(), tokenAO.getId());
             return Result.fail(ErrorCode.INTERNAL_ERROR, "Failed to create token.");
         }
-
-        //设置过期时间
-        Long result = cacheService.expire(tokenAO.getToken(), TokenExpire.NORMAL.getExpire());
+        // 设置过期时间
+        Long result = cacheService.expire(keyOfId, TokenExpire.NORMAL.getExpire());
         if (result.equals(0L)) {
             cacheService.del(tokenAO.getToken());
-            logger.error("Failed to set expire, type: {} and id: {}", tokenAO.getToken(), tokenAO.getId());
+            logger.error("Failed to set expire, key: {}, type: {} and id: {}",
+                    keyOfId, tokenAO.getToken(), tokenAO.getId());
+            return Result.fail(ErrorCode.INTERNAL_ERROR, "Failed to set expire.");
+        }
+
+        // 保存TokenAO，该token以token作为key
+        String keyOfToken = MessageFormat.format(TokenConstant.PREFIX_OF_TOKEN_FOR_REDIS_KEY, tokenAO.getToken());
+        code = cacheService.set(keyOfToken, gson.toJson(tokenAO));
+        // 保存失败
+        if (!code.equals(RedisStatus.OK.name())) {
+            logger.error("Failed to create token, key: {}, type: {} and id: {}",
+                    keyOfToken, tokenAO.getToken(), tokenAO.getId());
+            return Result.fail(ErrorCode.INTERNAL_ERROR, "Failed to create token.");
+        }
+        // 设置过期时间
+        result = cacheService.expire(keyOfToken, TokenExpire.NORMAL.getExpire());
+        if (result.equals(0L)) {
+            cacheService.del(tokenAO.getToken());
+            logger.error("Failed to set expire, key: {}, type: {} and id: {}",
+                    keyOfToken, tokenAO.getToken(), tokenAO.getId());
             return Result.fail(ErrorCode.INTERNAL_ERROR, "Failed to set expire.");
         }
 
@@ -122,8 +147,9 @@ public class TokenServiceImpl implements TokenService {
      */
     @Override
     public Result<TokenAO> getToken(String token) {
-        String jsonToken = cacheService.get(token);
-        //token不在
+        String keyOfToken = MessageFormat.format(TokenConstant.PREFIX_OF_TOKEN_FOR_REDIS_KEY, token);
+        String jsonToken = cacheService.get(keyOfToken);
+        // token不在
         if (jsonToken == null) {
             return Result.fail(ErrorCode.UNAUTHORIZED);
         }
@@ -147,17 +173,26 @@ public class TokenServiceImpl implements TokenService {
             return Result.fail(result.getErrorCode(), result.getMessage());
         }
 
-        //不是所需的token类型
+        // 不是所需的token类型
         TokenAO tokenAO = result.getData();
         if (!authTokenType(tokenAO.getType(), tokenTypes)) {
             return Result.fail(ErrorCode.FORBIDDEN_SUB_USER);
         }
 
-        //更新token过期时间
-        Long expire = cacheService.expire(result.getData().getToken(), seconds);
+        // 更新token所对应key的TokenAO过期时间
+        String keyOfToken = MessageFormat.format(TokenConstant.PREFIX_OF_TOKEN_FOR_REDIS_KEY, token);
+        Long expire = cacheService.expire(keyOfToken, seconds);
         if (expire == 0) {
-            logger.warn("Set redis expire fail, token: {} id: {} type: {}",
-                    tokenAO.getToken(), tokenAO.getId(), tokenAO.getType());
+            logger.warn("Set redis expire fail, key: {}, token: {} id: {} type: {}",
+                    keyOfToken, tokenAO.getToken(), tokenAO.getId(), tokenAO.getType());
+        }
+        // 更新id所对应key的TokenAO过期时间
+        String keyOfId = MessageFormat.format(TokenConstant.PREFIX_OF_ID_TOKEN_FOR_REDIS_KEY,
+                tokenAO.getType(), tokenAO.getId());
+        expire = cacheService.expire(keyOfId, seconds);
+        if (expire == 0) {
+            logger.warn("Set redis expire fail, key: {}, token: {} id: {} type: {}",
+                    keyOfId, tokenAO.getToken(), tokenAO.getId(), tokenAO.getType());
         }
 
         return result;
@@ -216,6 +251,25 @@ public class TokenServiceImpl implements TokenService {
         String token = createToken();
         tokenAO.setToken(token);
         return saveToken(tokenAO);
+    }
+
+    /**
+     * 查找并移除旧的Token
+     * 1.通过ID查找TokenAO
+     * 2.如果存在则通过Token查找TokenAO
+     * 3.移除ID和Token所对应的Token
+     */
+    private void findAndRemoveOldToken(TokenAO tokenAO) {
+        String keyOfId = MessageFormat.format(TokenConstant.PREFIX_OF_ID_TOKEN_FOR_REDIS_KEY,
+                tokenAO.getType(), tokenAO.getId());
+        String tokenById = cacheService.get(keyOfId);
+        // 如果Token存在则进行删除处理
+        if (tokenById != null) {
+            TokenAO oldTokenAO = gson.fromJson(tokenById, TokenAO.class);
+            String keyOfToken = MessageFormat.format(TokenConstant.PREFIX_OF_TOKEN_FOR_REDIS_KEY, oldTokenAO.getToken());
+            cacheService.del(keyOfId);
+            cacheService.del(keyOfToken);
+        }
     }
 
     /**
