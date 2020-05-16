@@ -15,9 +15,23 @@
 		<include refid="pointLogColumn"/>
 		from point_log
 		<where>
+			<if test="id != null">
+				and id = #{id}
+			</if>
+			<if test="idList != null">
+				and id in (
+				<foreach collection="idList"  item="item" index="index" separator=",">
+					#{item}
+				</foreach>
+				)
+			</if>
 		    <if test="userId != null">
-		        user_id = #{userId}
+		        and user_id = #{userId}
 		    </if>
+			<if test="content != null">
+				and content like "%"#{content}"%"
+			</if>
 		</where>
+		order by update_time desc
 	</select>
 </mapper>

@@ -1,5 +1,6 @@
 package com.xiaohuashifu.tm.controller.v1.api;
 
+import com.xiaohuashifu.tm.result.ErrorCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -19,7 +20,7 @@ import com.xiaohuashifu.tm.result.Result;
 import com.xiaohuashifu.tm.service.PointLogService;
 
 @RestController
-@RequestMapping("v1/pointLogs")
+@RequestMapping("v1/points/logs")
 @Validated
 public class PointLogController {
 	
@@ -32,11 +33,17 @@ public class PointLogController {
 	
 	@RequestMapping(method = RequestMethod.GET)
 	@ResponseStatus(HttpStatus.OK)
-	@TokenAuth(tokenType = {TokenType.USER})
+	@TokenAuth(tokenType = {TokenType.USER, TokenType.ADMIN})
 	@ErrorHandler
-	public Object list(TokenAO tokenAO, PointLogQuery pointLogQuery) {
-		pointLogQuery.setUserId(tokenAO.getId());
-		Result<PageInfo<PointLogDO>> result = pointLogService.listPointLogs(pointLogQuery);
+	public Object list(TokenAO tokenAO, PointLogQuery query) {
+		// USER-TOKEN只能获取自己的积分日志
+		if (tokenAO.getType() == TokenType.USER) {
+			if (query.getUserId() != null && !query.getUserId().equals(tokenAO.getId())) {
+				return Result.fail(ErrorCode.FORBIDDEN_SUB_USER);
+			}
+			query.setUserId(tokenAO.getId());
+		}
+		Result<PageInfo<PointLogDO>> result = pointLogService.listPointLogs(query);
 		return result.isSuccess() ? result.getData() : result;
 	}
 	

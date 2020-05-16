@@ -130,7 +130,7 @@
                 and id = #{id, jdbcType=INTEGER}
             </if>
             <if test="idList != null">
-                id in (
+                and id in (
                     <foreach collection="idList"  item="item" index="index" separator=",">
                         #{item}
                     </foreach>
