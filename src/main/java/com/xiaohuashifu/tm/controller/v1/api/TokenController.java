@@ -26,7 +26,6 @@ import javax.validation.constraints.NotNull;
  *
  * @author xhsf
  * @email 827032783@qq.com
- * @create 2019-08-10 21:10
  */
 @RestController
 @RequestMapping("v1/tokens")

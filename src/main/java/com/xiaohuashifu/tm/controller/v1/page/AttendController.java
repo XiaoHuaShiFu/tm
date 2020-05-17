@@ -31,7 +31,7 @@ public class AttendController {
 	
 	@RequestMapping(value = "login", method = RequestMethod.GET)
 	public String login() {
-		return "user/login";
+		return "user/login1";
 	}
 	
 	@ResponseBody

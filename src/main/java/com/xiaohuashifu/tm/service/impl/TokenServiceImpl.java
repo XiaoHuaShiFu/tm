@@ -29,7 +29,6 @@ import java.util.UUID;
  *
  * @author xhsf
  * @email 827032783@qq.com
- * @create 2019-08-06 21:30
  */
 @Service("tokenService")
 public class TokenServiceImpl implements TokenService {
@@ -60,18 +59,6 @@ public class TokenServiceImpl implements TokenService {
      */
     @Override
     public Result<TokenAO> saveToken(TokenAO tokenAO) {
-        return saveToken(tokenAO, TokenExpire.NORMAL.getExpire());
-    }
-
-    /**
-     * 在缓存里添加token，并设置过期时间
-     *
-     * @param tokenAO TokenAO
-     * @param seconds 过期时间
-     * @return Result<TokenAO>
-     */
-    @Override
-    public Result<TokenAO> saveToken(TokenAO tokenAO, int seconds) {
         // 移除旧Token
         findAndRemoveOldToken(tokenAO);
 
