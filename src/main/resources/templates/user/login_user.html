@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>扫码签到登录</title>
+    <title>用户登录</title>
     <style>
         * {
             margin: 0;
@@ -137,18 +137,17 @@
             <div class="enterBut">
                 <input style="border-bottom: none;" class="button-1" id="login-btn" value="Submit" type="button">
             </div>
-
         </div>
     </div>
 </form>
-<form action="index" method="post">
+<form action="/v1/login/index" method="post">
     <input type="hidden" id="header" name="_header">
 </form>
 <script th:src="@{/vendor/jquery/jquery.min.js}"></script>
 <script type="text/javascript" th:inline="javascript">
     $("#login-btn").click(function () {
         $.ajax({
-            url: "validate",
+            url: "/v1/login/validate",
             data: {
                 "account": $("#account").val(),
                 "password": $("#password").val()

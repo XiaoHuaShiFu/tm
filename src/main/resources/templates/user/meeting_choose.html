@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>选择会议</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+        }
+
+        html {
+            width: 100%;
+            height: 100%;
+            background: url("/img/back.png");
+            background-size: 100% 100%;
+            background-repeat: no-repeat;
+        }
+
+        .loginFrame {
+            width: 350px;
+            height: 200px;
+            background: rgba(0, 0, 0, 0.3);
+            /*元素上下左右都居中*/
+            /*margin: auto;*/
+            /*top: 0;*/
+            /*bottom: 0;*/
+            /*left: 0;*/
+            /*right: 0;*/
+            margin-right: 10px;
+            margin-left: 10px;
+            border-radius: 10px;
+            padding: 20px 10px;
+            box-sizing: border-box;
+            box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.4);
+        }
+
+        .loginFrame > div {
+            width: 350px;
+            height: 20px;
+            margin: 10px auto;
+            color: white;
+        }
+
+        .loginFrame > p {
+            text-align: center;
+            color: white;
+            font-size: 18px;
+            line-height: 25px;
+        }
+
+        .loginFrame > div span {
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        .loginFrame > div input {
+            width: 100%;
+            height: 30px;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid white;
+            outline: none;
+            color: white;
+
+        }
+
+        .loginFrame .enterBut {
+            width: 200px;
+            height: 50px;
+            border-radius: 50px;
+            background-image: linear-gradient(to right, #c979d4, #fa719d);
+            text-align: center;
+            padding-top: 10px;
+            box-sizing: border-box;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .loginFrame .enterBut:hover {
+            box-shadow: 0 0 10px rgba(0, 0, 0, .5) inset;
+        }
+
+        input::-webkit-input-placeholder { /* WebKit browsers 适配谷歌 */
+            color: #BDCADA;
+        }
+
+        svg {
+            vertical-align: bottom;
+        }
+        .container1 {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+<div class="container1">
+    <div th:each="meeting : ${meetingList}">
+        <div class="loginFrame">
+            <p th:text="${meeting.name}"></p>
+            <p th:text="${meeting.department}"></p>
+            <p th:text="${meeting.place}"></p>
+            <p th:text="${meeting.state}"></p>
+            <div class="enterBut">
+                <input style="border-bottom: none;" th:name="${meeting.id}" onclick="toQrcode(this)" class="button-1" id="login-btn" value="生成签到二维码" type="button">
+            </div>
+        </div>
+    </div>
+</div>
+
+<input type="hidden" th:value="${token}" id="staff_name2"/>
+<form action="/v1/meeting/choose/qrcode" method="post">
+    <input type="hidden" id="header" name="_header">
+    <input type="hidden" th:name="meetingId" value="">
+</form>
+
+<script th:src="@{/vendor/jquery/jquery.min.js}"></script>
+<script type="text/javascript" th:inline="javascript">
+    function toQrcode(obj) {
+        var token = $("#staff_name2").val();
+        var meetingId = obj.name;
+        $("#header").val("authorization:" + token);
+        sessionStorage.setItem("meetingId",meetingId);
+        document.getElementsByTagName("form")[0].submit();
+    }
+</script>
+</body>
+</html>

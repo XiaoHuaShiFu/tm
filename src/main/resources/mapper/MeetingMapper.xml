@@ -21,6 +21,9 @@
 				</foreach>
 				)
 			</if>
+			<if test="userId != null">
+				and user_id = #{userId}
+			</if>
 			<if test="name != null">
 				and name like "%"#{name, jdbcType=VARCHAR}"%"
 			</if>

@@ -14,6 +14,9 @@ public class MeetingQuery {
     private Integer id;
 
 	private List<Integer> idList;
+
+	private Integer userId;
+
 	/**
 	 * 模糊搜素
 	 */
@@ -34,12 +37,13 @@ public class MeetingQuery {
     	this.pageNum = pageNum;
     }
 
-	public MeetingQuery(Integer pageNum, Integer pageSize, Integer id, List<Integer> idList, String name, String place,
-						Department department, MeetingState state) {
+	public MeetingQuery(Integer pageNum, Integer pageSize, Integer id, List<Integer> idList, Integer userId,
+						String name, String place, Department department, MeetingState state) {
 		this.pageNum = pageNum;
 		this.pageSize = pageSize;
 		this.id = id;
 		this.idList = idList;
+		this.userId = userId;
 		this.name = name;
 		this.place = place;
 		this.department = department;
@@ -76,6 +80,14 @@ public class MeetingQuery {
 
 	public void setIdList(List<Integer> idList) {
 		this.idList = idList;
+	}
+
+	public Integer getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Integer userId) {
+		this.userId = userId;
 	}
 
 	public String getName() {
@@ -117,6 +129,7 @@ public class MeetingQuery {
 				", pageSize=" + pageSize +
 				", id=" + id +
 				", idList=" + idList +
+				", userId=" + userId +
 				", name='" + name + '\'' +
 				", place='" + place + '\'' +
 				", department=" + department +
