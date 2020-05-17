@@ -118,6 +118,65 @@ public class TokenServiceImpl implements TokenService {
     /**
      * 创建token并保存到redis里
      *
+     * @param username 用户名
+     * @param password 密码
+     * @param tokenType token类型
+     * @return Result<TokenAO>
+     */
+    @Override
+    public Result<TokenAO> createAndSaveToken(TokenType tokenType, String username, String password) {
+        TokenAO tokenAO = new TokenAO();
+        if (tokenType == TokenType.ADMIN) {
+            Result<AdminDO> result = adminService.getAdminByJobNumber(username);
+            if (!result.isSuccess()) {
+                return Result.fail(result.getErrorCode(), result.getMessage());
+            }
+            AdminDO admin = result.getData();
+            if (!admin.getPassword().equals(password)) {
+                return Result.fail(ErrorCode.UNAUTHORIZED, "Wrong password.");
+            }
+
+            tokenAO.setId(admin.getId());
+            tokenAO.setType(tokenType);
+        } else if (tokenType == TokenType.USER) {
+            Result<UserDO> result = userService.getUserByJobNumber(username);
+            if (!result.isSuccess()) {
+                return Result.fail(result.getErrorCode(), result.getMessage());
+            }
+
+            UserDO user = result.getData();
+            if (!user.getPassword().equals(password)) {
+                return Result.fail(ErrorCode.UNAUTHORIZED, "Wrong password.");
+            }
+
+            tokenAO.setId(user.getId());
+            tokenAO.setType(tokenType);
+        }
+        // TODO: 2020/4/3 这里有点偷懒了，最好弄权限管理的方式
+        else if (tokenType == TokenType.QRCODE) {
+            final String username0 = AttendanceConstant.USERNAME_FOR_QRCODE_TOKEN;
+            final String password0 = AttendanceConstant.PASSWORD_FOR_QRCODE_TOKEN;
+            if (!username0.equals(username) || !password0.equals(password)) {
+                return Result.fail(ErrorCode.UNAUTHORIZED, "Wrong username or password.");
+            }
+
+            tokenAO.setId(-1);
+            tokenAO.setType(tokenType);
+        }
+
+        // 如果旧token存在，则直接获取旧token，并更新过期时间
+        Result<TokenAO> getTokenResult = getTokenByIdAndTokenTypeAndUpdateExpire(tokenAO);
+        if (getTokenResult.isSuccess()) {
+            return getTokenResult;
+        }
+        String token = createToken();
+        tokenAO.setToken(token);
+        return saveToken(tokenAO);
+    }
+
+    /**
+     * 创建token并保存到redis里
+     *
      * @param tokenType token类型
      * @param code wx.login()接口获取的返回值
      * @return Result<TokenAO>
@@ -133,9 +192,13 @@ public class TokenServiceImpl implements TokenService {
         tokenAO.setId(user.getId());
         tokenAO.setType(TokenType.USER);
 
+        // 如果旧token存在，则直接获取旧token，并更新过期时间
+        Result<TokenAO> getTokenResult = getTokenByIdAndTokenTypeAndUpdateExpire(tokenAO);
+        if (getTokenResult.isSuccess()) {
+            return getTokenResult;
+        }
         String token = createToken();
         tokenAO.setToken(token);
-
         return saveToken(tokenAO);
     }
 
@@ -199,58 +262,34 @@ public class TokenServiceImpl implements TokenService {
     }
 
     /**
-     * 创建token并保存到redis里
-     *
-     * @param username 用户名
-     * @param password 密码
-     * @param tokenType token类型
-     * @return Result<TokenAO>
+     * 获取token通过id和TokenType
+     * @param tokenAO 用于查询token
+     * @return 获取结果
      */
-    @Override
-    public Result<TokenAO> createAndSaveToken(TokenType tokenType, String username, String password) {
-        TokenAO tokenAO = new TokenAO();
-        if (tokenType == TokenType.ADMIN) {
-            Result<AdminDO> result = adminService.getAdminByJobNumber(username);
-            if (!result.isSuccess()) {
-                return Result.fail(result.getErrorCode(), result.getMessage());
-            }
-            AdminDO admin = result.getData();
-            if (!admin.getPassword().equals(password)) {
-                return Result.fail(ErrorCode.UNAUTHORIZED, "Wrong password.");
-            }
-
-            tokenAO.setId(admin.getId());
-            tokenAO.setType(tokenType);
-        } else if (tokenType == TokenType.USER) {
-            Result<UserDO> result = userService.getUserByJobNumber(username);
-            if (!result.isSuccess()) {
-                return Result.fail(result.getErrorCode(), result.getMessage());
-            }
-
-            UserDO user = result.getData();
-            if (!user.getPassword().equals(password)) {
-                return Result.fail(ErrorCode.UNAUTHORIZED, "Wrong password.");
-            }
-
-            tokenAO.setId(user.getId());
-            tokenAO.setType(tokenType);
+    private Result<TokenAO> getTokenByIdAndTokenTypeAndUpdateExpire(TokenAO tokenAO) {
+        String keyOfId = MessageFormat.format(TokenConstant.PREFIX_OF_ID_TOKEN_FOR_REDIS_KEY,
+                tokenAO.getType(), tokenAO.getId());
+        String tokenById = cacheService.get(keyOfId);
+        // 如果Token不存在则返回失败删除处理
+        if (tokenById == null) {
+            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "The token not exists.");
         }
-        // TODO: 2020/4/3 这里有点偷懒了，最好弄权限管理的方式
-        else if (tokenType == TokenType.QRCODE) {
-            final String username0 = AttendanceConstant.USERNAME_FOR_QRCODE_TOKEN;
-            final String password0 = AttendanceConstant.PASSWORD_FOR_QRCODE_TOKEN;
-            if (!username0.equals(username) || !password0.equals(password)) {
-                return Result.fail(ErrorCode.UNAUTHORIZED, "Wrong username or password.");
-            }
+        TokenAO oldTokenAO = gson.fromJson(tokenById, TokenAO.class);
+        String keyOfToken = MessageFormat.format(TokenConstant.PREFIX_OF_TOKEN_FOR_REDIS_KEY, oldTokenAO.getToken());
 
-            tokenAO.setId(-1);
-            tokenAO.setType(tokenType);
+        // 更新token所对应key的TokenAO过期时间
+        Long expire = cacheService.expire(keyOfToken, TokenExpire.NORMAL.getExpire());
+        if (expire == 0) {
+            logger.warn("Set redis expire fail, key: {}, token: {} id: {} type: {}",
+                    keyOfToken, tokenAO.getToken(), tokenAO.getId(), tokenAO.getType());
         }
-
-
-        String token = createToken();
-        tokenAO.setToken(token);
-        return saveToken(tokenAO);
+        // 更新id所对应key的TokenAO过期时间
+        expire = cacheService.expire(keyOfId, TokenExpire.NORMAL.getExpire());
+        if (expire == 0) {
+            logger.warn("Set redis expire fail, key: {}, token: {} id: {} type: {}",
+                    keyOfId, tokenAO.getToken(), tokenAO.getId(), tokenAO.getType());
+        }
+        return Result.success(oldTokenAO);
     }
 
     /**

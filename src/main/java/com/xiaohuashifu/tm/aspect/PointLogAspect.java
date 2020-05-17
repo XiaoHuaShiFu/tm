@@ -51,7 +51,7 @@ public class PointLogAspect {
 			pointLogDO.setContent(pointLog.value());
 			pointLogDO.setPoint(point);
 			pointLogDO.setUserId((userId = attendance.getUserId()));
-		}else if (data instanceof MeetingParticipantDO) {  // 会议签到增加积分
+		} else if (data instanceof MeetingParticipantDO) {  // 会议签到增加积分
 			MeetingParticipantDO meetingParticipant = (MeetingParticipantDO) data;
 			pointLogDO.setContent(pointLog.value());
 			pointLogDO.setPoint(point);
