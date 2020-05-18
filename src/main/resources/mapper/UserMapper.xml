@@ -214,4 +214,13 @@
         where id = #{id, jdbcType=INTEGER}
     </update>
 
+	<resultMap id="deparmentUserCount" type="java.util.HashMap">
+        <result property="department" column="department" jdbcType="VARCHAR" javaType="string"/>
+        <result property="count" column="num" jdbcType="INTEGER" javaType="int"/>
+	</resultMap>
+
+    <select id="countUsersByDepartment" resultMap="deparmentUserCount">
+        select department, count(*) as num from user group by department;
+    </select>
+
 </mapper>

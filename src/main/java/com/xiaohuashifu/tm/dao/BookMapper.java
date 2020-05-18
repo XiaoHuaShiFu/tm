@@ -19,8 +19,7 @@ public interface BookMapper {
 	int updateCover(@Param("id") Integer id, @Param("cover_url") String coverUrl);
 	String getCoverUrlById(Integer id);
 	BookDO getBookById(Integer id);
-	Integer countBooks();
-	Integer countBorrowedBooks();
+	Integer countBooks(BookQuery bookQuery);
 	
 	/**
 	 * 查询书籍

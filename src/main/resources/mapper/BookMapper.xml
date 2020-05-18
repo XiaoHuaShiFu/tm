@@ -84,14 +84,14 @@
 		order by update_time desc
 	</select>
 	
-	<select id="countBooks" resultType="integer">
-	    select count(*) from book;
+	<select id="countBooks" parameterType="com.xiaohuashifu.tm.pojo.query.BookQuery" resultType="integer">
+	    select count(*) from book
+	    <where>
+	        <if test="state != null">
+	            state = #{state}
+	        </if>
+	    </where>
 	</select>
-	
-	<select id="countBorrowedBooks" resultType="integer">
-        select count(*) from book where state = 'BORROWED';
-    </select>
-	
 	
   
 	<!--  借书相关  -->

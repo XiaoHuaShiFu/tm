@@ -1,10 +1,12 @@
 package com.xiaohuashifu.tm.service;
 
 import com.github.pagehelper.PageInfo;
-import com.xiaohuashifu.tm.constant.Department;
 import com.xiaohuashifu.tm.pojo.do0.UserDO;
 import com.xiaohuashifu.tm.pojo.query.UserQuery;
 import com.xiaohuashifu.tm.result.Result;
+
+import java.util.Map;
+
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -31,4 +33,6 @@ public interface UserService {
     Result<UserDO> updateUser(UserDO userDO);
 
     Result<UserDO> updateAvatar(Integer id, MultipartFile avatar);
+    
+    Result<Map<String, Integer>> countUsersByDepartment();
 }

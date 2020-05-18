@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,8 +17,10 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.tm.aspect.annotation.AdminLog;
+import com.xiaohuashifu.tm.aspect.annotation.TokenAuth;
 import com.xiaohuashifu.tm.constant.AdminLogType;
 import com.xiaohuashifu.tm.constant.BookLogState;
+import com.xiaohuashifu.tm.constant.BookState;
 import com.xiaohuashifu.tm.constant.Department;
 import com.xiaohuashifu.tm.constant.TokenType;
 import com.xiaohuashifu.tm.manager.AdminLogManager;
@@ -59,301 +62,330 @@ import com.xiaohuashifu.tm.service.UserService;
 @RequestMapping("v1/admin")
 public class AdminController {
 
-	private final AnnouncementService announcementService;
-	private final UserService userService;
-	private final BookService bookService;
-	private final BookLogManager bookLogManager;
-	private final MeetingService meetingService;
-	private final MeetingManager meetingManager;
-	private final MeetingParticipantManager meetingParticipantManager;
-	private final AttendanceManager attendanceManager;
-	private final PointLogService pointLogService;
-	private final AdminLogManager adminLogManager;
-	private final TokenService tokenService;
-	private final WeChatMpManager weChatMpManager;
-	
-	@Autowired
-	public AdminController(AnnouncementService announcementService, UserService userService,
-			BookService bookService, BookLogManager bookLogManager,
-			MeetingService meetingService, MeetingManager meetingManager,
-			MeetingParticipantManager meetingParticipantManager,
-			AttendanceManager attendanceManager, PointLogService pointLogService,
-			AdminLogManager adminLogManager, TokenService tokenService, WeChatMpManager weChatMpManager) {
-		this.announcementService = announcementService;
-		this.userService = userService;
-		this.bookService = bookService;
-		this.bookLogManager = bookLogManager;
-		this.meetingService = meetingService;
-		this.meetingManager = meetingManager;
-		this.meetingParticipantManager = meetingParticipantManager;
-		this.attendanceManager = attendanceManager;
-		this.pointLogService = pointLogService;
-		this.adminLogManager = adminLogManager;
-		this.tokenService = tokenService;
-		this.weChatMpManager = weChatMpManager;
-	}
+    private final AnnouncementService announcementService;
+    private final UserService userService;
+    private final BookService bookService;
+    private final BookLogManager bookLogManager;
+    private final MeetingService meetingService;
+    private final MeetingManager meetingManager;
+    private final MeetingParticipantManager meetingParticipantManager;
+    private final AttendanceManager attendanceManager;
+    private final PointLogService pointLogService;
+    private final AdminLogManager adminLogManager;
+    private final TokenService tokenService;
+    private final WeChatMpManager weChatMpManager;
+    
+    @Autowired
+    public AdminController(AnnouncementService announcementService, UserService userService,
+            BookService bookService, BookLogManager bookLogManager,
+            MeetingService meetingService, MeetingManager meetingManager,
+            MeetingParticipantManager meetingParticipantManager,
+            AttendanceManager attendanceManager, PointLogService pointLogService,
+            AdminLogManager adminLogManager, TokenService tokenService, WeChatMpManager weChatMpManager) {
+        this.announcementService = announcementService;
+        this.userService = userService;
+        this.bookService = bookService;
+        this.bookLogManager = bookLogManager;
+        this.meetingService = meetingService;
+        this.meetingManager = meetingManager;
+        this.meetingParticipantManager = meetingParticipantManager;
+        this.attendanceManager = attendanceManager;
+        this.pointLogService = pointLogService;
+        this.adminLogManager = adminLogManager;
+        this.tokenService = tokenService;
+        this.weChatMpManager = weChatMpManager;
+    }
 
-	@RequestMapping(value = "login", method = RequestMethod.GET)
-	public String login() {
-		return "admin/login";
-	}
+    @RequestMapping(value = "login", method = RequestMethod.GET)
+    public String login() {
+        return "admin/login";
+    }
 
-	@ResponseBody
-	@RequestMapping(value = "validate", method = RequestMethod.POST)
-	@AdminLog(value = "登录", type = AdminLogType.LOGIN)
-	public Object adminLogin(@RequestParam("jobNumber") String jobNumber, @RequestParam("password") String password) {
-		Result<TokenAO> result = tokenService.createAndSaveToken(TokenType.ADMIN, jobNumber, password);
-		if(!result.isSuccess()) {
-			return result;
-		}
-		return result.getData().getToken();
-	}
-	
-	@RequestMapping(value = "index")
-//	@TokenAuth(tokenType = {TokenType.ADMIN})
-	public ModelAndView index() {
-		ModelAndView model = new ModelAndView("admin/index");
-		Result<Integer> borrowCountResult = bookService.countBorrowedBooks();
-		model.addObject("borrowCount", borrowCountResult.isSuccess() ? borrowCountResult.getData() : Integer.valueOf(0));
-		Result<Integer> bookCountResult = bookService.countBooks();
-		model.addObject("bookCount", bookCountResult.isSuccess() ? bookCountResult.getData() : Integer.valueOf(0));
-		
-		List<String> dateList = new ArrayList<>();
-		int year = LocalDateTime.now().getYear();
-    	int month = LocalDateTime.now().getMonthValue();
-    	int day = LocalDateTime.now().getDayOfMonth();
-    	for (int i = 1; i < day; i++) {
-    		dateList.add(LocalDateTime.of(year, month, i, 0, 0).format(DateTimeFormatter.ofPattern("yyyyMMdd")));
-    	}
-		Result<List<DailyVisitTrendDTO>> result = weChatMpManager.getDailyVisitTrend(dateList);
-		if (result.isSuccess()) {
-			model.addObject("dailyVisitTrend", result.getData());
-		}
-		return model;
-	}
+    @ResponseBody
+    @RequestMapping(value = "validate", method = RequestMethod.POST)
+    @AdminLog(value = "登录", type = AdminLogType.LOGIN)
+    public Object adminLogin(@RequestParam("jobNumber") String jobNumber, @RequestParam("password") String password) {
+        Result<TokenAO> result = tokenService.createAndSaveToken(TokenType.ADMIN, jobNumber, password);
+        if(!result.isSuccess()) {
+            return result;
+        }
+        return result.getData().getToken();
+    }
+    
+    @RequestMapping(value = "index")
+//  @TokenAuth(tokenType = {TokenType.ADMIN})
+    public ModelAndView index() {
+        ModelAndView model = new ModelAndView("admin/index");
+        BookQuery bookQuery = new BookQuery();
+        Result<Integer> bookCountResult = bookService.countBooks(bookQuery);
+        model.addObject("bookCount", bookCountResult.isSuccess() ? bookCountResult.getData() : Integer.valueOf(0));
+        bookQuery.setState(BookState.BORROWED);
+        bookCountResult = bookService.countBooks(bookQuery);
+        model.addObject("borrowCount", bookCountResult.isSuccess() ? bookCountResult.getData() : Integer.valueOf(0));
+        
+        Result<Map<String, Integer>> userCountResult = userService.countUsersByDepartment();
+        if (userCountResult.isSuccess()) {
+        	Map<String, Integer> userCountMap = userCountResult.getData();
+            model.addObject(Department.ALL.toString().concat("Count"), userCountMap.get(Department.ALL.toString()) != null 
+            		? userCountMap.get(Department.ALL.toString()) : Integer.valueOf(0));
+            model.addObject(Department.CGB.toString().concat("Count"), userCountMap.get(Department.CGB.toString()) != null 
+            		? userCountMap.get(Department.CGB.toString()) : Integer.valueOf(0));
+            model.addObject(Department.CWB.toString().concat("Count"), userCountMap.get(Department.CWB.toString()) != null 
+            		? userCountMap.get(Department.CWB.toString()) : Integer.valueOf(0));
+            model.addObject(Department.GZB.toString().concat("Count"), userCountMap.get(Department.GZB.toString()) != null 
+            		? userCountMap.get(Department.GZB.toString()) : Integer.valueOf(0));
+            model.addObject(Department.KFB.toString().concat("Count"), userCountMap.get(Department.KFB.toString()) != null 
+            		? userCountMap.get(Department.KFB.toString()) : Integer.valueOf(0));
+            model.addObject(Department.PZB.toString().concat("Count"), userCountMap.get(Department.PZB.toString()) != null 
+            		? userCountMap.get(Department.PZB.toString()) : Integer.valueOf(0));
+            model.addObject(Department.RSB.toString().concat("Count"), userCountMap.get(Department.RSB.toString()) != null 
+            		? userCountMap.get(Department.RSB.toString()) : Integer.valueOf(0));
+            model.addObject(Department.UNKNOWN.toString().concat("Count"), userCountMap.get(Department.UNKNOWN.toString()) != null 
+            		? userCountMap.get(Department.UNKNOWN.toString()) : Integer.valueOf(0));
+            model.addObject(Department.XSB.toString().concat("Count"), userCountMap.get(Department.XSB.toString()) != null 
+            		? userCountMap.get(Department.XSB.toString()) : Integer.valueOf(0));
+            model.addObject(Department.YFB.toString().concat("Count"), userCountMap.get(Department.YFB.toString()) != null 
+            		? userCountMap.get(Department.YFB.toString()) : Integer.valueOf(0));
+            model.addObject(Department.ZZB.toString().concat("Count"), userCountMap.get(Department.ZZB.toString()) != null 
+            		? userCountMap.get(Department.ZZB.toString()) : Integer.valueOf(0));
+        }
+        
+        List<String> dateList = new ArrayList<>();
+        int year = LocalDateTime.now().getYear();
+        int month = LocalDateTime.now().getMonthValue();
+        int day = LocalDateTime.now().getDayOfMonth();
+        for (int i = 1; i < day; i++) {
+            dateList.add(LocalDateTime.of(year, month, i, 0, 0).format(DateTimeFormatter.ofPattern("yyyyMMdd")));
+        }
+        Result<List<DailyVisitTrendDTO>> result = weChatMpManager.getDailyVisitTrend(dateList);
+        if (result.isSuccess()) {
+            model.addObject("dailyVisitTrend", result.getData());
+        }
+        return model;
+    }
 
-	@ResponseBody
-	@RequestMapping(value = "announcement", method = RequestMethod.PUT)
-	public String updateAnnouncement(@RequestParam("announcement") String content) {
-		AnnouncementDO announcement = new AnnouncementDO();
-		announcement.setContent(content);
-		Result<?> result = announcementService.updateAnnouncement(announcement);
-		if (result.isSuccess()) {
-			return "ok";
-		}
-		return "error";
-	}
+    @ResponseBody
+    @RequestMapping(value = "announcement", method = RequestMethod.PUT)
+    public String updateAnnouncement(@RequestParam("announcement") String content) {
+        AnnouncementDO announcement = new AnnouncementDO();
+        announcement.setContent(content);
+        Result<?> result = announcementService.updateAnnouncement(announcement);
+        if (result.isSuccess()) {
+            return "ok";
+        }
+        return "error";
+    }
 
-	@RequestMapping(value = "books/{pageNum}", method = RequestMethod.GET)
-	public ModelAndView getBooks(@PathVariable("pageNum") Integer pageNum,
-			@RequestParam(value = "name", required = false) String name) {
-		ModelAndView model = new ModelAndView("admin/books");
-		BookQuery bookQuery = new BookQuery(pageNum);
-		if (name != null) {
-			bookQuery.setName(name.trim());
-		}
-		Result<PageInfo<BookDO>> result = bookService.listBooks(bookQuery);
-		if (result.isSuccess()) {
-			PageInfo<BookDO> booksInfo = result.getData();
-			List<BookDO> books = booksInfo.getList();
-			model.addObject("books", books);
-			model.addObject("total", booksInfo.getTotal());
-			model.addObject("pageSize", bookQuery.getPageSize());
-			model.addObject("pageIndex", pageNum);
-		} else {
-			model.addObject("error", "error");
-		}
-		return model;
-	}
-	
-	@RequestMapping(value = "bookLogs/{pageNum}", method = RequestMethod.GET)
-	public ModelAndView getBookLogs(@PathVariable("pageNum") Integer pageNum,
-			@RequestParam(value = "userId", required = false) Integer userId,
-			@RequestParam(value = "state", required = false) BookLogState state) {
-		ModelAndView model = new ModelAndView("admin/bookLogs");
-		BookLogQuery bookLogQuery = new BookLogQuery(pageNum);
-		if (userId != null) {
-			bookLogQuery.setUserId(userId);
-		}
-		if (state != null) {
-			bookLogQuery.setState(state);
-			model.addObject("state", state);
-		}
-		Result<PageInfo<BookLogVO>> result = bookLogManager.listBookLogs(bookLogQuery);
-		if (result.isSuccess()) {
-			PageInfo<BookLogVO> bookLogsInfo = result.getData();
-			List<BookLogVO> bookLogs = bookLogsInfo.getList();
-			model.addObject("bookLogs", bookLogs);
-			model.addObject("total", bookLogsInfo.getTotal());
-			model.addObject("pageSize", bookLogQuery.getPageSize());
-			model.addObject("pageIndex", pageNum);
-		}else {
-			model.addObject("error", "error");
-		}
-		return model;
-	}
+    @RequestMapping(value = "books/{pageNum}", method = RequestMethod.GET)
+    public ModelAndView getBooks(@PathVariable("pageNum") Integer pageNum,
+            @RequestParam(value = "name", required = false) String name) {
+        ModelAndView model = new ModelAndView("admin/books");
+        BookQuery bookQuery = new BookQuery(pageNum);
+        if (name != null) {
+            bookQuery.setName(name.trim());
+        }
+        Result<PageInfo<BookDO>> result = bookService.listBooks(bookQuery);
+        if (result.isSuccess()) {
+            PageInfo<BookDO> booksInfo = result.getData();
+            List<BookDO> books = booksInfo.getList();
+            model.addObject("books", books);
+            model.addObject("total", booksInfo.getTotal());
+            model.addObject("pageSize", bookQuery.getPageSize());
+            model.addObject("pageIndex", pageNum);
+        } else {
+            model.addObject("error", "error");
+        }
+        return model;
+    }
+    
+    @RequestMapping(value = "bookLogs/{pageNum}", method = RequestMethod.GET)
+    public ModelAndView getBookLogs(@PathVariable("pageNum") Integer pageNum,
+            @RequestParam(value = "userId", required = false) Integer userId,
+            @RequestParam(value = "state", required = false) BookLogState state) {
+        ModelAndView model = new ModelAndView("admin/bookLogs");
+        BookLogQuery bookLogQuery = new BookLogQuery(pageNum);
+        if (userId != null) {
+            bookLogQuery.setUserId(userId);
+        }
+        if (state != null) {
+            bookLogQuery.setState(state);
+            model.addObject("state", state);
+        }
+        Result<PageInfo<BookLogVO>> result = bookLogManager.listBookLogs(bookLogQuery);
+        if (result.isSuccess()) {
+            PageInfo<BookLogVO> bookLogsInfo = result.getData();
+            List<BookLogVO> bookLogs = bookLogsInfo.getList();
+            model.addObject("bookLogs", bookLogs);
+            model.addObject("total", bookLogsInfo.getTotal());
+            model.addObject("pageSize", bookLogQuery.getPageSize());
+            model.addObject("pageIndex", pageNum);
+        }else {
+            model.addObject("error", "error");
+        }
+        return model;
+    }
 
-	@RequestMapping(value = "members/{pageNum}", method = RequestMethod.GET)
-	public ModelAndView members(@PathVariable("pageNum") Integer pageNum,
-			@RequestParam(value = "jobNumber", required = false) String jobNumber,
-			@RequestParam(value = "department", required = false) Department department,
-			@RequestParam(value = "sort", required = false, defaultValue = "false") Boolean sort) {
-		ModelAndView model = new ModelAndView("admin/members");
-		UserQuery userQuery = new UserQuery(pageNum);
-		Result<?> result = null;
-		if (jobNumber != null) {
-			result = userService.getUserByJobNumber(jobNumber.trim());
-		} else {
-			if (department != null) {
-				userQuery.setDepartment(department);
-				model.addObject("department", department);
-			}
-			if (sort == true) {
-				userQuery.setOrderByPoint(true);
-				model.addObject("sort", sort);
-			}
-			result = userService.listUsers(userQuery);
-		}
-		if (result.isSuccess()) {
-			Object data = result.getData();
-			List<UserDO> users = null;
-			if (data instanceof UserDO) {  //根据工号得到的结果
-				users = new ArrayList<>();
-				users.add((UserDO)data);
-			}else {
-				PageInfo<UserDO> usersInfo = (PageInfo<UserDO>)result.getData();
-				users = usersInfo.getList();
-				model.addObject("total", usersInfo.getTotal());
-				model.addObject("pageSize", userQuery.getPageSize());
-				model.addObject("pageIndex", pageNum);
-			}
-			model.addObject("users", users);
-		} else {
-			model.addObject("error", "error");
-		}
-		return model;
-	}
-	
-	@RequestMapping(value = "meetings/{pageNum}", method = RequestMethod.GET)
-	public ModelAndView meetings(@PathVariable("pageNum") Integer pageNum) {
-		ModelAndView model = new ModelAndView("admin/meetings");
-		MeetingQuery meetingQuery = new MeetingQuery(pageNum);
-		Result<PageInfo<MeetingVO>> result = meetingManager.listMeetings(meetingQuery);
-		if (result.isSuccess()) {
-			PageInfo<MeetingVO> meetingsInfo = (PageInfo<MeetingVO>) result.getData();
-			List<MeetingVO> meetings = meetingsInfo.getList();
-			model.addObject("meetings", meetings);
-			model.addObject("total", meetingsInfo.getTotal());
-			model.addObject("pageSize", meetingQuery.getPageSize());
-			model.addObject("pageIndex", pageNum);
-		}else {
-			model.addObject("error", "error");
-		}
-		return model;
-	}
-	
-	@RequestMapping(value = "meetings/{meetingId}/participants/{pageNum}", method = RequestMethod.GET)
-	public ModelAndView meetingParticipants(@PathVariable("meetingId") Integer meetingId,
-			@PathVariable("pageNum") Integer pageNum, @RequestParam("prevPageNum") Integer prevPageNum) {
-		ModelAndView model = new ModelAndView("admin/meetingParticipants");
-		MeetingParticipantQuery query = new MeetingParticipantQuery(pageNum, meetingId);
-		Result<PageInfo<MeetingParticipantVO>> participantResult = meetingParticipantManager.listMeetingParticipants(query);
-		Result<MeetingDO> meetingResult = meetingService.getMeeting(meetingId);
-		if (participantResult.isSuccess() && meetingResult.isSuccess()) {
-			PageInfo<MeetingParticipantVO> participantsInfo = participantResult.getData();
-			List<MeetingParticipantVO> participants = participantsInfo.getList();
-			model.addObject("meetingParticipants", participants);
-			model.addObject("total", participantsInfo.getTotal());
-			model.addObject("pageSize", query.getPageSize());
-			model.addObject("pageIndex", pageNum);
-			model.addObject("prevPageNum", prevPageNum);
-			model.addObject("meeting", meetingResult.getData());
-		}else {
-			model.addObject("error", "error");
-		}
-		return model;
-	}
-	
-	@RequestMapping(value = "attendances/{pageNum}", method = RequestMethod.GET)
-	public ModelAndView attendances(@PathVariable("pageNum") Integer pageNum,
-			@RequestParam(value = "department", required = false) Department department,
-			@RequestParam(value = "month", required = false) Integer month) {
-		ModelAndView model = new ModelAndView("admin/attendances");
-		AttendanceQuery attendanceQuery = new AttendanceQuery(pageNum);
-		if (department != null) {
-			attendanceQuery.setDepartment(department);
-			model.addObject("department", department);
-		}
-		if (month != null) {
-			attendanceQuery.setMonth(month);
-			model.addObject("month", month);
-		}
-		Result<PageInfo<AttendanceVO>> result = attendanceManager.listAttendances(attendanceQuery);
-		if (result.isSuccess()) {
-			PageInfo<AttendanceVO> attendancesInfo = result.getData();
-			List<AttendanceVO> attendances = attendancesInfo.getList();
-			model.addObject("attendances", attendances);
-			model.addObject("total", attendancesInfo.getTotal());
-			model.addObject("pageSize", attendanceQuery.getPageSize());
-			model.addObject("pageIndex", pageNum);
-		}else {
-			model.addObject("error", "error");
-		}
-		return model;
-	}
-	
-	@RequestMapping("pointLogs/{pageNum}")
-	public ModelAndView pointLogs(@PathVariable("pageNum") Integer pageNum) {
-		ModelAndView model = new ModelAndView("admin/pointLogs");
-		PointLogQuery pointLogQuery = new PointLogQuery(pageNum);
-		Result<PageInfo<PointLogDO>> result = pointLogService.listPointLogs(pointLogQuery);
-		if (result.isSuccess()) {
-			PageInfo<PointLogDO> pointLogsInfo = result.getData();
-			List<PointLogDO> pointLogs = pointLogsInfo.getList();
-			model.addObject("pointLogs", pointLogs);
-			model.addObject("total", pointLogsInfo.getTotal());
-			model.addObject("pageSize", pointLogsInfo.getPageSize());
-			model.addObject("pageIndex", pageNum);
-		}else {
-			model.addObject("error", "error");
-		}
-		return model;
-	}
-	
-	@RequestMapping(value = "announcements/{pageNum}", method = RequestMethod.GET)
-	public ModelAndView announcements(@PathVariable("pageNum") Integer pageNum) {
-		ModelAndView model = new ModelAndView("admin/announcements");
-		AnnouncementQuery announcementQuery = new AnnouncementQuery(pageNum);
-		Result<PageInfo<AnnouncementDO>> result = announcementService.listAnnouncements(announcementQuery);
-		if (result.isSuccess()) {
-			PageInfo<AnnouncementDO> announcementsInfo = result.getData();
-			List<AnnouncementDO> announcements = announcementsInfo.getList();
-			model.addObject("announcements", announcements);
-			model.addObject("total", announcementsInfo.getTotal());
-			model.addObject("pageSize", announcementsInfo.getPageSize());
-			model.addObject("pageIndex", pageNum);
-		}else {
-			model.addObject("error", "error");
-		}
-		return model;
-	}
-	
-	@RequestMapping(value = "adminLogs/{pageNum}", method = RequestMethod.GET)
-	public ModelAndView adminLogs(@PathVariable("pageNum") Integer pageNum) {
-		ModelAndView model = new ModelAndView("admin/adminLogs");
-		AdminLogQuery adminLogQuery = new AdminLogQuery(pageNum);
-		Result<PageInfo<AdminLogVO>> result = adminLogManager.listAdminLogs(adminLogQuery);
-		if (result.isSuccess()) {
-			PageInfo<AdminLogVO> adminLogsInfo = result.getData();
-			List<AdminLogVO> adminLogs = adminLogsInfo.getList();
-			model.addObject("adminLogs", adminLogs);
-			model.addObject("total", adminLogsInfo.getTotal());
-			model.addObject("pageSize", adminLogQuery.getPageSize());
-			model.addObject("pageIndex", pageNum);
-		} else {
-			model.addObject("error", "error");
-		}
-		return model;
-	}
-	
+    @RequestMapping(value = "members/{pageNum}", method = RequestMethod.GET)
+    public ModelAndView members(@PathVariable("pageNum") Integer pageNum,
+            @RequestParam(value = "jobNumber", required = false) String jobNumber,
+            @RequestParam(value = "department", required = false) Department department,
+            @RequestParam(value = "sort", required = false, defaultValue = "false") Boolean sort) {
+        ModelAndView model = new ModelAndView("admin/members");
+        UserQuery userQuery = new UserQuery(pageNum);
+        Result<?> result = null;
+        if (jobNumber != null) {
+            result = userService.getUserByJobNumber(jobNumber.trim());
+        } else {
+            if (department != null) {
+                userQuery.setDepartment(department);
+                model.addObject("department", department);
+            }
+            if (sort == true) {
+                userQuery.setOrderByPoint(true);
+                model.addObject("sort", sort);
+            }
+            result = userService.listUsers(userQuery);
+        }
+        if (result.isSuccess()) {
+            Object data = result.getData();
+            List<UserDO> users = null;
+            if (data instanceof UserDO) {  //根据工号得到的结果
+                users = new ArrayList<>();
+                users.add((UserDO)data);
+            }else {
+                PageInfo<UserDO> usersInfo = (PageInfo<UserDO>)result.getData();
+                users = usersInfo.getList();
+                model.addObject("total", usersInfo.getTotal());
+                model.addObject("pageSize", userQuery.getPageSize());
+                model.addObject("pageIndex", pageNum);
+            }
+            model.addObject("users", users);
+        } else {
+            model.addObject("error", "error");
+        }
+        return model;
+    }
+    
+    @RequestMapping(value = "meetings/{pageNum}", method = RequestMethod.GET)
+    public ModelAndView meetings(@PathVariable("pageNum") Integer pageNum) {
+        ModelAndView model = new ModelAndView("admin/meetings");
+        MeetingQuery meetingQuery = new MeetingQuery(pageNum);
+        Result<PageInfo<MeetingVO>> result = meetingManager.listMeetings(meetingQuery);
+        if (result.isSuccess()) {
+            PageInfo<MeetingVO> meetingsInfo = (PageInfo<MeetingVO>) result.getData();
+            List<MeetingVO> meetings = meetingsInfo.getList();
+            model.addObject("meetings", meetings);
+            model.addObject("total", meetingsInfo.getTotal());
+            model.addObject("pageSize", meetingQuery.getPageSize());
+            model.addObject("pageIndex", pageNum);
+        }else {
+            model.addObject("error", "error");
+        }
+        return model;
+    }
+    
+    @RequestMapping(value = "meetings/{meetingId}/participants/{pageNum}", method = RequestMethod.GET)
+    public ModelAndView meetingParticipants(@PathVariable("meetingId") Integer meetingId,
+            @PathVariable("pageNum") Integer pageNum, @RequestParam("prevPageNum") Integer prevPageNum) {
+        ModelAndView model = new ModelAndView("admin/meetingParticipants");
+        MeetingParticipantQuery query = new MeetingParticipantQuery(pageNum, meetingId);
+        Result<PageInfo<MeetingParticipantVO>> participantResult = meetingParticipantManager.listMeetingParticipants(query);
+        Result<MeetingDO> meetingResult = meetingService.getMeeting(meetingId);
+        if (participantResult.isSuccess() && meetingResult.isSuccess()) {
+            PageInfo<MeetingParticipantVO> participantsInfo = participantResult.getData();
+            List<MeetingParticipantVO> participants = participantsInfo.getList();
+            model.addObject("meetingParticipants", participants);
+            model.addObject("total", participantsInfo.getTotal());
+            model.addObject("pageSize", query.getPageSize());
+            model.addObject("pageIndex", pageNum);
+            model.addObject("prevPageNum", prevPageNum);
+            model.addObject("meeting", meetingResult.getData());
+        }else {
+            model.addObject("error", "error");
+        }
+        return model;
+    }
+    
+    @RequestMapping(value = "attendances/{pageNum}", method = RequestMethod.GET)
+    public ModelAndView attendances(@PathVariable("pageNum") Integer pageNum,
+            @RequestParam(value = "department", required = false) Department department,
+            @RequestParam(value = "month", required = false) Integer month) {
+        ModelAndView model = new ModelAndView("admin/attendances");
+        AttendanceQuery attendanceQuery = new AttendanceQuery(pageNum);
+        if (department != null) {
+            attendanceQuery.setDepartment(department);
+            model.addObject("department", department);
+        }
+        if (month != null) {
+            attendanceQuery.setMonth(month);
+            model.addObject("month", month);
+        }
+        Result<PageInfo<AttendanceVO>> result = attendanceManager.listAttendances(attendanceQuery);
+        if (result.isSuccess()) {
+            PageInfo<AttendanceVO> attendancesInfo = result.getData();
+            List<AttendanceVO> attendances = attendancesInfo.getList();
+            model.addObject("attendances", attendances);
+            model.addObject("total", attendancesInfo.getTotal());
+            model.addObject("pageSize", attendanceQuery.getPageSize());
+            model.addObject("pageIndex", pageNum);
+        }else {
+            model.addObject("error", "error");
+        }
+        return model;
+    }
+    
+    @RequestMapping("pointLogs/{pageNum}")
+    public ModelAndView pointLogs(@PathVariable("pageNum") Integer pageNum) {
+        ModelAndView model = new ModelAndView("admin/pointLogs");
+        PointLogQuery pointLogQuery = new PointLogQuery(pageNum);
+        Result<PageInfo<PointLogDO>> result = pointLogService.listPointLogs(pointLogQuery);
+        if (result.isSuccess()) {
+            PageInfo<PointLogDO> pointLogsInfo = result.getData();
+            List<PointLogDO> pointLogs = pointLogsInfo.getList();
+            model.addObject("pointLogs", pointLogs);
+            model.addObject("total", pointLogsInfo.getTotal());
+            model.addObject("pageSize", pointLogsInfo.getPageSize());
+            model.addObject("pageIndex", pageNum);
+        }else {
+            model.addObject("error", "error");
+        }
+        return model;
+    }
+    
+    @RequestMapping(value = "announcements/{pageNum}", method = RequestMethod.GET)
+    public ModelAndView announcements(@PathVariable("pageNum") Integer pageNum) {
+        ModelAndView model = new ModelAndView("admin/announcements");
+        AnnouncementQuery announcementQuery = new AnnouncementQuery(pageNum);
+        Result<PageInfo<AnnouncementDO>> result = announcementService.listAnnouncements(announcementQuery);
+        if (result.isSuccess()) {
+            PageInfo<AnnouncementDO> announcementsInfo = result.getData();
+            List<AnnouncementDO> announcements = announcementsInfo.getList();
+            model.addObject("announcements", announcements);
+            model.addObject("total", announcementsInfo.getTotal());
+            model.addObject("pageSize", announcementsInfo.getPageSize());
+            model.addObject("pageIndex", pageNum);
+        }else {
+            model.addObject("error", "error");
+        }
+        return model;
+    }
+    
+    @RequestMapping(value = "adminLogs/{pageNum}", method = RequestMethod.GET)
+    public ModelAndView adminLogs(@PathVariable("pageNum") Integer pageNum) {
+        ModelAndView model = new ModelAndView("admin/adminLogs");
+        AdminLogQuery adminLogQuery = new AdminLogQuery(pageNum);
+        Result<PageInfo<AdminLogVO>> result = adminLogManager.listAdminLogs(adminLogQuery);
+        if (result.isSuccess()) {
+            PageInfo<AdminLogVO> adminLogsInfo = result.getData();
+            List<AdminLogVO> adminLogs = adminLogsInfo.getList();
+            model.addObject("adminLogs", adminLogs);
+            model.addObject("total", adminLogsInfo.getTotal());
+            model.addObject("pageSize", adminLogQuery.getPageSize());
+            model.addObject("pageIndex", pageNum);
+        } else {
+            model.addObject("error", "error");
+        }
+        return model;
+    }
+    
 }

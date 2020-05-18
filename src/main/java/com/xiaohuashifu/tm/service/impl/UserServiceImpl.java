@@ -17,6 +17,11 @@ import com.xiaohuashifu.tm.service.UserAuthCodeService;
 import com.xiaohuashifu.tm.service.UserService;
 import com.xiaohuashifu.tm.service.constant.UserConstant;
 import com.xiaohuashifu.tm.util.BeanUtils;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -247,5 +252,18 @@ public class UserServiceImpl implements UserService {
         userDO.setAvatarUrl(newAvatarUrl);
         return Result.success(userDO);
     }
+
+	@Override
+	public Result<Map<String, Integer>> countUsersByDepartment() {
+		List<Map<String, Object>> list = userMapper.countUsersByDepartment();
+		Map<String, Integer> combinedMap = new HashMap<>(16);
+    	for (int i = 0; i < list.size(); i++) {
+    		combinedMap.put((String) list.get(i).get("department"), (Integer) list.get(i).get("count"));
+    	}
+		if (combinedMap.size() == 0) {
+			return Result.fail(ErrorCode.INTERNAL_ERROR, "Can not get any count for user by department.");
+		}
+		return Result.success(combinedMap);
+	}
 
 }

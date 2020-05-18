@@ -1,12 +1,11 @@
 package com.xiaohuashifu.tm.dao;
 
-import com.xiaohuashifu.tm.constant.Department;
 import com.xiaohuashifu.tm.pojo.do0.UserDO;
 import com.xiaohuashifu.tm.pojo.query.UserQuery;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface UserMapper {
@@ -61,4 +60,11 @@ public interface UserMapper {
      */
     int updateUser(UserDO userDO0);
 
+    /**
+     * 统计用户数量
+     * @param userQuery 查询参数
+     * @return 符合条件用户的数量
+     */
+    List<Map<String, Object>> countUsersByDepartment();
+    
 }
