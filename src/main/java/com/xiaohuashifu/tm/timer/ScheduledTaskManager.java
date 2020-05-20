@@ -67,7 +67,7 @@ public class ScheduledTaskManager {
     private static final ScheduledExecutorService schedule = Executors.newScheduledThreadPool(CORE_POOL_SIZE);
 
     @Autowired
-    public ScheduledTaskManager(MeetingStateTask meetingStateTask, BookLogStateTask bookLogStateTask, 
+    public ScheduledTaskManager(MeetingStateTask meetingStateTask, BookLogStateTask bookLogStateTask,
     		CachingAccessTokenTask cachingAccessTokenTask) {
         this.meetingStateTask = meetingStateTask;
         this.bookLogStateTask = bookLogStateTask;

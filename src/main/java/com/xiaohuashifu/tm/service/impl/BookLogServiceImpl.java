@@ -2,6 +2,7 @@ package com.xiaohuashifu.tm.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.xiaohuashifu.tm.aspect.annotation.PointLog;
 import com.xiaohuashifu.tm.constant.BookLogState;
 import com.xiaohuashifu.tm.constant.BookState;
 import com.xiaohuashifu.tm.constant.TokenType;
@@ -110,7 +111,7 @@ public class BookLogServiceImpl implements BookLogService {
         PageHelper.startPage(query.getPageNum(), query.getPageSize());
         PageInfo<BookLogDO> pageInfo = new PageInfo<>(bookLogMapper.listBookLogs(query));
         if (pageInfo.getList().size() < 1) {
-            Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "Not found.");
+            return Result.fail(ErrorCode.INVALID_PARAMETER_NOT_FOUND, "Not found.");
         }
 
         return Result.success(pageInfo);
@@ -134,6 +135,7 @@ public class BookLogServiceImpl implements BookLogService {
      * @return 更新后的借书信息
      */
     @Override
+    @PointLog(point = 1)
     public Result<BookLogDO> updateBookLog(TokenType tokenType, BookLogDO bookLogDO) {
         // 要更新的借书信息必须存在
         Result<BookLogDO> getBookLogResult = getBookLog(bookLogDO.getId());
