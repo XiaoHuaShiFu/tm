@@ -75,6 +75,7 @@
 	    xhr.send(data);
         xhr.onreadystatechange = function(){
 	        var content = JSON.parse(xhr.response).qrcode;
+	        content = sessionStorage.getItem("meetingId") + "," + content;
 	        if ($("#qrcode > canvas") == null) {
 	            $("#qrcode").qrcode(content);
 	        } else {
