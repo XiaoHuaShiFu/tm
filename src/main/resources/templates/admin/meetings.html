@@ -95,12 +95,12 @@
                       <tbody>
                         <tr th:each="meeting : ${meetings}">
 					        <td th:text="${meeting.id}">空</td>
-					        <td th:text="${meeting.user.fullName}">空</td>
+					        <td style="max-width: 5em;" th:text="${meeting.user.fullName}">空</td>
 					        <td th:text="${meeting.name}">空</td>
 					        <td th:text="${#dates.format(meeting.startTime, 'yyyy-MM-dd HH:mm:ss')}">空</td>
 					        <td th:text="${#dates.format(meeting.startTime, 'yyyy-MM-dd HH:mm:ss')}">空</td>
 					        <td th:text="${meeting.place}">空</td>
-					        <td th:text="${meeting.department}">空</td>
+					        <td style="max-width: 6em;" th:text="${meeting.department}">空</td>
 					        <td th:unless="${#strings.length(meeting.content)}>5" th:text="${meeting.content}">空</td>
 					        <td th:if="${#strings.length(meeting.content)}>5" th:text="${#strings.append(#strings.substring(meeting.content,0,5), '...')}" th:title="${meeting.content}">空</td>
 					        <td th:text="${meeting.state}">空</td>

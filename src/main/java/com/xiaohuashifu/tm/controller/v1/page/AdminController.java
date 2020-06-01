@@ -291,17 +291,19 @@ public class AdminController {
         MeetingParticipantQuery query = new MeetingParticipantQuery(pageNum, meetingId);
         Result<PageInfo<MeetingParticipantVO>> participantResult = meetingParticipantManager.listMeetingParticipants(query);
         Result<MeetingDO> meetingResult = meetingService.getMeeting(meetingId);
-        if (participantResult.isSuccess() && meetingResult.isSuccess()) {
+        if (meetingResult.isSuccess()) {
+        	model.addObject("meeting", meetingResult.getData());
+        	model.addObject("prevPageNum", prevPageNum);
+        }else {
+        	model.addObject("error", "error");
+        }
+        if (participantResult.isSuccess()) {
             PageInfo<MeetingParticipantVO> participantsInfo = participantResult.getData();
             List<MeetingParticipantVO> participants = participantsInfo.getList();
             model.addObject("meetingParticipants", participants);
             model.addObject("total", participantsInfo.getTotal());
             model.addObject("pageSize", query.getPageSize());
             model.addObject("pageIndex", pageNum);
-            model.addObject("prevPageNum", prevPageNum);
-            model.addObject("meeting", meetingResult.getData());
-        }else {
-            model.addObject("error", "error");
         }
         return model;
     }

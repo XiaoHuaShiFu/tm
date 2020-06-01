@@ -4,9 +4,10 @@
  * @param sum:内容总数
  * @param maxPerPage:一页最多内容数
  * @param pageIndex:当前页索引
+ * @author TAO
  */
 function setPagination(content, sum, maxPerPage, pageIndex){
-	if (sum > 0){
+	if (sum > 0) {
 		var footer = document.createElement("div");
 		footer.setAttribute("class", "footer");
 		content.appendChild(footer);
@@ -16,7 +17,7 @@ function setPagination(content, sum, maxPerPage, pageIndex){
 		var pageCount = parseInt(sum/maxPerPage);
 		if (sum%maxPerPage != 0) pageCount++;
 		var pgs = [];
-		if (pageCount <= 10){
+		if (pageCount <= 10) {
 			for (var i = 1; i <= pageCount; i++){
 				pgs[i] = document.createElement("div");
 				pgs[i].innerHTML = i;
@@ -28,7 +29,7 @@ function setPagination(content, sum, maxPerPage, pageIndex){
 				pagination.appendChild(pgs[i]);
 			}
 		}else {
-			if (pageIndex < 7){
+			if (pageIndex < 7) {
 				for (var i = 1; i <= 7; i++){
 					pgs[i] = document.createElement("div");
 					pgs[i].innerHTML = i;
@@ -55,10 +56,10 @@ function setPagination(content, sum, maxPerPage, pageIndex){
 				pgs[1] = document.createElement("div");  //首页页索引块
 				pgs[1].innerHTML = 1;
 				(function(first) {
-					pgs[1].onclick = function() {
-						window.location.href = pageCount;
+					first.onclick = function() {
+						window.location.href = 1;
 					}
-				}(1));
+				}(pgs[1]));
 				pagination.appendChild(pgs[1]);
 				var ect = document.createElement("span");
 				ect.innerHTML="···";
@@ -68,7 +69,7 @@ function setPagination(content, sum, maxPerPage, pageIndex){
 				var endPage = pageIndex+3;  //中间部分索引块的尾索引
 				if (startPage > pageCount - 6) startPage = pageCount - 6;
 				if (endPage > pageCount) endPage = pageCount;
-				for (var i = startPage; i <= endPage; i++){
+				for (var i = startPage; i <= endPage; i++) {
 					pgs[i] = document.createElement("div");
 					pgs[i].innerHTML = i;
 					(function(i) {
@@ -78,7 +79,7 @@ function setPagination(content, sum, maxPerPage, pageIndex){
 					}(i));
 					pagination.appendChild(pgs[i]);
 				}
-				if (pageIndex + 3 < pageCount){
+				if (pageIndex + 3 < pageCount) {
 					var ect2 = document.createElement("span");
 					ect2.innerHTML="···";
 					ect2.style.marginRight = "9px";
