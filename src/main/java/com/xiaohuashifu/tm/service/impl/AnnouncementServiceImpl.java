@@ -8,8 +8,6 @@ import org.springframework.stereotype.Service;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.xiaohuashifu.tm.aspect.annotation.AdminLog;
-import com.xiaohuashifu.tm.constant.AdminLogType;
 import com.xiaohuashifu.tm.dao.AnnouncementMapper;
 import com.xiaohuashifu.tm.pojo.do0.AnnouncementDO;
 import com.xiaohuashifu.tm.pojo.query.AnnouncementQuery;
@@ -28,7 +26,6 @@ public class AnnouncementServiceImpl implements AnnouncementService {
 	}
 	
 	@Override
-	@AdminLog(value = "'发布公告'", type = AdminLogType.INSERT)
 	public Result<AnnouncementDO> insertAnnouncement(AnnouncementDO announcement) {
 		int count = announcementMapper.insertAnnouncement(announcement);
 		if (count < 1) {
@@ -38,7 +35,6 @@ public class AnnouncementServiceImpl implements AnnouncementService {
 	}
 	
 	@Override
-	@AdminLog(value = "'更新公告'", type = AdminLogType.UPDATE)
 	public Result<Map<Object, Object>> updateAnnouncement(AnnouncementDO announcement) {
 		Map<Object, Object> map = new HashMap<>();
 		AnnouncementDO oldAnnouncement = announcementMapper.getAnnouncement();
@@ -52,7 +48,6 @@ public class AnnouncementServiceImpl implements AnnouncementService {
 	}
 	
 	@Override
-	@AdminLog(value = "'删除公告'", type = AdminLogType.DELETE)
 	public Result<Integer> deleteAnnouncement(Integer id) {
 		int count = announcementMapper.deleteAnnouncement(id);
 		if (count < 1) {

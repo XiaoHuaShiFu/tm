@@ -79,3 +79,13 @@
     right: 0;
     margin: auto;
 }
+
+/*表格*/
+table .content-cell{
+	text-align: left;
+	white-space: pre-wrap;
+}
+
+table .time-cell{
+	min-width: 8em;
+}

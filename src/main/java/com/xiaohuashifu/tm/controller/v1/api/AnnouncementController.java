@@ -1,7 +1,8 @@
 package com.xiaohuashifu.tm.controller.v1.api;
 
-import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,7 +14,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.github.pagehelper.PageInfo;
+import com.xiaohuashifu.tm.aspect.annotation.AdminLog;
 import com.xiaohuashifu.tm.auth.TokenAuth;
+import com.xiaohuashifu.tm.constant.AdminLogType;
 import com.xiaohuashifu.tm.constant.TokenType;
 import com.xiaohuashifu.tm.pojo.do0.AnnouncementDO;
 import com.xiaohuashifu.tm.pojo.query.AnnouncementQuery;
@@ -34,8 +37,9 @@ public class AnnouncementController {
 	
 	@ResponseStatus(HttpStatus.CREATED)
 	@RequestMapping(method = RequestMethod.POST)
-//	@TokenAuth(tokenType = TokenType.ADMIN)
-	public Object post(AnnouncementDO announcement) {
+	@TokenAuth(tokenType = TokenType.ADMIN)
+	@AdminLog(value = "'发布公告'", type = AdminLogType.INSERT)
+	public Object post(HttpServletRequest request, AnnouncementDO announcement) {
 		Result<AnnouncementDO> result = announcementService.insertAnnouncement(announcement);
 		if (!result.isSuccess()) {
 			return result;
@@ -45,8 +49,9 @@ public class AnnouncementController {
 	
 	@ResponseStatus(HttpStatus.OK)
 	@RequestMapping(method = RequestMethod.PUT)
-//	@TokenAuth(tokenType = TokenType.ADMIN)
-	public Object put(AnnouncementDO announcement) {
+	@TokenAuth(tokenType = TokenType.ADMIN)
+	@AdminLog(value = "'更新公告'", type = AdminLogType.UPDATE)
+	public Object put(HttpServletRequest request, AnnouncementDO announcement) {
 		Result<Map<Object, Object>> result = announcementService.updateAnnouncement(announcement);
 		if (!result.isSuccess()) {
 			return result;
@@ -55,8 +60,9 @@ public class AnnouncementController {
 	}
 	
 	@RequestMapping(method = RequestMethod.DELETE)
-//	@TokenAuth(tokenType = TokenType.ADMIN)
-	public Object delete(@RequestParam("id") Integer id) {
+	@TokenAuth(tokenType = TokenType.ADMIN)
+	@AdminLog(value = "'删除公告'", type = AdminLogType.DELETE)
+	public Object delete(HttpServletRequest request, @RequestParam("id") Integer id) {
 		Result<Integer> result = announcementService.deleteAnnouncement(id);
 		if (!result.isSuccess()) {
 			return result;

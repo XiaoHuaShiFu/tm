@@ -84,20 +84,21 @@ public class AdminLogAspect {
 			logger.error("操作失败");
 			return;
 		}
-//		String token = request.getHeader("authorization");
-//        Result<TokenAO> tokenResult = tokenService.getToken(token);
-//        if (!tokenResult.isSuccess()) {
-//        	logger.error("token获取失败");
-//        	return;
-//        }
+		
+		String token = request.getHeader("authorization");
+        Result<TokenAO> tokenResult = tokenService.getToken(token);
+        if (!tokenResult.isSuccess()) {
+        	logger.error("token获取失败");
+        	return;
+        }
+        
 		Object data = object;
 		if (object instanceof Result) {
 			data = ((Result) object).getData();
 		}
 		String logValue = expressionParser.parseExpression(adminLog.value()).getValue(evaluationContext, String.class);
 		AdminLogDO adminLogDO = new AdminLogDO();
-//		adminLogDO.setAdminId(tokenResult.getData().getId());
-		adminLogDO.setAdminId(1);
+		adminLogDO.setAdminId(tokenResult.getData().getId());
 		if (adminLog.type().equals(AdminLogType.INSERT)) {
 			adminLogDO.setContent(logValue + ", 添加的数据 : " + data.toString());
 		}else if (adminLog.type().equals(AdminLogType.UPDATE)) {

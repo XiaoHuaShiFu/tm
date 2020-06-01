@@ -39,26 +39,26 @@
       <div id="sidebar" class="sidebar py-3">
         <div class="text-gray-400 text-uppercase px-3 px-lg-4 py-4 font-weight-bold small headings-font-family">MAIN</div>
         <ul class="sidebar-menu list-unstyled">
-            <li class="sidebar-list-item"><a href="/v1/admin/index" class="sidebar-link text-muted"><i class="o-home-1 mr-3 text-gray"></i><span>Home</span></a></li>
-            <li class="sidebar-list-item"><a href="/v1/admin/members/1" class="sidebar-link text-muted"><i class="o-sales-up-1 mr-3 text-gray"></i><span>成员管理</span></a></li>
+            <li class="sidebar-list-item"><span href="/v1/admin/index" class="sidebar-link text-muted" onclick="jumpWithToken(this)"><i class="o-home-1 mr-3 text-gray"></i><span>Home</span></span></li>
+            <li class="sidebar-list-item"><span href="/v1/admin/members/1" class="sidebar-link text-muted" onclick="jumpWithToken(this)"><i class="o-sales-up-1 mr-3 text-gray"></i><span>成员管理</span></span></li>
             <li class="sidebar-list-item"><a href="#" data-toggle="collapse" data-target="#bookPages" aria-expanded="false" aria-controls="bookPages" class="sidebar-link text-muted"><i class="o-table-content-1 mr-3 text-gray"></i><span>图书管理</span></a>
                 <div id="bookPages" class="collapse">
                     <ul class="sidebar-menu list-unstyled border-left border-primary border-thick">
-                        <li class="sidebar-list-item"><a href="/v1/admin/books/1" class="sidebar-link text-muted pl-lg-5">书籍信息</a></li>
-                        <li class="sidebar-list-item"><a href="/v1/admin/bookLogs/1" class="sidebar-link text-muted pl-lg-5">借还信息</a></li>
+                        <li class="sidebar-list-item"><span href="/v1/admin/books/1" class="sidebar-link text-muted pl-lg-5" onclick="jumpWithToken(this)">书籍信息</span></li>
+                        <li class="sidebar-list-item"><span href="/v1/admin/bookLogs/1" class="sidebar-link text-muted pl-lg-5" onclick="jumpWithToken(this)">借还信息</span></li>
                     </ul>
                 </div>
             </li>
-            <li class="sidebar-list-item"><a href="1" class="sidebar-link text-muted active"><i class="o-survey-1 mr-3 text-gray"></i><span>会议管理</span></a></li>
+            <li class="sidebar-list-item"><span href="1" class="sidebar-link text-muted active"><i class="o-survey-1 mr-3 text-gray" onclick="jumpWithToken(this)"></i><span>会议管理</span></span></li>
             <li class="sidebar-list-item"><a href="#" data-toggle="collapse" data-target="#dutyPages" aria-expanded="false" aria-controls="dutyPages" class="sidebar-link text-muted"><i class="o-wireframe-1 mr-3 text-gray"></i><span>值班管理</span></a>
 	            <div id="dutyPages" class="collapse">
 	                <ul class="sidebar-menu list-unstyled border-left border-primary border-thick">
-	                    <li class="sidebar-list-item"><a href="/v1/admin/attendances/1" class="sidebar-link text-muted pl-lg-5">签到信息</a></li>
+	                    <li class="sidebar-list-item"><span href="/v1/admin/attendances/1" class="sidebar-link text-muted pl-lg-5" onclick="jumpWithToken(this)">签到信息</span></li>
 	                </ul>
 	            </div>
 	        </li>
-	        <li class="sidebar-list-item"><a href="/v1/admin/announcements/1" class="sidebar-link text-muted"><i class="o-database-1 mr-3 text-gray"></i><span>公告管理</span></a></li>
-            <li class="sidebar-list-item"><a href="/v1/admin/adminLogs/1" class="sidebar-link text-muted"><i class="o-paperwork-1 mr-3 text-gray"></i><span>日志信息</span></a></li>
+	        <li class="sidebar-list-item"><span href="/v1/admin/announcements/1" class="sidebar-link text-muted" onclick="jumpWithToken(this)"><i class="o-database-1 mr-3 text-gray"></i><span>公告管理</span></span></li>
+            <li class="sidebar-list-item"><span href="/v1/admin/adminLogs/1" class="sidebar-link text-muted" onclick="jumpWithToken(this)"><i class="o-paperwork-1 mr-3 text-gray"></i><span>日志信息</span></span></li>
             <li class="sidebar-list-item"><a href="/v1/admin/login" class="sidebar-link text-muted"><i class="o-exit-1 mr-3 text-gray"></i><span>Exit</span></a></li>
         </ul>
       </div>
@@ -98,7 +98,7 @@
 					        <td style="max-width: 5em;" th:text="${meeting.user.fullName}">空</td>
 					        <td th:text="${meeting.name}">空</td>
 					        <td th:text="${#dates.format(meeting.startTime, 'yyyy-MM-dd HH:mm:ss')}">空</td>
-					        <td th:text="${#dates.format(meeting.startTime, 'yyyy-MM-dd HH:mm:ss')}">空</td>
+					        <td th:text="${#dates.format(meeting.endTime, 'yyyy-MM-dd HH:mm:ss')}">空</td>
 					        <td th:text="${meeting.place}">空</td>
 					        <td style="max-width: 6em;" th:text="${meeting.department}">空</td>
 					        <td th:unless="${#strings.length(meeting.content)}>5" th:text="${meeting.content}">空</td>
@@ -141,11 +141,13 @@
     <script th:src="@{/js/js.cookie.min.js}"></script>
     <script th:src="@{/js/front.js}"></script>
     <script th:src="@{/js/pagination.js}"></script>
+    <script th:src="@{/js/common.js}"></script>
     <script type="text/javascript" th:inline="javascript">
    		setPagination($(".pgn-container")[0], [[${total}]], [[${pageSize}]], [[${pageIndex}]]);
    		
    		function showParticipants(ele){
-    		window.location.href = window.location.href.substring(0, window.location.href.lastIndexOf('/') + 1) + $(ele).attr("see") + '/participants/1?prevPageNum=' + [[${pageIndex}]];
+   			ele.setAttribute("href", window.location.href.substring(0, window.location.href.lastIndexOf('/') + 1) + $(ele).attr("see") + '/participants/1?prevPageNum=' + [[${pageIndex}]]);
+   			jumpWithToken(ele);
    		}
     </script>
   </body>

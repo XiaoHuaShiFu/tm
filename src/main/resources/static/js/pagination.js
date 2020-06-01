@@ -1,5 +1,5 @@
 /**
- * 插入分页。
+ * 插入分页
  * @param content:内容容器
  * @param sum:内容总数
  * @param maxPerPage:一页最多内容数
@@ -20,10 +20,11 @@ function setPagination(content, sum, maxPerPage, pageIndex){
 		if (pageCount <= 10) {
 			for (var i = 1; i <= pageCount; i++){
 				pgs[i] = document.createElement("div");
+				pgs[i].setAttribute("href", i);
 				pgs[i].innerHTML = i;
 				(function(i) {
 					pgs[i].onclick = function() {
-						window.location.href = i;
+						jumpWithToken(this);
 					}
 				}(i));
 				pagination.appendChild(pgs[i]);
@@ -32,10 +33,11 @@ function setPagination(content, sum, maxPerPage, pageIndex){
 			if (pageIndex < 7) {
 				for (var i = 1; i <= 7; i++){
 					pgs[i] = document.createElement("div");
+					pgs[i].setAttribute("href", i);
 					pgs[i].innerHTML = i;
 					(function(i) {
 						pgs[i].onclick = function() {
-							window.location.href = i;
+							jumpWithToken(this);
 						}
 					}(i));
 					pagination.appendChild(pgs[i]);
@@ -45,19 +47,21 @@ function setPagination(content, sum, maxPerPage, pageIndex){
 				ect.style.marginRight = "9px";
 				pagination.appendChild(ect);
 				pgs[pageCount] = document.createElement("div");  //尾页索引块
+				pgs[pageCount].setAttribute("href", pageCount);
 				pgs[pageCount].innerHTML = pageCount;
 				(function(pageCount) {
 					pgs[pageCount].onclick = function() {
-						window.location.href = pageCount;
+						jumpWithToken(this);
 					}
 				}(pageCount));
 				pagination.appendChild(pgs[pageCount]);
 			}else {  //当前索引>=7时，显示首尾索引块，中间显示以当前索引块为对称线的7个索引块
 				pgs[1] = document.createElement("div");  //首页页索引块
+				pgs[1].setAttribute("href", 1);
 				pgs[1].innerHTML = 1;
 				(function(first) {
 					first.onclick = function() {
-						window.location.href = 1;
+						jumpWithToken(this);
 					}
 				}(pgs[1]));
 				pagination.appendChild(pgs[1]);
@@ -71,10 +75,11 @@ function setPagination(content, sum, maxPerPage, pageIndex){
 				if (endPage > pageCount) endPage = pageCount;
 				for (var i = startPage; i <= endPage; i++) {
 					pgs[i] = document.createElement("div");
+					pgs[i].setAttribute("href", i);
 					pgs[i].innerHTML = i;
 					(function(i) {
 						pgs[i].onclick = function() {
-							window.location.href = i;
+							jumpWithToken(this);
 						}
 					}(i));
 					pagination.appendChild(pgs[i]);
@@ -85,10 +90,11 @@ function setPagination(content, sum, maxPerPage, pageIndex){
 					ect2.style.marginRight = "9px";
 					pagination.appendChild(ect2);
 					pgs[pageCount] = document.createElement("div");  //尾页索引块
+					pgs[pageCount].setAttribute("href", pageCount);
 					pgs[pageCount].innerHTML = pageCount;
 					(function(pageCount) {
 						pgs[pageCount].onclick = function() {
-							window.location.href = pageCount;
+							jumpWithToken(this);
 						}
 					}(pageCount));
 					pagination.appendChild(pgs[pageCount]);

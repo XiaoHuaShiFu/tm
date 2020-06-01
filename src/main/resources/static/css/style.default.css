@@ -1320,6 +1320,7 @@ button {
   -webkit-transition: background 0.3s;
   transition: background 0.3s;
   padding: 0.5rem 1.5rem;
+  cursor: pointer;
 }
 
 .sidebar-link[data-toggle="collapse"] {

@@ -17,7 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.github.pagehelper.PageInfo;
 import com.xiaohuashifu.tm.aspect.annotation.AdminLog;
-import com.xiaohuashifu.tm.aspect.annotation.TokenAuth;
+import com.xiaohuashifu.tm.auth.TokenAuth;
 import com.xiaohuashifu.tm.constant.AdminLogType;
 import com.xiaohuashifu.tm.constant.BookLogState;
 import com.xiaohuashifu.tm.constant.BookState;
@@ -112,8 +112,8 @@ public class AdminController {
         return result.getData().getToken();
     }
     
-    @RequestMapping(value = "index")
-//  @TokenAuth(tokenType = {TokenType.ADMIN})
+    @RequestMapping(value = "index", method = RequestMethod.POST)
+    @TokenAuth(tokenType = TokenType.ADMIN)
     public ModelAndView index() {
         ModelAndView model = new ModelAndView("admin/index");
         BookQuery bookQuery = new BookQuery();
@@ -164,19 +164,8 @@ public class AdminController {
         return model;
     }
 
-    @ResponseBody
-    @RequestMapping(value = "announcement", method = RequestMethod.PUT)
-    public String updateAnnouncement(@RequestParam("announcement") String content) {
-        AnnouncementDO announcement = new AnnouncementDO();
-        announcement.setContent(content);
-        Result<?> result = announcementService.updateAnnouncement(announcement);
-        if (result.isSuccess()) {
-            return "ok";
-        }
-        return "error";
-    }
-
-    @RequestMapping(value = "books/{pageNum}", method = RequestMethod.GET)
+    @TokenAuth(tokenType = TokenType.ADMIN)
+    @RequestMapping(value = "books/{pageNum}", method = RequestMethod.POST)
     public ModelAndView getBooks(@PathVariable("pageNum") Integer pageNum,
             @RequestParam(value = "name", required = false) String name) {
         ModelAndView model = new ModelAndView("admin/books");
@@ -198,7 +187,8 @@ public class AdminController {
         return model;
     }
     
-    @RequestMapping(value = "bookLogs/{pageNum}", method = RequestMethod.GET)
+    @TokenAuth(tokenType = TokenType.ADMIN)
+    @RequestMapping(value = "bookLogs/{pageNum}", method = RequestMethod.POST)
     public ModelAndView getBookLogs(@PathVariable("pageNum") Integer pageNum,
             @RequestParam(value = "userId", required = false) Integer userId,
             @RequestParam(value = "state", required = false) BookLogState state) {
@@ -225,7 +215,8 @@ public class AdminController {
         return model;
     }
 
-    @RequestMapping(value = "members/{pageNum}", method = RequestMethod.GET)
+    @TokenAuth(tokenType = TokenType.ADMIN)
+    @RequestMapping(value = "members/{pageNum}", method = RequestMethod.POST)
     public ModelAndView members(@PathVariable("pageNum") Integer pageNum,
             @RequestParam(value = "jobNumber", required = false) String jobNumber,
             @RequestParam(value = "department", required = false) Department department,
@@ -266,7 +257,8 @@ public class AdminController {
         return model;
     }
     
-    @RequestMapping(value = "meetings/{pageNum}", method = RequestMethod.GET)
+    @TokenAuth(tokenType = TokenType.ADMIN)
+    @RequestMapping(value = "meetings/{pageNum}", method = RequestMethod.POST)
     public ModelAndView meetings(@PathVariable("pageNum") Integer pageNum) {
         ModelAndView model = new ModelAndView("admin/meetings");
         MeetingQuery meetingQuery = new MeetingQuery(pageNum);
@@ -284,7 +276,8 @@ public class AdminController {
         return model;
     }
     
-    @RequestMapping(value = "meetings/{meetingId}/participants/{pageNum}", method = RequestMethod.GET)
+    @TokenAuth(tokenType = TokenType.ADMIN)
+    @RequestMapping(value = "meetings/{meetingId}/participants/{pageNum}", method = RequestMethod.POST)
     public ModelAndView meetingParticipants(@PathVariable("meetingId") Integer meetingId,
             @PathVariable("pageNum") Integer pageNum, @RequestParam("prevPageNum") Integer prevPageNum) {
         ModelAndView model = new ModelAndView("admin/meetingParticipants");
@@ -308,7 +301,8 @@ public class AdminController {
         return model;
     }
     
-    @RequestMapping(value = "attendances/{pageNum}", method = RequestMethod.GET)
+    @TokenAuth(tokenType = TokenType.ADMIN)
+    @RequestMapping(value = "attendances/{pageNum}", method = RequestMethod.POST)
     public ModelAndView attendances(@PathVariable("pageNum") Integer pageNum,
             @RequestParam(value = "department", required = false) Department department,
             @RequestParam(value = "month", required = false) Integer month) {
@@ -336,7 +330,8 @@ public class AdminController {
         return model;
     }
     
-    @RequestMapping("pointLogs/{pageNum}")
+    @TokenAuth(tokenType = TokenType.ADMIN)
+    @RequestMapping(value = "pointLogs/{pageNum}", method = RequestMethod.POST)
     public ModelAndView pointLogs(@PathVariable("pageNum") Integer pageNum) {
         ModelAndView model = new ModelAndView("admin/pointLogs");
         PointLogQuery pointLogQuery = new PointLogQuery(pageNum);
@@ -354,7 +349,8 @@ public class AdminController {
         return model;
     }
     
-    @RequestMapping(value = "announcements/{pageNum}", method = RequestMethod.GET)
+    @TokenAuth(tokenType = TokenType.ADMIN)
+    @RequestMapping(value = "announcements/{pageNum}", method = RequestMethod.POST)
     public ModelAndView announcements(@PathVariable("pageNum") Integer pageNum) {
         ModelAndView model = new ModelAndView("admin/announcements");
         AnnouncementQuery announcementQuery = new AnnouncementQuery(pageNum);
@@ -372,7 +368,8 @@ public class AdminController {
         return model;
     }
     
-    @RequestMapping(value = "adminLogs/{pageNum}", method = RequestMethod.GET)
+    @TokenAuth(tokenType = TokenType.ADMIN)
+    @RequestMapping(value = "adminLogs/{pageNum}", method = RequestMethod.POST)
     public ModelAndView adminLogs(@PathVariable("pageNum") Integer pageNum) {
         ModelAndView model = new ModelAndView("admin/adminLogs");
         AdminLogQuery adminLogQuery = new AdminLogQuery(pageNum);

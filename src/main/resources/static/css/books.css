@@ -46,3 +46,16 @@
 .mask>div>form>div{
 	padding-top: 20px;
 }
+
+.mask form .title{
+	min-width: 500px;
+}
+
+.mask form .content-mark{
+	vertical-align: top;
+}
+
+.mask form textarea{
+	min-width: 500px;
+	height: 140px;
+}

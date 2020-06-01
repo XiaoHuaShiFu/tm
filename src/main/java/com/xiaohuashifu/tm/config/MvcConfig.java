@@ -19,10 +19,9 @@ public class MvcConfig {
 	@Bean
     public FilterRegistrationBean<HiddenHttpHeaderFilter> headerFilter() {
         FilterRegistrationBean<HiddenHttpHeaderFilter> filterRegistrationBean = new FilterRegistrationBean<>();
-        HiddenHttpHeaderFilter hiddenHttpHeaderFilter = new HiddenHttpHeaderFilter();
-        filterRegistrationBean.setFilter(hiddenHttpHeaderFilter);
+        filterRegistrationBean.setFilter(new HiddenHttpHeaderFilter());
         List<String> urls = new ArrayList<>();
-        urls.add("/*");
+        urls.add("/v1/admin/*");
         filterRegistrationBean.setUrlPatterns(urls);
         return filterRegistrationBean;
     }

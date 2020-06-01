@@ -45,8 +45,8 @@ public class BookController {
 	
 	@ResponseStatus(HttpStatus.CREATED)
 	@RequestMapping(method = RequestMethod.POST)
-//	@TokenAuth(tokenType = {TokenType.ADMIN})
-//	@AdminLog(value = "'添加书籍'", type = AdminLogType.INSERT)
+	@TokenAuth(tokenType = TokenType.ADMIN)
+	@AdminLog(value = "'添加书籍'", type = AdminLogType.INSERT)
 	public Object insertBook(HttpServletRequest request, @RequestPart("bookInfo") BookDO book, 
 			@RequestPart(value = "cover", required = false) MultipartFile cover) {
 		Result<BookDO> result = bookService.saveBook(book, cover);
@@ -55,8 +55,8 @@ public class BookController {
 	
 //	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@RequestMapping(method = RequestMethod.DELETE)
-//	@TokenAuth(tokenType = {TokenType.ADMIN})
-//	@AdminLog(value = "'删除书籍'", type = AdminLogType.DELETE)
+	@TokenAuth(tokenType = TokenType.ADMIN)
+	@AdminLog(value = "'删除书籍'", type = AdminLogType.DELETE)
 	public Object deleteBook(HttpServletRequest request, @RequestParam("id") Integer id) {
 		Result<?> result = bookService.deleteBook(id);
 		return result;
@@ -69,8 +69,8 @@ public class BookController {
 	 */
 	@RequestMapping(method = RequestMethod.PUT)
 	@ResponseStatus(HttpStatus.OK)
-//	@TokenAuth(tokenType = {TokenType.ADMIN})
-//	@AdminLog(value = "'更新书籍'", type = AdminLogType.UPDATE)
+	@TokenAuth(tokenType = TokenType.ADMIN)
+	@AdminLog(value = "'更新书籍'", type = AdminLogType.UPDATE)
 	public Object put(HttpServletRequest request, @RequestPart("bookInfo") BookDO book,
 			@RequestPart(value = "cover", required = false) MultipartFile cover) {
 		Result<BookDO> result = bookService.updateBook(book, cover);
