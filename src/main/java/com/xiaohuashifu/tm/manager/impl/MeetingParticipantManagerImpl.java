@@ -53,7 +53,8 @@ public class MeetingParticipantManagerImpl implements MeetingParticipantManager 
      * @return Result<PageInfo<MeetingParticipantVO>>
      */
     @Override
-    public Result<PageInfo<MeetingParticipantVO>> listMeetingParticipants(MeetingParticipantQuery meetingParticipantQuery) {
+    public Result<PageInfo<MeetingParticipantVO>> listMeetingParticipants(
+            MeetingParticipantQuery meetingParticipantQuery) {
         Result<PageInfo<MeetingParticipantDO>> result =
                 meetingParticipantService.listMeetingParticipants(meetingParticipantQuery);
         if (!result.isSuccess()) {
@@ -68,7 +69,8 @@ public class MeetingParticipantManagerImpl implements MeetingParticipantManager 
                     UserVO userVO = mapper.map(userDOResult.getData(), UserVO.class);
                     Result<MeetingDO> meetingDOResult = meetingService.getMeeting(meetingParticipantDO.getMeetingId());
                     MeetingVO meetingVO = mapper.map(meetingDOResult.getData(), MeetingVO.class);
-                    MeetingParticipantVO meetingParticipantVO = mapper.map(meetingParticipantDO, MeetingParticipantVO.class);
+                    MeetingParticipantVO meetingParticipantVO = mapper.map(meetingParticipantDO,
+                            MeetingParticipantVO.class);
                     meetingParticipantVO.setMeeting(meetingVO);
                     meetingParticipantVO.setUser(userVO);
                     return meetingParticipantVO;
