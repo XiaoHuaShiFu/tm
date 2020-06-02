@@ -89,7 +89,7 @@
                           <th>参与部门</th>
                           <th>会议内容</th>
                           <th>状态</th>
-                          <th>操作</th>
+                          <th style="min-width: 4em;">操作</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -106,7 +106,6 @@
 					        <td th:text="${meeting.state}">空</td>
 					        <td>
 					        	<span class="see-btn" th:see="${meeting.id}" onclick="showParticipants(this);">查看</span>
-					        	<span class="del-btn" th:del="${meeting.id}">删除</span>
 					        </td>
 						</tr>
                       </tbody>
