@@ -8,7 +8,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.xiaohuashifu.tm.mvc.filter.HiddenHttpHeaderFilter;
+import com.xiaohuashifu.tm.mvc.filter.VisitFilter;
 
+/**
+ * MVC配置
+ * @author TAO
+ * @date 2020/06/02
+ */
 @Configuration
 public class MvcConfig {
 
@@ -23,6 +29,18 @@ public class MvcConfig {
         List<String> urls = new ArrayList<>();
         urls.add("/v1/admin/*");
         filterRegistrationBean.setUrlPatterns(urls);
+        return filterRegistrationBean;
+    }
+	
+	/**
+	 * 用于外部GET访问重定向到登录页
+	 * @return
+	 */
+	@Bean
+    public FilterRegistrationBean<VisitFilter> preMostFilter() {
+        FilterRegistrationBean<VisitFilter> filterRegistrationBean = new FilterRegistrationBean<>();
+        filterRegistrationBean.setFilter(new VisitFilter());
+        filterRegistrationBean.addUrlPatterns("/v1/admin/*");
         return filterRegistrationBean;
     }
 	

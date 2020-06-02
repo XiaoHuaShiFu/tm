@@ -97,8 +97,12 @@ public class AdminController {
     }
 
     @RequestMapping(value = "login", method = RequestMethod.GET)
-    public String login() {
-        return "admin/login";
+    public ModelAndView login(@RequestParam(value = "ot", required = false) Integer isOvertime) {
+    	ModelAndView model = new ModelAndView("admin/login");
+    	if (isOvertime != null && isOvertime == 1) {
+    		model.addObject("ot", 1);
+    	}
+    	return model;
     }
 
     @ResponseBody
