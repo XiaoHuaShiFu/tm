@@ -255,7 +255,7 @@ public class UserController {
      */
     @RequestMapping(value = "/available", method = RequestMethod.PUT)
     @ResponseStatus(value = HttpStatus.OK)
-//    @TokenAuth(tokenType = TokenType.ADMIN)
+    @TokenAuth(tokenType = TokenType.ADMIN)
     @AdminLog(value = "#available ? '解封' : '封号'", type = AdminLogType.UPDATE)
     public Object putAvailable(HttpServletRequest request,
     		@RequestParam("id") Integer id, @RequestParam("available") Boolean available) {
