@@ -70,6 +70,10 @@
   </body>
   
   	<script type="text/javascript" th:inline="javascript">
+  	    if (sessionStorage.getItem("token") != null){
+  	    	$("#pwd").val(Math.random());
+  	    }
+  	
   		$("#login_btn").click(function(){
   			var token = sessionStorage.getItem("token");
   			if (token == null) {

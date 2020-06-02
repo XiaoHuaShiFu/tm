@@ -1,8 +1,5 @@
 package com.xiaohuashifu.tm.config;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,15 +23,13 @@ public class MvcConfig {
     public FilterRegistrationBean<HiddenHttpHeaderFilter> headerFilter() {
         FilterRegistrationBean<HiddenHttpHeaderFilter> filterRegistrationBean = new FilterRegistrationBean<>();
         filterRegistrationBean.setFilter(new HiddenHttpHeaderFilter());
-        List<String> urls = new ArrayList<>();
-        urls.add("/v1/admin/*");
-        filterRegistrationBean.setUrlPatterns(urls);
+        filterRegistrationBean.addUrlPatterns("/v1/admin/*");
         return filterRegistrationBean;
     }
 	
 	/**
 	 * 用于外部GET访问重定向到登录页
-	 * @return
+	 * @return FilterRegistrationBean<VisitFilter>
 	 */
 	@Bean
     public FilterRegistrationBean<VisitFilter> preMostFilter() {
