@@ -4,19 +4,30 @@
  * @author TAO
  * @date 2020/6/1
  */
-function jumpWithToken(trigger){
+function jumpWithToken(trigger) {
 	var destination = trigger.getAttribute("href")
-	if (location.href != location.href.substring(0, location.href.lastIndexOf("/") + 1) + destination){
+	if (location.href != location.href.substring(0, location.href.lastIndexOf("/") + 1) + destination) {
 		var form = document.createElement("form");
 		form.setAttribute("action", destination);
-		form.setAttribute("method", "post");
-		var input = document.createElement("input");
-		input.setAttribute("type", "hidden");
-		input.setAttribute("name", "_header");
-		input.setAttribute("value", "authorization:" + sessionStorage.getItem("token"));
-		form.appendChild(input);
+		form.style.display = "none";
 		document.body.appendChild(form);
-		form.submit();
+		submitWithToken(form);
 		document.body.removeChild(form);
 	}
+}
+
+/**
+ * 携带token提交，提交到当前页面
+ * @param form 提交的表单
+ * @author TAO
+ * @date 2020/6/2
+ */
+function submitWithToken(form) {
+	form.setAttribute("method", "post");
+	var input = document.createElement("input");
+	input.setAttribute("type", "hidden");
+	input.setAttribute("name", "_header");
+	input.setAttribute("value", "authorization:" + sessionStorage.getItem("token"));
+	form.appendChild(input);
+	form.submit();
 }

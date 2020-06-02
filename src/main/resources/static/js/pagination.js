@@ -7,7 +7,7 @@
  * @author TAO
  */
 function setPagination(content, sum, maxPerPage, pageIndex){
-	if (sum > 0) {
+	if (sum > 0 && maxPerPage > 0 && pageIndex > 0) {
 		var footer = document.createElement("div");
 		footer.setAttribute("class", "footer");
 		content.appendChild(footer);

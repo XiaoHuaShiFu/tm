@@ -22,6 +22,8 @@ public class AttendanceQuery {
     private Integer userId;
 
     private List<Integer> idList;
+    
+    private String jobNumber;
 
     private Boolean available;
     
@@ -84,6 +86,14 @@ public class AttendanceQuery {
     public void setIdList(List<Integer> idList) {
         this.idList = idList;
     }
+    
+    public String getJobNumber() {
+    	return jobNumber;
+    }
+    
+    public void setJobNumber(String jobNumber) {
+    	this.jobNumber = jobNumber;
+    }
 
     public Boolean getAvailable() {
         return available;
@@ -117,6 +127,7 @@ public class AttendanceQuery {
                 ", id=" + id +
                 ", userId=" + userId +
                 ", idList=" + idList +
+                ", jobNumber=" + jobNumber +
                 ", available=" + available +
                 ", department=" + department +
                 ", month=" + month +

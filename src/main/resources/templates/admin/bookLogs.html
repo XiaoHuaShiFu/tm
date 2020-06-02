@@ -70,7 +70,7 @@
         	<section>
         		<div class="func-bar clearfix">
         			<div style="padding: 0 20px;">
-       					<form action="1" method="get">
+       					<form action="1">
                             <span>选择操作状态</span>
                             <select name="state">
                                 <option value="">所有</option>
@@ -80,7 +80,7 @@
                                 <option value="RETURNED" th:selected="${#strings.equals(state, 'RETURNED')}">返还</option>
                             </select>
                             <input name="userId" type="text" placeholder="输入用户id" title="不输入参数默认查询所有">
-                            <input type="submit" value="查询" title="不输入参数默认查询所有">
+                            <input type="button" value="查询" title="不输入参数默认查询所有" onclick="submitWithToken(this.parentElement);">
        					</form>
        				</div>
         		</div>

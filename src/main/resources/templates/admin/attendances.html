@@ -68,11 +68,11 @@
         	<section class="func-bar-wrapper">
 	        		<div class="func-bar clearfix">
 	        			<div style="padding: 0 20px;">
-	        				<form method="get">
+	        				<form>
 	       						<input name="jobNumber" type="text" placeholder="输入工号">
-	       						<input type="submit" value="查询">
+	       						<input type="button" value="查询" onclick="submitWithToken(this.parentElement);">
 	       					</form>
-	        				<form id="condition-form" action="1" method="get">
+	        				<form id="condition-form" action="1">
 	        				    <span>选择月份</span>
 	        				    <select name="month">
 	        				       <option value="" th:selected="${month}">所有</option>
@@ -104,7 +104,7 @@
 		       						<option value="GZB" th:selected="${#strings.equals(department, 'GZB')}">管制部</option>
 		       						<option value="KFB" th:selected="${#strings.equals(department, 'KFB')}">客服部</option>
 		       					</select>
-		       					<input type="submit" value="查询">
+		       					<input type="button" value="查询" onclick="submitWithToken(this.parentElement);">
 	       					</form>
 	       				</div>
 	        		</div>
@@ -123,6 +123,7 @@
                       <thead>
                         <tr>
                           <th>id</th>
+                          <th>工号</th>
                           <th>姓名</th>
                           <th>经度</th>
                           <th>纬度</th>
@@ -134,6 +135,7 @@
                       <tbody>
                         <tr th:each="attendance : ${attendances}">
 					        <td th:text="${attendance.id}">空</td>
+					        <td th:text="${attendance.user.jobNumber}">空</td>
 					        <td th:text="${attendance.user.fullName}">空</td>
 					        <td th:text="${attendance.longitude}">空</td>
 					        <td th:text="${attendance.latitude}">空</td>

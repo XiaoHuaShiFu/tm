@@ -68,11 +68,11 @@
         	<section class="func-bar-wrapper">
         		<div class="func-bar clearfix">
         			<div style="padding: 0 20px;">
-        				<form method="get">
+        				<form>
        						<input name="jobNumber" type="text" placeholder="输入工号">
-       						<input type="submit" value="查询">
+       						<input type="button" value="查询" onclick="submitWithToken(this.parentElement);">
        					</form>
-        				<form id="condition-form" action="1" method="get">
+        				<form id="condition-form" action="1">
         				    <input id="sort" type="hidden" name="sort" value="false">
         				    <span id="sort-btn" onselectstart="return false;" th:class="${sort}? 'sort-btn-active':''">按积分降序</span>
                                <span>选择部门</span>
@@ -90,7 +90,7 @@
 	       						<option value="GZB" th:selected="${#strings.equals(department, 'GZB')}">管制部</option>
 	       						<option value="KFB" th:selected="${#strings.equals(department, 'KFB')}">客服部</option>
 	       					</select>
-	       					<input type="submit" value="查询">
+	       					<input type="button" value="查询" onclick="submitWithToken(this.parentElement);">
        					</form>
        				</div>
         		</div>
@@ -196,7 +196,7 @@
    				$(this).removeAttr("class");
    				$("#sort").attr("value", "false");
    			}
-   			$("#condition-form").submit();
+   			submitWithToken(document.getElementById("condition-form"));
    		});
    		
    		function forbid(ele){

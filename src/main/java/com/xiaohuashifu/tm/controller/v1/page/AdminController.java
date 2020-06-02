@@ -186,6 +186,7 @@ public class AdminController {
             model.addObject("pageSize", bookQuery.getPageSize());
             model.addObject("pageIndex", pageNum);
         } else {
+        	model.addObject("total", 0);
             model.addObject("error", "error");
         }
         return model;
@@ -214,6 +215,7 @@ public class AdminController {
             model.addObject("pageSize", bookLogQuery.getPageSize());
             model.addObject("pageIndex", pageNum);
         }else {
+        	model.addObject("total", 0);
             model.addObject("error", "error");
         }
         return model;
@@ -247,6 +249,7 @@ public class AdminController {
             if (data instanceof UserDO) {  //根据工号得到的结果
                 users = new ArrayList<>();
                 users.add((UserDO)data);
+                model.addObject("total", users.size());
             }else {
                 PageInfo<UserDO> usersInfo = (PageInfo<UserDO>)result.getData();
                 users = usersInfo.getList();
@@ -256,6 +259,7 @@ public class AdminController {
             }
             model.addObject("users", users);
         } else {
+        	model.addObject("total", 0);
             model.addObject("error", "error");
         }
         return model;
@@ -275,6 +279,7 @@ public class AdminController {
             model.addObject("pageSize", meetingQuery.getPageSize());
             model.addObject("pageIndex", pageNum);
         }else {
+        	model.addObject("total", 0);
             model.addObject("error", "error");
         }
         return model;
@@ -292,6 +297,7 @@ public class AdminController {
         	model.addObject("meeting", meetingResult.getData());
         	model.addObject("prevPageNum", prevPageNum);
         }else {
+        	model.addObject("total", 0);
         	model.addObject("error", "error");
         }
         if (participantResult.isSuccess()) {
@@ -309,7 +315,8 @@ public class AdminController {
     @RequestMapping(value = "attendances/{pageNum}", method = RequestMethod.POST)
     public ModelAndView attendances(@PathVariable("pageNum") Integer pageNum,
             @RequestParam(value = "department", required = false) Department department,
-            @RequestParam(value = "month", required = false) Integer month) {
+            @RequestParam(value = "month", required = false) Integer month,
+            @RequestParam(value = "jobNumber", required = false) String jobNumber) {
         ModelAndView model = new ModelAndView("admin/attendances");
         AttendanceQuery attendanceQuery = new AttendanceQuery(pageNum);
         if (department != null) {
@@ -320,6 +327,9 @@ public class AdminController {
             attendanceQuery.setMonth(month);
             model.addObject("month", month);
         }
+        if (jobNumber != null) {
+        	attendanceQuery.setJobNumber(jobNumber);
+        }
         Result<PageInfo<AttendanceVO>> result = attendanceManager.listAttendances(attendanceQuery);
         if (result.isSuccess()) {
             PageInfo<AttendanceVO> attendancesInfo = result.getData();
@@ -329,6 +339,7 @@ public class AdminController {
             model.addObject("pageSize", attendanceQuery.getPageSize());
             model.addObject("pageIndex", pageNum);
         }else {
+        	model.addObject("total", 0);
             model.addObject("error", "error");
         }
         return model;
@@ -348,6 +359,7 @@ public class AdminController {
             model.addObject("pageSize", pointLogsInfo.getPageSize());
             model.addObject("pageIndex", pageNum);
         }else {
+        	model.addObject("total", 0);
             model.addObject("error", "error");
         }
         return model;
@@ -367,6 +379,7 @@ public class AdminController {
             model.addObject("pageSize", announcementsInfo.getPageSize());
             model.addObject("pageIndex", pageNum);
         }else {
+        	model.addObject("total", 0);
             model.addObject("error", "error");
         }
         return model;
@@ -386,6 +399,7 @@ public class AdminController {
             model.addObject("pageSize", adminLogQuery.getPageSize());
             model.addObject("pageIndex", pageNum);
         } else {
+        	model.addObject("total", 0);
             model.addObject("error", "error");
         }
         return model;

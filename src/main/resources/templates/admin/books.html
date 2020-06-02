@@ -71,9 +71,9 @@
         		<div class="func-bar">
         			<div style="padding: 0 20px;">
        					<span id="add-btn" onselectstart="return false;">添加书籍</span>
-       					<form action="1" method="get">
+       					<form action="1">
        						<input name="name" type="text" placeholder="输入书名">
-       						<input type="submit" value="查询">
+       						<input type="button" value="查询" onclick="submitWithToken(this.parentElement);">
        					</form>
        				</div>
         		</div>
