@@ -56,7 +56,7 @@ public class AnnouncementController {
 		if (!result.isSuccess()) {
 			return result;
 		}
-		return result.getData().get("newValue");
+		return result;
 	}
 	
 	@RequestMapping(method = RequestMethod.DELETE)
@@ -67,7 +67,7 @@ public class AnnouncementController {
 		if (!result.isSuccess()) {
 			return result;
 		}
-		return result.getData();
+		return result;
 	}
 	
 	@ResponseStatus(HttpStatus.OK)

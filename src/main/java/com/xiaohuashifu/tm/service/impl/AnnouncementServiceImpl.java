@@ -37,8 +37,7 @@ public class AnnouncementServiceImpl implements AnnouncementService {
 	@Override
 	public Result<Map<Object, Object>> updateAnnouncement(AnnouncementDO announcement) {
 		Map<Object, Object> map = new HashMap<>();
-		AnnouncementDO oldAnnouncement = announcementMapper.getAnnouncement();
-		map.put("oldValue", oldAnnouncement);
+		map.put("oldValue", announcement);
 		int count = announcementMapper.updateAnnouncement(announcement);
 		if (count < 1) {
 			return Result.fail(ErrorCode.INTERNAL_ERROR, "Update announcement failed.");
@@ -57,8 +56,8 @@ public class AnnouncementServiceImpl implements AnnouncementService {
 	}
 	
 	@Override
-	public Result<AnnouncementDO> getAnnouncement() {
-		AnnouncementDO announcement = announcementMapper.getAnnouncement();
+	public Result<AnnouncementDO> getAnnouncement(Integer id) {
+		AnnouncementDO announcement = announcementMapper.getAnnouncement(id);
 		if (announcement == null) {
 			return Result.fail(ErrorCode.INTERNAL_ERROR, "Get announcement fail");
 		}

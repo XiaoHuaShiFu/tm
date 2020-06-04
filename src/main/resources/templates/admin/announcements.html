@@ -132,12 +132,12 @@
       </div>
     </div>
     
-    <!-- 添加书籍遮罩层 -->
+    <!-- 添加公告遮罩层 -->
     <div id="add-mask" class="mask">
     	<div>
     		<form id="add-form" method="post">
     			<div>
-    				标题 <input name="title" type="text">
+    				标题 <input name="title" type="text" style="min-width: 500px;">
     			</div>
     			<div>
     			    <span class="content-mark">内容</span>
@@ -151,7 +151,7 @@
     	</div>
     </div>
     
-    <!-- 修改书籍遮罩层 -->
+    <!-- 修改公告遮罩层 -->
     <div id="upd-mask" class="mask">
     	<div>
     		<form id="upd-form" method="post">
@@ -159,7 +159,7 @@
     		        id&emsp;<input id="upd-id" name="id" type="text" disabled="disabled">
     		    </div>
     			<div>
-                                    标题 <input id="upd-title" name="title" type="text">
+                                    标题 <input id="upd-title" name="title" type="text" style="min-width: 500px;">
                 </div>
                 <div>
                     <span class="content-mark">内容</span> 
@@ -216,6 +216,7 @@
 		})
 		
 		$("#upd-submit").click(function(){  //点击提交
+			$("#upd-id").removeAttr("disabled");
 			var formData = new FormData(document.getElementById("upd-form"));
 			$.ajax({
 				url:"/v1/announcements",
@@ -227,12 +228,11 @@
                     "authorization" : sessionStorage.getItem("token")
                 },
 				success:function(data){
-					if (data.success != false){
-						console.log(data);
+					if (data.success != false) {
 						alert("修改成功");
 						$("#upd-mask").attr("style", "display:none");
-						$("#updating").children()[1].innerText = data.title;
-						$("#updating").children()[2].innerText = data.content;
+						$("#updating").children()[1].innerText = data.data.newValue.title;
+						$("#updating").children()[2].innerText = data.data.newValue.content;
 						$("#updating").removeAttr("id");  //取消选中状态
 					}else {
 						alert("修改失败");
@@ -247,7 +247,7 @@
 			$(parent).attr("id", "updating");  //设置为选中状态
 			$("#upd-id").attr("value", updId);
 			$("#upd-title").attr("value", parent.children()[1].innerText);
-			$("#upd-content").attr("value", parent.children()[2].innerText);
+			$("#upd-content").text(parent.children()[2].innerText);
 			$("#upd-mask").attr("style", "display:block;");
 		}
 		

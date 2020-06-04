@@ -11,6 +11,6 @@ public interface AnnouncementService {
 	Result<AnnouncementDO> insertAnnouncement(AnnouncementDO announcement);
 	Result<Map<Object, Object>> updateAnnouncement(AnnouncementDO announcement);
 	Result<Integer> deleteAnnouncement(Integer id);
-	Result<AnnouncementDO> getAnnouncement();
+	Result<AnnouncementDO> getAnnouncement(Integer id);
 	Result<PageInfo<AnnouncementDO>> listAnnouncements(AnnouncementQuery announcementQuery);
 }

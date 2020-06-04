@@ -11,12 +11,6 @@ public interface AnnouncementMapper {
 	int insertAnnouncement(AnnouncementDO announcement);
 	int updateAnnouncement(AnnouncementDO announcement);
 	int deleteAnnouncement(Integer id);
-	
-	/**
-	 * 获取最新发布的公告
-	 * @return AnnouncementDO对象
-	 */
-	AnnouncementDO getAnnouncement();
-	
+	AnnouncementDO getAnnouncement(Integer id);
 	List<AnnouncementDO> listAnnouncements();
 }
