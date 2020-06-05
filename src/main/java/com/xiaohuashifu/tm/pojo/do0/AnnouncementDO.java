@@ -4,6 +4,7 @@ import java.util.Date;
 
 public class AnnouncementDO {
 	private Integer id;
+	private Integer adminId;
 	private String title;
 	private String content;
 	private Date publishTime;
@@ -18,6 +19,14 @@ public class AnnouncementDO {
 		this.id = id;
 	}
 
+	public Integer getAdminId() {
+		return adminId;
+	}
+	
+	public void setAdminId(Integer adminId) {
+		this.adminId = adminId;
+	}
+	
 	public String getTitle() {
 		return title;
 	}
@@ -61,6 +70,7 @@ public class AnnouncementDO {
 	@Override
 	public String toString() {
 		return "AnnouncementDO [id=" + id +
+				", adminId=" + adminId +
 				", title=" + title +
 				", content=" + content +
 				", publishTime=" + publishTime +

@@ -24,13 +24,13 @@ import com.xiaohuashifu.tm.constant.BookState;
 import com.xiaohuashifu.tm.constant.Department;
 import com.xiaohuashifu.tm.constant.TokenType;
 import com.xiaohuashifu.tm.manager.AdminLogManager;
+import com.xiaohuashifu.tm.manager.AnnouncementManager;
 import com.xiaohuashifu.tm.manager.AttendanceManager;
 import com.xiaohuashifu.tm.manager.BookLogManager;
 import com.xiaohuashifu.tm.manager.MeetingManager;
 import com.xiaohuashifu.tm.manager.MeetingParticipantManager;
 import com.xiaohuashifu.tm.manager.WeChatMpManager;
 import com.xiaohuashifu.tm.pojo.ao.TokenAO;
-import com.xiaohuashifu.tm.pojo.do0.AnnouncementDO;
 import com.xiaohuashifu.tm.pojo.do0.BookDO;
 import com.xiaohuashifu.tm.pojo.do0.MeetingDO;
 import com.xiaohuashifu.tm.pojo.do0.PointLogDO;
@@ -46,12 +46,12 @@ import com.xiaohuashifu.tm.pojo.query.MeetingQuery;
 import com.xiaohuashifu.tm.pojo.query.PointLogQuery;
 import com.xiaohuashifu.tm.pojo.query.UserQuery;
 import com.xiaohuashifu.tm.pojo.vo.AdminLogVO;
+import com.xiaohuashifu.tm.pojo.vo.AnnouncementVO;
 import com.xiaohuashifu.tm.pojo.vo.AttendanceVO;
 import com.xiaohuashifu.tm.pojo.vo.BookLogVO;
 import com.xiaohuashifu.tm.pojo.vo.MeetingParticipantVO;
 import com.xiaohuashifu.tm.pojo.vo.MeetingVO;
 import com.xiaohuashifu.tm.result.Result;
-import com.xiaohuashifu.tm.service.AnnouncementService;
 import com.xiaohuashifu.tm.service.BookService;
 import com.xiaohuashifu.tm.service.MeetingService;
 import com.xiaohuashifu.tm.service.PointLogService;
@@ -62,7 +62,7 @@ import com.xiaohuashifu.tm.service.UserService;
 @RequestMapping("v1/admin")
 public class AdminController {
 
-    private final AnnouncementService announcementService;
+    private final AnnouncementManager announcementManager;
     private final UserService userService;
     private final BookService bookService;
     private final BookLogManager bookLogManager;
@@ -76,13 +76,13 @@ public class AdminController {
     private final WeChatMpManager weChatMpManager;
     
     @Autowired
-    public AdminController(AnnouncementService announcementService, UserService userService,
+    public AdminController(AnnouncementManager announcementManager, UserService userService,
             BookService bookService, BookLogManager bookLogManager,
             MeetingService meetingService, MeetingManager meetingManager,
             MeetingParticipantManager meetingParticipantManager,
             AttendanceManager attendanceManager, PointLogService pointLogService,
             AdminLogManager adminLogManager, TokenService tokenService, WeChatMpManager weChatMpManager) {
-        this.announcementService = announcementService;
+        this.announcementManager = announcementManager;
         this.userService = userService;
         this.bookService = bookService;
         this.bookLogManager = bookLogManager;
@@ -367,13 +367,20 @@ public class AdminController {
     
     @TokenAuth(tokenType = TokenType.ADMIN)
     @RequestMapping(value = "announcements/{pageNum}", method = RequestMethod.POST)
-    public ModelAndView announcements(@PathVariable("pageNum") Integer pageNum) {
+    public ModelAndView announcements(TokenAO tokenAO, @PathVariable("pageNum") Integer pageNum) {
         ModelAndView model = new ModelAndView("admin/announcements");
         AnnouncementQuery announcementQuery = new AnnouncementQuery(pageNum);
-        Result<PageInfo<AnnouncementDO>> result = announcementService.listAnnouncements(announcementQuery);
+        Result<PageInfo<AnnouncementVO>> result = announcementManager.listAnnouncements(announcementQuery);
         if (result.isSuccess()) {
-            PageInfo<AnnouncementDO> announcementsInfo = result.getData();
-            List<AnnouncementDO> announcements = announcementsInfo.getList();
+            PageInfo<AnnouncementVO> announcementsInfo = result.getData();
+            List<AnnouncementVO> announcements = announcementsInfo.getList();
+            announcements.forEach((announcement)->{
+            	if (announcement.getAdmin().getId().equals(tokenAO.getId())) {
+            		announcement.setIsCurrentAdmin(Boolean.TRUE);
+            	}else {
+            		announcement.setIsCurrentAdmin(Boolean.FALSE);
+            	}
+            });
             model.addObject("announcements", announcements);
             model.addObject("total", announcementsInfo.getTotal());
             model.addObject("pageSize", announcementsInfo.getPageSize());

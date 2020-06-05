@@ -56,8 +56,8 @@ public class AnnouncementServiceImpl implements AnnouncementService {
 	}
 	
 	@Override
-	public Result<AnnouncementDO> getAnnouncement(Integer id) {
-		AnnouncementDO announcement = announcementMapper.getAnnouncement(id);
+	public Result<AnnouncementDO> getAnnouncement(AnnouncementQuery announcementQuery) {
+		AnnouncementDO announcement = announcementMapper.getAnnouncement(announcementQuery);
 		if (announcement == null) {
 			return Result.fail(ErrorCode.INTERNAL_ERROR, "Get announcement fail");
 		}

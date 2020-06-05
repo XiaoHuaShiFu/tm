@@ -18,8 +18,12 @@ import com.xiaohuashifu.tm.aspect.annotation.AdminLog;
 import com.xiaohuashifu.tm.auth.TokenAuth;
 import com.xiaohuashifu.tm.constant.AdminLogType;
 import com.xiaohuashifu.tm.constant.TokenType;
+import com.xiaohuashifu.tm.manager.AnnouncementManager;
+import com.xiaohuashifu.tm.pojo.ao.TokenAO;
 import com.xiaohuashifu.tm.pojo.do0.AnnouncementDO;
 import com.xiaohuashifu.tm.pojo.query.AnnouncementQuery;
+import com.xiaohuashifu.tm.pojo.vo.AnnouncementVO;
+import com.xiaohuashifu.tm.result.ErrorCode;
 import com.xiaohuashifu.tm.result.Result;
 import com.xiaohuashifu.tm.service.AnnouncementService;
 
@@ -29,17 +33,20 @@ import com.xiaohuashifu.tm.service.AnnouncementService;
 public class AnnouncementController {
 	
 	private final AnnouncementService announcementService;
+	private final AnnouncementManager announcementManager;
 	
 	@Autowired
-	public AnnouncementController(AnnouncementService announcementService) {
+	public AnnouncementController(AnnouncementService announcementService, AnnouncementManager announcementManager) {
 		this.announcementService = announcementService;
+		this.announcementManager = announcementManager;
 	}
 	
 	@ResponseStatus(HttpStatus.CREATED)
 	@RequestMapping(method = RequestMethod.POST)
 	@TokenAuth(tokenType = TokenType.ADMIN)
 	@AdminLog(value = "'发布公告'", type = AdminLogType.INSERT)
-	public Object post(HttpServletRequest request, AnnouncementDO announcement) {
+	public Object post(TokenAO tokenAO, HttpServletRequest request, AnnouncementDO announcement) {
+		announcement.setAdminId(tokenAO.getId());
 		Result<AnnouncementDO> result = announcementService.insertAnnouncement(announcement);
 		if (!result.isSuccess()) {
 			return result;
@@ -51,7 +58,10 @@ public class AnnouncementController {
 	@RequestMapping(method = RequestMethod.PUT)
 	@TokenAuth(tokenType = TokenType.ADMIN)
 	@AdminLog(value = "'更新公告'", type = AdminLogType.UPDATE)
-	public Object put(HttpServletRequest request, AnnouncementDO announcement) {
+	public Object put(TokenAO tokenAO, HttpServletRequest request, AnnouncementDO announcement) {
+		if (!tokenAO.getId().equals(announcement.getAdminId())) {
+			return Result.fail(ErrorCode.FORBIDDEN_SUB_USER, "Not allowed!");
+		}
 		Result<Map<Object, Object>> result = announcementService.updateAnnouncement(announcement);
 		if (!result.isSuccess()) {
 			return result;
@@ -62,7 +72,11 @@ public class AnnouncementController {
 	@RequestMapping(method = RequestMethod.DELETE)
 	@TokenAuth(tokenType = TokenType.ADMIN)
 	@AdminLog(value = "'删除公告'", type = AdminLogType.DELETE)
-	public Object delete(HttpServletRequest request, @RequestParam("id") Integer id) {
+	public Object delete(TokenAO tokenAO, HttpServletRequest request, 
+			@RequestParam("id") Integer id, @RequestParam("adminId") Integer adminId) {
+		if (!tokenAO.getId().equals(adminId)) {
+			return Result.fail(ErrorCode.FORBIDDEN_SUB_USER, "Not allowed!");
+		}
 		Result<Integer> result = announcementService.deleteAnnouncement(id);
 		if (!result.isSuccess()) {
 			return result;
@@ -78,11 +92,11 @@ public class AnnouncementController {
 		if (pageNum != null) {
 			announcementQuery.setPageNum(pageNum);
 		}
-		Result<PageInfo<AnnouncementDO>> result = announcementService.listAnnouncements(announcementQuery);
+		Result<PageInfo<AnnouncementVO>> result = announcementManager.listAnnouncements(announcementQuery);
 		if (!result.isSuccess()) {
 			return result;
 		}
-		PageInfo<AnnouncementDO> announcementsInfo = result.getData();
+		PageInfo<AnnouncementVO> announcementsInfo = result.getData();
 		return announcementsInfo;
 	}
 	

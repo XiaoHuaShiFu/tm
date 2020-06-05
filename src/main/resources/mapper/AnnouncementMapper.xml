@@ -2,12 +2,12 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.xiaohuashifu.tm.dao.AnnouncementMapper">
     <sql id="announcementColumn">
-        id, title, content, publish_time, create_time, update_time
+        id, admin_id, title, content, publish_time, create_time, update_time
     </sql>
 
 	
 	<insert id="insertAnnouncement" parameterType="com.xiaohuashifu.tm.pojo.do0.AnnouncementDO">
-		insert into announcement(title, content) values (#{title}, #{content});
+		insert into announcement(admin_id, title, content) values (#{adminId}, #{title}, #{content});
 	</insert>
 	
 	<update id="updateAnnouncement" parameterType="com.xiaohuashifu.tm.pojo.do0.AnnouncementDO">
@@ -24,14 +24,22 @@
 	</update>
 	
 	<delete id="deleteAnnouncement" parameterType="integer">
-	   delete from announcement where id = #{id};
+	    delete from announcement where id = #{id};
 	</delete>
 	
-	<select id="getAnnouncement" parameterType="integer" resultType="com.xiaohuashifu.tm.pojo.do0.AnnouncementDO">
+	<select id="getAnnouncement" parameterType="com.xiaohuashifu.tm.pojo.query.AnnouncementQuery" 
+	    resultType="com.xiaohuashifu.tm.pojo.do0.AnnouncementDO">
         select
         <include refid="announcementColumn"/>
         from announcement
-        where id = #{id}
+        <where>
+            <if test="id != null">
+                id = #{id}
+            </if>
+            <if test="adminId != null">
+                and admin_id = #{adminId}
+            </if>
+        </where>
     </select>
     
     <select id="listAnnouncements" resultType="com.xiaohuashifu.tm.pojo.do0.AnnouncementDO">

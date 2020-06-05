@@ -16,7 +16,7 @@ import com.xiaohuashifu.tm.pojo.vo.AdminLogVO;
 import com.xiaohuashifu.tm.result.Result;
 import com.xiaohuashifu.tm.service.AdminService;
 
-@Component("AdminLogManager")
+@Component("adminLogManager")
 public class AdminLogManagerImpl implements AdminLogManager {
 
     private final AdminService adminService;

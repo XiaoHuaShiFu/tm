@@ -91,6 +91,7 @@
                       <thead>
                         <tr>
                           <th>id</th>
+                          <th style="min-width: 5em">发布人</th>
                           <th>标题</th>
                           <th class="content-cell" style="text-align: center;">内容</th>
                           <th class="time-cell">发布时间</th>
@@ -100,12 +101,13 @@
                       <tbody>
                         <tr th:each="announcement : ${announcements}">
 					        <td th:text="${announcement.id}">空</td>
+					        <td th:text="${announcement.admin.fullName}">空</td>
 					        <td class="content-cell" th:text="${announcement.title}">空</td>
 					        <td style="text-align:left;white-space:pre-wrap;" th:text="${announcement.content}">空</td>
 					        <td th:text="${#dates.format(announcement.publishTime, 'yyyy-MM-dd HH:mm:ss')}">空</td>
 					        <td>
-					        	<span class="upd-btn" th:upd="${announcement.id}" onclick="updateAnnouncements(this);">修改</span>
-					        	<span class="del-btn" th:del="${announcement.id}" onclick="deleteAnnouncements(this);">删除</span>
+					        	<span th:if="${announcement.isCurrentAdmin}" class="upd-btn" th:upd="${announcement.id}" th:amd="${announcement.admin.id}" onclick="updateAnnouncements(this);">修改</span>
+					        	<span th:if="${announcement.isCurrentAdmin}" class="del-btn" th:del="${announcement.id}" th:amd="${announcement.admin.id}" onclick="deleteAnnouncements(this);">删除</span>
 					        </td>
 						</tr>
                       </tbody>
@@ -158,6 +160,7 @@
     		    <div>
     		        id&emsp;<input id="upd-id" name="id" type="text" disabled="disabled">
     		    </div>
+    		    <input id="upd-admin" type="hidden" name="adminId">
     			<div>
                                     标题 <input id="upd-title" name="title" type="text" style="min-width: 500px;">
                 </div>
@@ -235,7 +238,7 @@
 						$("#updating").children()[2].innerText = data.data.newValue.content;
 						$("#updating").removeAttr("id");  //取消选中状态
 					}else {
-						alert("修改失败");
+						alert("修改失败，" + data.message);
 					}
 				}
 			});	
@@ -243,11 +246,13 @@
 		
 		function updateAnnouncements(ele){  //弹出更新公告的窗口
 			var updId = $(ele).attr("upd");
+			var adminId = $(ele).attr("amd");
 			var parent = $(ele).parent().parent();
 			$(parent).attr("id", "updating");  //设置为选中状态
 			$("#upd-id").attr("value", updId);
-			$("#upd-title").attr("value", parent.children()[1].innerText);
-			$("#upd-content").text(parent.children()[2].innerText);
+			$("#upd-admin").attr("value", adminId);
+			$("#upd-title").attr("value", parent.children()[2].innerText);
+			$("#upd-content").text(parent.children()[3].innerText);
 			$("#upd-mask").attr("style", "display:block;");
 		}
 		
@@ -257,7 +262,8 @@
 				$.ajax({
 					url:"/v1/announcements",
 					data:{
-						id : delId
+						id : delId,
+						adminId : $(ele).attr("amd")
 					},
 					method:"DELETE",
 					headers:{
@@ -268,7 +274,7 @@
 							$(ele).parent().parent().remove();
 							alert("删除成功");
 						}else {
-							alert("删除失败");
+							alert("删除失败，" + data.message);
 						}
 					}
 				});
