@@ -47,10 +47,8 @@ public class AttendController {
 	
 	@RequestMapping(value = "index", method = RequestMethod.POST)
 	@TokenAuth(tokenType = {TokenType.QRCODE})
-	public Object attend(HttpServletRequest request) {
-		ModelAndView model = new ModelAndView("user/attend");
-		model.addObject("token", request.getHeader("authorization"));
-		return model;
+	public String attend(HttpServletRequest request) {
+		return "user/attend";
 	}
 	
 }

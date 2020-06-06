@@ -24,11 +24,12 @@ public class MvcConfig {
         FilterRegistrationBean<HiddenHttpHeaderFilter> filterRegistrationBean = new FilterRegistrationBean<>();
         filterRegistrationBean.setFilter(new HiddenHttpHeaderFilter());
         filterRegistrationBean.addUrlPatterns("/v1/admin/*");
+        filterRegistrationBean.addUrlPatterns("/v1/attend/*");
         return filterRegistrationBean;
     }
 	
 	/**
-	 * 用于外部GET访问重定向到登录页
+	 * 用于外部对admin页面的GET访问重定向到登录页
 	 * @return FilterRegistrationBean<VisitFilter>
 	 */
 	@Bean
