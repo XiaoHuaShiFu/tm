@@ -25,6 +25,7 @@ public class MvcConfig {
         filterRegistrationBean.setFilter(new HiddenHttpHeaderFilter());
         filterRegistrationBean.addUrlPatterns("/v1/admin/*");
         filterRegistrationBean.addUrlPatterns("/v1/attend/*");
+        filterRegistrationBean.addUrlPatterns("/v1/login/*");
         return filterRegistrationBean;
     }
 	
