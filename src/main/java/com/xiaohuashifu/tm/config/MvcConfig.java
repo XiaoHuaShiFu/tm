@@ -26,6 +26,7 @@ public class MvcConfig {
         filterRegistrationBean.addUrlPatterns("/v1/admin/*");
         filterRegistrationBean.addUrlPatterns("/v1/attend/*");
         filterRegistrationBean.addUrlPatterns("/v1/login/*");
+        filterRegistrationBean.addUrlPatterns("/v1/meeting/choose/qrcode");
         return filterRegistrationBean;
     }
 	

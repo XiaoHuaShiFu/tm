@@ -33,9 +33,15 @@ public class MeetingChooseController {
 	}
 
 	@RequestMapping(method = RequestMethod.GET)
-	public Object login(@ModelAttribute(value = "userId") String userId, @ModelAttribute(value = "token") String token) {
+	public Object login(HttpServletRequest request, 
+			@ModelAttribute(value = "userId") String userId, @ModelAttribute(value = "token") String token) {
 		MeetingQuery meetingQuery = new MeetingQuery();
 		meetingQuery.setState(MeetingState.PROCESSING);
+		if (userId == null || userId.equals("")) {
+			userId = (String) request.getSession().getAttribute("userId");
+		}else {
+			request.getSession().setAttribute("userId", userId);
+		}
 		meetingQuery.setUserId(Integer.valueOf(userId));
 		ModelMap modelMap = new ModelMap();
 		Result<PageInfo<MeetingDO>> listMeetings = meetingService.listMeetings(meetingQuery);

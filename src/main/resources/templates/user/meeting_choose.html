@@ -121,7 +121,6 @@
     </div>
 </div>
 
-<input type="hidden" th:value="${token}" id="staff_name2"/>
 <form action="/v1/meeting/choose/qrcode" method="post">
     <input type="hidden" id="header" name="_header">
     <input type="hidden" th:name="meetingId" value="">
@@ -129,10 +128,12 @@
 
 <script th:src="@{/vendor/jquery/jquery.min.js}"></script>
 <script type="text/javascript" th:inline="javascript">
+    if ([[${token}]] != null && [[${token}]] != ""){
+	    sessionStorage.setItem("token", [[${token}]]);
+    }
     function toQrcode(obj) {
-        var token = $("#staff_name2").val();
         var meetingId = obj.name;
-        $("#header").val("authorization:" + token);
+        $("#header").val("authorization:" + sessionStorage.getItem("token"));
         sessionStorage.setItem("meetingId",meetingId);
         document.getElementsByTagName("form")[0].submit();
     }
